@@ -1,8 +1,14 @@
 import React from 'react'
+import RestaurantCard from '../Restaurant/RestaurantCard'
 
 const Favourites = () => {
   return (
-    <div>Favourites</div>
+    <div>
+      <h1 className='py-5 text-xl font-semibold text-center'>Nhà Hàng Yêu Thích</h1>
+      <div className='flex flex-wrap gap-3 justify-center'>
+        {[1,1,1].map((item) => <RestaurantCard/>)}
+      </div>
+    </div>
   )
 }
 

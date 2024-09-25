@@ -10,13 +10,13 @@ import { Divider, Drawer, useMediaQuery } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 const menu = [
-  { title: "Orders", icon: <ShoppingBagIcon /> },
-  { title: "Favorites", icon: <FavoriteIcon /> },
-  { title: "Address", icon: <HomeIcon /> },
-  { title: "Payment", icon: <AccountBalanceWalletIcon /> },
-  { title: "Notification", icon: <NotificationsIcon /> },
-  { title: "Events", icon: <EventIcon /> },
-  { title: "Logout", icon: <LogoutIcon /> },
+  { title: "Đơn hàng", slug: "orders", icon: <ShoppingBagIcon /> },
+  { title: "Yêu thích", slug: "favorites", icon: <FavoriteIcon /> },
+  { title: "Địa chỉ", slug: "address", icon: <HomeIcon /> },
+  { title: "Thanh toán", slug: "payment", icon: <AccountBalanceWalletIcon /> },
+  { title: "Thông báo", slug: "notification", icon: <NotificationsIcon /> },
+  { title: "Sự kiện", slug: "events", icon: <EventIcon /> },
+  { title: "Đăng xuất", slug: "logout", icon: <LogoutIcon /> },
 
 ]
 
@@ -26,7 +26,7 @@ const ProfileNavigation = ({ open, handleClose }) => {
   const navigate = useNavigate();
 
   const handleNavigate = (item) => {
-   navigate(`/my-profile/${item.title.toLowerCase()}`)
+    navigate(`/my-profile/${item.slug.toLowerCase()}`)
 
   }
 
