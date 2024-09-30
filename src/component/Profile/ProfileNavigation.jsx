@@ -8,6 +8,9 @@ import EventIcon from '@mui/icons-material/Event';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { Divider, Drawer, useMediaQuery } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { logout } from '../State/Authentication/Action';
+
 
 const menu = [
   { title: "Đơn hàng", slug: "orders", icon: <ShoppingBagIcon /> },
@@ -24,12 +27,19 @@ const menu = [
 const ProfileNavigation = ({ open, handleClose }) => {
   const isSmallScreen = useMediaQuery('(max-width:900px)')
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleNavigate = (item) => {
-    navigate(`/my-profile/${item.slug.toLowerCase()}`)
+    if(item.slug === "logout"){
+      dispatch(logout())
+      navigate("/")
+    }else{
+      navigate(`/my-profile/${item.slug.toLowerCase()}`)
+    }   
 
   }
-
+  
+  
   return (
     <div>
       <Drawer

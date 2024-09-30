@@ -16,17 +16,12 @@ function App() {
   const dispatch = useDispatch();
   const jwt = localStorage.getItem("jwt")
   const { auth } = useSelector(store => store)
-  useEffect(() => {
+  useEffect(() => {    
     dispatch(getUser(auth.jwt || jwt))
   }, [auth.jwt])
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
-      {/* <Navbar /> */}
-      {/* <Home/> */}
-      {/* <RestaurantDetails/> */}
-      {/* <Cart /> */}
-      {/* <Profile/> */}
       <CustomerRoute />
     </ThemeProvider>
 
