@@ -2,33 +2,50 @@ import { Card, Chip, IconButton } from '@mui/material'
 import React from 'react'
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { addToFavorite } from '../State/Authentication/Action';
+import { isPresentInFavorites } from '../config/logic';
 
-const RestaurantCard = () => {
-  return (
-    <Card className='w-[18rem]'>
-        <div className={`${true? 'cursor-pointer' : 'cursor-not-allowed'} relative`} >
-            <img className="w-full h-[10rem] rounded-t-md object-cover" 
-            src='https://dynamic-media-cdn.tripadvisor.com/media/photo-o/05/d2/7d/72/la-vong.jpg?w=1200&h=-1&s=1' alt=''/>
-            <Chip size='small' className='absolute top-2 left-2' color={true?"success":"error"} label={true?"open":"closed"}/>
-        </div>
-        
-        <div className='p-4 textPart lg:flex w-full justify-between'>
-            <div className='space-y-1'>
-                <p className='font-semibold text-lg'>Nhà Hàng Lã Vọng</p>
-                <p className='text-gray-500 text-sm'>
-                    Nhà hàng Lã Vọng - chuyên Buffet & Hải Sản tươi sống ra đời nhằm mang đến những tinh hoa ẩm thực kết hợp các món ăn Hải sản mang đẳng cấp cao, với phong cách kiến trúc Hoàng gia và chất lượng phục vụ hoàn hảo tới khách hàng Một số món ăn đặc trưng: - Súp Vi cá - Tôm hùm Nha Trang bỏ lò pho mai kiểu Louis - Cá Song sao hấp sốt xí muội kiểu Lã Vọng - Ốc Hoàng Hậu chế biến tại bàn
-                </p>
+const RestaurantCard = ({ item }) => {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const jwt = localStorage.getItem("jwt");
+    const {auth} = useSelector(store => store);
+    console.log("Auth:",auth);
+    const handleAddToFavorite = () => {
+        dispatch(addToFavorite({ jwt , restaurantId: item.id }))
+    }
+    const handleNavigateToRestaurant = () => {
+        if(item.open){
+            navigate(`/restaurant/${item.address.city}/${item.name}/${item.id}`)
+        }
+    }
+    return (
+        <Card className='w-[18rem]'>
+            <div className={`${true ? 'cursor-pointer' : 'cursor-not-allowed'} relative`} >
+                <img className="w-full h-[10rem] rounded-t-md object-cover"
+                    src={item.images[0]} alt='' />
+                <Chip size='small' className='absolute top-2 left-2' color={item.open ? "success" : "error"} label={item.open ? "Mở cửa" : "Đóng cửa"} />
             </div>
-            <div>
-                <IconButton>
-                    {true?<FavoriteIcon/>:<FavoriteBorderIcon/>}
-                </IconButton>
+
+            <div className='p-4 textPart lg:flex w-full justify-between'>
+                <div className='space-y-1'>
+                    <p onClick={handleNavigateToRestaurant}  className='font-semibold text-lg cursor-pointer'>{item.name}</p>
+                    <p className='text-gray-500 text-sm'>
+                        {item.description}
+                    </p>
+                </div>
+                <div>
+                    <IconButton onClick={handleAddToFavorite}>
+                        {isPresentInFavorites(auth.favorites,item) ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+                    </IconButton>
+                </div>
             </div>
-        </div>
-    </Card>
-      
-    
-  )
+        </Card>
+
+
+    )
 }
 
 export default RestaurantCard

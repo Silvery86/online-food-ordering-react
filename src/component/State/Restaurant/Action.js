@@ -65,7 +65,7 @@ export const getRestaurantById = (reqData) => {
                 },
             });
             dispatch({ type: GET_RESTAURANT_BY_ID_SUCCESS, payload: response.data })
-            console.log("Restaurant by id:", data);
+            console.log("Restaurant by id:", response.data);
         } catch (error) {
             dispatch({ type: GET_RESTAURANT_BY_ID_FAILURE, payload: error })
             console.log("Error:", error);
@@ -287,8 +287,7 @@ export const getRestaurantCategory = ({ jwt, restaurantId }) => {
         dispatch({ type: GET_RESTAURANT_CATEGORY_REQUEST });
         try {
             const res = await api.get(
-                `/api/category/restaurant/${restaurantId}`,
-                reqData,
+                `/api/category/restaurant/${restaurantId}`,               
                 {
                     headers: {
                         Authorization: `Bearer ${jwt}`,

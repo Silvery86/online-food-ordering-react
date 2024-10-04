@@ -3,7 +3,7 @@ import * as actionTypes from "./ActionType";
 
 const initialState = {
     loading: false,
-    order: [],
+    orders: [],
     error: null,
 
 };

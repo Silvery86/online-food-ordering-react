@@ -8,33 +8,34 @@ const initialState = {
 
 const ingredientReducer = (state = initialState, action) => {
     switch (action.type) {
-        case actionTypes.GET_RESTAURANTS_ORDER_REQUEST:
-        case actionTypes.UPDATE_ORDER_STATUS_REQUEST:
+        case actionTypes.GET_INGREDIENTS:
             return {
                 ...state,
-                loading: true,
-                error: null,
+                ingredients: action.payload,
             };
-        case actionTypes.GET_RESTAURANTS_ORDER_SUCCESS:
+        case actionTypes.GET_INGREDIENT_CATEGORY_SUCCESS:
             return {
                 ...state,
-                loading: false,
-                orders: action.payload,
+                category: action.payload,
             };
-        case actionTypes.UPDATE_ORDER_STATUS_SUCCESS:
+        case actionTypes.CREATE_INGREDIENT_CATEGORY_SUCCESS:
             return {
                 ...state,
-                loading: false,
-                orders: state.orders.map(
-                    (order) => order.id === action.payload.id ? action.payload : order
+                category: [...state.category, action.payload],
+            };
+        case actionTypes.CREATE_INFREDIENT_SUCCESS:
+            return {
+                ...state,
+
+                ingredients: [...state.ingredients, action.payload],
+            };
+        case actionTypes.UPDATE_STOCK:
+            return {
+                ...state,
+                update: action.payload,
+                ingredients: state.ingredients.map(
+                    (item) => item.id === action.payload.id ? action.payload : item
                 ),
-            };
-        case actionTypes.GET_RESTAURANTS_ORDER_FAILURE:
-        case actionTypes.UPDATE_ORDER_STATUS_FAILURE:
-            return {
-                ...state,
-                loading: false,
-                orders: action.payload,
             };
         default:
             return state;

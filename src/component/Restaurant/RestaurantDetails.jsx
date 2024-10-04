@@ -1,15 +1,14 @@
 import { Divider, FormControl, FormControlLabel, Grid, Radio, RadioGroup, Typography } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import MenuCard from './MenuCard';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { getRestaurantById, getRestaurantCategory } from '../State/Restaurant/Action';
+import { getUser } from '../State/Authentication/Action';
 
-const categories = [
-    "Phở Tái",
-    "Phở Chín",
-    "Phở Nạm",
-    "Phở Gầu"
-]
+
 const foodTypes = [
     { label: "All", value: "all" },
     { label: "Vegetarian Only", value: "vegetarian" },
@@ -20,11 +19,24 @@ const foodTypes = [
 const menu = [1, 1, 1, 1, 1, 1, 1]
 
 const RestaurantDetails = () => {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const jwt = localStorage.getItem("jwt");
+    console.log("JWT:",jwt)
+    const { auth, restaurant } = useSelector(store => store);
+    const { id , city } = useParams();
     const [foodType, setFoodType] = useState("");
     const [category, setCategory] = useState("");
     const handleFilter = (e) => {
         console.log(e.target.value, e.target.name)
     }
+
+    useEffect(() => {
+        dispatch(getRestaurantById({ jwt, restaurantId: id }));
+        dispatch(getRestaurantCategory({ jwt, restaurantId: id }));
+    }, []
+    )
+    console.log("Restaurant:", restaurant)
     return (
         <div className='px-5 lg:px-20'>
             <section>
@@ -32,20 +44,20 @@ const RestaurantDetails = () => {
                 <div>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
-                            <img className='w-full h-[40vh] object-cover'
-                                src='https://noipho360.vn/wp-content/uploads/2022/05/pho-ly-quoc-su.jpg'
+                            <img className='w-full h-[80vh] object-cover'
+                                src={restaurant.restaurant?.images[0]}
                                 alt=''
                             />
                         </Grid>
                         <Grid item xs={12} lg={6}>
                             <img className='w-full h-[40vh] object-cover'
-                                src='https://noidiennaupho.com/wp-content/uploads/2023/09/pho-ly-quoc-su-gan-day.jpg'
+                                src={restaurant.restaurant?.images[1]}
                                 alt=''
                             />
                         </Grid>
                         <Grid item xs={12} lg={6}>
                             <img className='w-full h-[40vh] object-cover'
-                                src='https://pholyquocsu.vn/wp-content/uploads/2022/09/mon-an-quoc-dan-700x700.jpg'
+                                src={restaurant.restaurant?.images[2]}
                                 alt=''
                             />
                         </Grid>
@@ -53,25 +65,24 @@ const RestaurantDetails = () => {
                 </div>
                 <div className='pt-3 pb-5'>
                     <h1 className='text-4xl font-semibold'>
-                        Phở Lý Quốc Sư
+                        {restaurant.restaurant?.name}
                     </h1>
                     <p className='text-gray-500 mt-1'>
                         <span>
-                            Đến với Hà Nội du khách sành ăn không bao giờ quên thưởng thức món Phở.
-                            Để nói thương hiệu phở ngon nhất nhì Hà Thành phải kể đến Phở Lý Quốc Sư.
+                            {restaurant.restaurant?.description}
                         </span>
                     </p>
                     <div className='space-y-3 mt-3'>
                         <p className='text-gray-500 flex items-center gap-3'>
                             <LocationOnIcon />
                             <span>
-                                Số 10, Lý Quốc Sư, Hoàn Kiếm, Hà Nội
+                             {restaurant.restaurant?.address.streetAddress} - {restaurant.restaurant?.address.state} - {restaurant.restaurant?.address.city}
                             </span>
                         </p>
                         <p className='text-gray-500 flex items-center gap-3'>
                             <CalendarTodayIcon />
                             <span>
-                                Mon-Sun: 9:00 AM - 9:00 PM (Today)
+                            {restaurant.restaurant?.openingHours}
                             </span>
                         </p>
                     </div>
@@ -102,16 +113,16 @@ const RestaurantDetails = () => {
                         <Divider />
 
                         <Typography variant='h5' sx={{ paddingBottom: "1rem" }}>
-                            Food Category
+                            Thực đơn :
                         </Typography>
                         <FormControl className='py-10 space-y-5' component={"fieldset"}>
                             <RadioGroup onChange={handleFilter} name='food_category' defaultValue="all" >
-                                {categories.map((item) =>
+                                {restaurant.categories.map((item) =>
                                     <FormControlLabel
-                                        //key={item}
-                                        value={item}
+                                        key={item.id}
+                                        value={item.name}
                                         control={<Radio />}
-                                        label={item}
+                                        label={item.name}
                                     />
                                 )}
                             </RadioGroup>

@@ -60,9 +60,10 @@ export const getUser = (jwt) => async (dispatch) => {
 export const addToFavorite = ({ jwt, restaurantId }) => async (dispatch) => {
     dispatch({ type: ADD_TO_FAVORITE_REQUEST })
     try {
-        const { data } = await api.put(`/api/restaurants/${restaurantId}/add-favorites`, {},
+        const { data } = await api.put(`/api/restaurants/${restaurantId}/add-favorites`,
+            {},
             {
-                header: {
+                headers: {
                     Authorization: `Bearer ${jwt}`
                 }
             })
@@ -76,11 +77,11 @@ export const addToFavorite = ({ jwt, restaurantId }) => async (dispatch) => {
 }
 
 export const logout = () => async (dispatch) => {
-  
+
     try {
         localStorage.clear()
         dispatch({ type: LOGOUT })
-      
+
     } catch (error) {
         console.log("Error:", error)
     }
