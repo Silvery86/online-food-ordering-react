@@ -8,8 +8,9 @@ const initialState = {
     jwt: null,
     favorites: [],
     success: null,
-}
-export const authReducer = (state = initialState, action) => {
+};
+
+const authReducer = (state = initialState, action) => {
     switch (action.type) {
         case REGISTER_REQUEST:
         case LOGIN_REQUEST:
@@ -60,4 +61,6 @@ export const authReducer = (state = initialState, action) => {
         default:
             return state;
     }
-}
+};
+
+export default authReducer;

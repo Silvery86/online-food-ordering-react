@@ -11,6 +11,7 @@ function App() {
   const dispatch = useDispatch();
   const jwt = localStorage.getItem("jwt")
   const auth = useSelector(store => store.auth);
+  const cart = useSelector(store => store.cart);
   // console.log(jwt);
   useEffect(() => {    
     dispatch(getUser(auth.jwt || jwt));
@@ -19,7 +20,7 @@ function App() {
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
-      <CustomerRoute />
+      <CustomerRoute/>
     </ThemeProvider>
 
   );
