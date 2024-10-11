@@ -8,11 +8,11 @@ export const findCart = (token) => {
             const res = await api.get(`/api/cart`,
                 {
                     headers: {
-                        Authorization: `Bearer ${jwt}`,
+                        Authorization: `Bearer ${token}`,
                     },
                 });
             dispatch({ type: FIND_CART_SUCCESS, payload: res.data })
-            console.log("Cart :", res.data);
+            console.log("My Cart :", res.data);
         } catch (error) {
             dispatch({ type: FIND_CART_FAILURE, payload: error })
             console.log("Error:", error);

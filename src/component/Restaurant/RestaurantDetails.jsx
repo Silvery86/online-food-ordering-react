@@ -7,13 +7,14 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getRestaurantById, getRestaurantCategory } from '../State/Restaurant/Action';
 import { getUser } from '../State/Authentication/Action';
+import { getMenuItemsByRestaurantId } from '../State/Menu/Action';
 
 
 const foodTypes = [
-    { label: "All", value: "all" },
-    { label: "Vegetarian Only", value: "vegetarian" },
-    { label: "Non-Vegetarian", value: "non_vegetarian" },
-    { label: "Seasonal", value: "seasonal" }
+    { label: "Tất cả", value: "all" },
+    { label: "Đồ Ăn Chay", value: "vegetarian" },
+    { label: "Đồ Tươi Sống", value: "non_vegetarian" },
+    { label: "Theo Mùa", value: "seasonal" }
 ]
 
 const menu = [1, 1, 1, 1, 1, 1, 1]
@@ -22,21 +23,41 @@ const RestaurantDetails = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const jwt = localStorage.getItem("jwt");
-    console.log("JWT:",jwt)
-    const { auth, restaurant } = useSelector(store => store);
-    const { id , city } = useParams();
+    const auth = useSelector(store => store.auth);
+    const restaurant = useSelector(store => store.restaurant);
+    const menu = useSelector(store => store.menu);
+
+    const [selectedCategory, setSelectedCategory] = useState("");
+    const { id, city } = useParams();
     const [foodType, setFoodType] = useState("");
     const [category, setCategory] = useState("");
     const handleFilter = (e) => {
+        setFoodType(e.target.value)
+        console.log(e.target.value, e.target.name)
+    }
+
+    const handleFilterCategory = (e, value) => {
+        setSelectedCategory(value);
         console.log(e.target.value, e.target.name)
     }
 
     useEffect(() => {
         dispatch(getRestaurantById({ jwt, restaurantId: id }));
         dispatch(getRestaurantCategory({ jwt, restaurantId: id }));
+
     }, []
     )
-    console.log("Restaurant:", restaurant)
+    useEffect(() => {
+        dispatch(getMenuItemsByRestaurantId({
+            jwt,
+            restaurantId: id,
+            nonveg: foodType === "vegetarian",
+            seasonal: foodType === "non_vegetarian",
+            vegetarian: foodType === "seasonal",
+            foodCategory: selectedCategory,
+        }));
+    }, [selectedCategory, foodType])
+    // console.log("Restaurant:", restaurant)
     return (
         <div className='px-5 lg:px-20'>
             <section>
@@ -76,13 +97,13 @@ const RestaurantDetails = () => {
                         <p className='text-gray-500 flex items-center gap-3'>
                             <LocationOnIcon />
                             <span>
-                             {restaurant.restaurant?.address.streetAddress} - {restaurant.restaurant?.address.state} - {restaurant.restaurant?.address.city}
+                                {restaurant.restaurant?.address.streetAddress} - {restaurant.restaurant?.address.state} - {restaurant.restaurant?.address.city}
                             </span>
                         </p>
                         <p className='text-gray-500 flex items-center gap-3'>
                             <CalendarTodayIcon />
                             <span>
-                            {restaurant.restaurant?.openingHours}
+                                {restaurant.restaurant?.openingHours}
                             </span>
                         </p>
                     </div>
@@ -93,15 +114,14 @@ const RestaurantDetails = () => {
             <section className='pt-[2rem] lg:flex relative'>
                 <div className='space-y-10 lg:w-[20%] filter'>
                     <div className='box space-y-5 lg:sticky top-28'>
-
                         <Typography variant='h5' sx={{ paddingBottom: "1rem" }}>
-                            Food Type
+                            Loại thực đơn :
                         </Typography>
                         <FormControl className='py-10 space-y-5' component={"fieldset"}>
                             <RadioGroup onChange={handleFilter} aria-labelledby="demo-radio-buttons-group-label" defaultValue="all" name='food_type'>
                                 {foodTypes.map((item) => (
                                     <FormControlLabel
-                                        //key={item.value}
+                                        key={item.value}
                                         value={item.value}
                                         control={<Radio />}
                                         label={item.label}
@@ -116,7 +136,12 @@ const RestaurantDetails = () => {
                             Thực đơn :
                         </Typography>
                         <FormControl className='py-10 space-y-5' component={"fieldset"}>
-                            <RadioGroup onChange={handleFilter} name='food_category' defaultValue="all" >
+                            <RadioGroup
+                                onChange={handleFilterCategory}
+                                name='food_category'
+                                value={selectedCategory}
+                            //defaultValue="all" 
+                            >
                                 {restaurant.categories.map((item) =>
                                     <FormControlLabel
                                         key={item.id}
@@ -127,12 +152,11 @@ const RestaurantDetails = () => {
                                 )}
                             </RadioGroup>
                         </FormControl>
-
                     </div>
 
                 </div>
                 <div className='space-y-5 lg:w-[80%] lg:pl-10'>
-                    {menu.map((item) => <MenuCard />)}
+                    {menu.menuItems.map((item) => <MenuCard key={item.id} item={item} />)}
                 </div>
             </section>
         </div>
