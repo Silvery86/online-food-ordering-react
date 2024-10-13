@@ -6,6 +6,7 @@ import Cart from '../Cart/Cart'
 import Profile from '../Profile/Profile'
 import { Navbar } from '../Navbar/Navbar'
 import { Auth } from '../Auth/Auth'
+import { PaymentSuccess } from '../PaymentSuccess/PaymentSuccess'
 const CustomerRoute = () => {
     return (
         <div>
@@ -15,7 +16,7 @@ const CustomerRoute = () => {
                     <Route path='/account/:register' element={<Home />} />
                     <Route path='/restaurant/:city/:title/:id' element={<RestaurantDetails />} />
                     <Route path='/cart' element={<Cart />} />
-                    <Route path='/my-profile/*' element={<Profile />} />
+                    <Route path='/payment/success/:id' element={<PaymentSuccess/>} />
                 </Routes>
             <Auth/>
         </div>
