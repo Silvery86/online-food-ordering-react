@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from './component/State/Authentication/Action';
 import { findCart } from './component/State/Cart/Action';
+import { Routers } from './component/Routers/Routers';
 
 function App() {
   const dispatch = useDispatch();
@@ -13,14 +14,14 @@ function App() {
   const auth = useSelector(store => store.auth);
   const cart = useSelector(store => store.cart);
   // console.log(jwt);
-  useEffect(() => {    
+  useEffect(() => {
     dispatch(getUser(auth.jwt || jwt));
     dispatch(findCart(jwt));
   }, [auth.jwt, jwt])
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
-      <CustomerRoute/>
+      <Routers />
     </ThemeProvider>
 
   );
