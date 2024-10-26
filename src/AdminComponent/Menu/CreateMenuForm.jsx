@@ -1,8 +1,11 @@
 import { AddPhotoAlternate, Close } from '@mui/icons-material'
 import { Box, Button, Chip, CircularProgress, FormControl, Grid, IconButton, InputLabel, MenuItem, OutlinedInput, Select, TextField } from '@mui/material'
 import { useFormik } from 'formik'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { uploadImageToCloudinary } from '../util/UploadToCloudinary'
+import { useDispatch, useSelector } from 'react-redux'
+import { createMenuItem } from '../../component/State/Menu/Action'
+import { getIngredientsOfRestaurant } from '../../component/State/Ingredients/Action'
 const initialValues = {
     name: "",
     description: "",
@@ -25,11 +28,19 @@ const MenuProps = {
     },
 };
 export const CreateMenuForm = () => {
+    const dispatch = useDispatch()
+    const jwt = localStorage.getItem("jwt")
+    const restaurant = useSelector(state => state.restaurant)
+    const ingredients = useSelector(state => state.ingredients)
     const [uploadImage, setUploadImage] = useState(false)
     const formik = useFormik({
         initialValues,
         onSubmit: (values) => {
-            values.restaurantId = 2
+            values.restaurantId = restaurant.usersRestaurant.id
+            dispatch(createMenuItem({
+                menu:values,
+                jwt
+            }))
             console.log("Data:", values)
         }
     })
@@ -40,13 +51,19 @@ export const CreateMenuForm = () => {
         formik.setFieldValue("images", [...formik.values.images, image]);
         setUploadImage(false);
     };
-
     const handleRemoveImage = (index) => {
         const updatedImages = [...formik.values.images];
         updatedImages.splice(index, 1);
         formik.setFieldValue("images", updatedImages);
     };
-
+    useEffect(() => {
+        dispatch(getIngredientsOfRestaurant({
+            id: restaurant.usersRestaurant.id,
+            jwt
+        }))
+    }, [])
+    console.log("Restaurant.....",restaurant)
+    console.log("Ingredients.....",ingredients)
     return (
         <div className='py-10 px-5 lg:flex items-center justify-center min-h-screen'>
             <div className='lg:max-w-4xl'>
@@ -138,9 +155,11 @@ export const CreateMenuForm = () => {
                                     onChange={formik.handleChange}
                                     name='category'
                                 >
-                                    <MenuItem value={10}>Ten</MenuItem>
-                                    <MenuItem value={20}>Twenty</MenuItem>
-                                    <MenuItem value={30}>Thirty</MenuItem>
+                                    {restaurant.categories?.map((item) => 
+                                          <MenuItem value={item}>{item.name}</MenuItem>
+                                    )}
+                                  
+                                   
                                 </Select>
                             </FormControl>
                         </Grid>
@@ -158,19 +177,19 @@ export const CreateMenuForm = () => {
                                     renderValue={(selected) => (
                                         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                                             {selected.map((value) => (
-                                                <Chip key={value} label={value} />
+                                                <Chip key={value.id} label={value.name} />
                                             ))}
                                         </Box>
                                     )}
                                     MenuProps={MenuProps}
                                 >
-                                    {[1, 2, 3, 4].map((name, index) => (
+                                    {ingredients.ingredients?.map((item, index) => (
                                         <MenuItem
-                                            key={name}
-                                            value={name}
+                                            key={item.id}
+                                            value={item}
 
                                         >
-                                            {name}
+                                            {item.name}
                                         </MenuItem>
                                     ))}
                                 </Select>

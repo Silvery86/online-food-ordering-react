@@ -1,5 +1,5 @@
-import { Box, Card, CardHeader, IconButton, Modal, Typography } from '@mui/material'
-import React from 'react'
+import { Box, Button, Card, CardHeader, IconButton, Modal, Typography } from '@mui/material'
+import React, { useEffect } from 'react'
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -7,8 +7,10 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Create} from '@mui/icons-material';
+import { Create } from '@mui/icons-material';
 import { CreateIngredientForm } from './CreateIngredientForm';
+import { useDispatch, useSelector } from 'react-redux';
+import { getIngredientsOfRestaurant, updateStockOfIngredient } from '../../component/State/Ingredients/Action';
 const orders = [1, 1, 1, 1, 1]
 const style = {
     position: 'absolute',
@@ -22,9 +24,28 @@ const style = {
     p: 4,
 };
 export const IngredientsTable = () => {
+    const dispatch = useDispatch()
+    const jwt = localStorage.getItem("jwt")
+    const restaurant = useSelector(state => state.restaurant)
+    const ingredients = useSelector(state => state.ingredients)
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+
+    useEffect(() => {
+        dispatch(getIngredientsOfRestaurant({
+            id: restaurant.usersRestaurant.id,
+            jwt
+        }))
+    }, [])
+    const handleUpdateStoke = (id) => {
+        dispatch(updateStockOfIngredient({
+            id,
+            jwt
+        }))
+    }
+    const ingredientsList = ingredients.ingredients
+    console.log("Ingredients......", ingredientsList)
     return (
         <Box>
             <Card>
@@ -50,17 +71,21 @@ export const IngredientsTable = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {orders.map((row) => (
+                            {ingredientsList.map((row) => (
                                 <TableRow
-                                    key={row.name}
+                                    key={row.id}
                                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                 >
                                     <TableCell component="th" scope="row">
-                                        {row.name}
+                                        {row.id}
                                     </TableCell>
-                                    <TableCell align="right">{row.calories}</TableCell>
-                                    <TableCell align="right">{row.fat}</TableCell>
-                                    <TableCell align="right">{row.carbs}</TableCell>
+                                    <TableCell align="right">{row.name}</TableCell>
+                                    <TableCell align="right">{row.category.name}</TableCell>
+                                    <TableCell align="right">
+                                        <Button onClick={() => handleUpdateStoke(row.id)}>
+                                            {row.inStoke ? "Tồn kho" : "Hết hàng"}
+                                        </Button>
+                                    </TableCell>
 
                                 </TableRow>
                             ))}
@@ -77,7 +102,7 @@ export const IngredientsTable = () => {
                 <Box sx={style}>
 
                     <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                       <CreateIngredientForm/>
+                        <CreateIngredientForm />
                     </Typography>
                 </Box>
             </Modal>

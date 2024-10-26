@@ -9,6 +9,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Create } from '@mui/icons-material';
 import { CreateFoodCategoryForm } from './CreateFoodCategoryForm';
+import { useDispatch, useSelector } from 'react-redux';
 
 const orders = [1, 1, 1, 1, 1]
 const style = {
@@ -24,9 +25,13 @@ const style = {
 };
 
 export const FoodCategoryTable = () => {
+  const restaurant = useSelector(state => state.restaurant)
+  const dispatch = useDispatch();
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const categories = restaurant.categories
+  console.log("Restaurant.....",restaurant)
   return (
     <Box>
       <Card className='mt-1'>
@@ -48,15 +53,15 @@ export const FoodCategoryTable = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {orders.map((row) => (
+              {categories.map((row) => (
                 <TableRow
                   key={row.name}
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
                   <TableCell component="th" scope="row">
-                    {row.name}
+                    {row.id}
                   </TableCell>
-                  <TableCell align="right">{row.calories}</TableCell>
+                  <TableCell align="right">{row.name}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

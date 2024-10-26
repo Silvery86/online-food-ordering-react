@@ -1,5 +1,5 @@
 import { Box, Card, CardHeader, IconButton, Modal, Typography } from '@mui/material'
-import React from 'react'
+import React, { useEffect } from 'react'
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -7,9 +7,10 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Create, Delete } from '@mui/icons-material';
+import { Create} from '@mui/icons-material';
 import { CreateIngredientCategoryForm } from './CreateIngredientCategoryForm';
-const orders=[1,1,1,1,1]
+import { useDispatch, useSelector } from 'react-redux';
+import { getIngredientCategory } from '../../component/State/Ingredients/Action';
 const style = {
   position: 'absolute',
   top: '50%',
@@ -22,9 +23,20 @@ const style = {
   p: 4,
 };
 export const IngredientsCategoryTable = () => {
+  const dispatch = useDispatch()
+  const restaurant = useSelector(state => state.restaurant)
+  const ingredients = useSelector(state => state.ingredients)
+  const jwt = localStorage.getItem("jwt")
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  useEffect(() => {
+    dispatch(getIngredientCategory({
+      jwt:jwt,
+      id:restaurant.usersRestaurant?.id,
+    }))
+  },[jwt])
+  const ingredientCategoryList = ingredients.category
   return (
     <Box>
       <Card>
@@ -46,15 +58,15 @@ export const IngredientsCategoryTable = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {orders.map((row) => (
+          {ingredientCategoryList.map((row) => (
             <TableRow
-              key={row.name}
+              key={row.id}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
               <TableCell component="th" scope="row">
-                {row.name}
+                {row.id}
               </TableCell>
-              <TableCell align="right">{row.calories}</TableCell>           
+              <TableCell align="right">{row.name}</TableCell>           
             </TableRow>
           ))}
         </TableBody>

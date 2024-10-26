@@ -14,7 +14,7 @@ export const updateOrderStatus = ({ orderId, orderStatus, jwt }) => {
                     },
                 });
             dispatch({ type: UPDATE_ORDER_STATUS_SUCCESS, payload: res.data })
-            console.log("Order update:", data);
+            console.log("Order update:", res.data);
         } catch (error) {
             dispatch({ type: UPDATE_ORDER_STATUS_FAILURE, payload: error })
             console.log("Error:", error);

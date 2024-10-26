@@ -11,7 +11,7 @@ const RestaurantCard = ({ item }) => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const jwt = localStorage.getItem("jwt");
-    const {auth} = useSelector(store => store);
+    const auth = useSelector(store => store.auth);
     console.log("Auth:",auth);
     const handleAddToFavorite = () => {
         dispatch(addToFavorite({ jwt , restaurantId: item.id }))
