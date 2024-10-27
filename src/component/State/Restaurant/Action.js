@@ -37,17 +37,12 @@ import {
     UPDATE_RESTAURANT_SUCCESS
 } from "./ActionType"
 
-export const getAllRestaurantsAction = (token) => {
+export const getAllRestaurantsAction = () => {
     return async (dispatch) => {
         dispatch({ type: GET_ALL_RESTAURANTS_REQUEST });
         try {
-            const { data } = await api.get("/api/restaurants", {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            const { data } = await api.get("/api/restaurants");
             dispatch({ type: GET_ALL_RESTAURANTS_SUCCESS, payload: data })
-            console.log("All restaurants:", data);
         } catch (error) {
             dispatch({ type: GET_ALL_RESTAURANTS_FAILURE, payload: error })
             console.log("Error:", error);
@@ -59,13 +54,8 @@ export const getRestaurantById = (reqData) => {
     return async (dispatch) => {
         dispatch({ type: GET_RESTAURANT_BY_ID_REQUEST });
         try {
-            const response = await api.get(`/api/restaurants/${reqData.restaurantId}`, {
-                headers: {
-                    Authorization: `Bearer ${reqData.jwt}`,
-                },
-            });
+            const response = await api.get(`/api/restaurants/${reqData.restaurantId}`);
             dispatch({ type: GET_RESTAURANT_BY_ID_SUCCESS, payload: response.data })
-            console.log("Restaurant by id:", response.data);
         } catch (error) {
             dispatch({ type: GET_RESTAURANT_BY_ID_FAILURE, payload: error })
             console.log("Error:", error);
@@ -83,7 +73,6 @@ export const getRestaurantByUserId = (jwt) => {
                 },
             });
             dispatch({ type: GET_RESTAURANT_BY_USER_ID_SUCCESS, payload: data })
-            console.log("Restaurant by user id:", data);
         } catch (error) {
             dispatch({ type: GET_RESTAURANT_BY_USER_ID_FAILURE, payload: error })
             console.log("Error:", error);
@@ -102,7 +91,6 @@ export const createRestaurant = (reqData) => {
                 },
             });
             dispatch({ type: CREATE_RESTAURANT_SUCCESS, payload: data })
-            console.log("Restaurant created:", data);
         } catch (error) {
             dispatch({ type: CREATE_RESTAURANT_FAILURE, payload: error })
             console.log("Error:", error);
@@ -124,7 +112,6 @@ export const updateRestaurant = ({ restaurantId, restaurantData, jwt }) => {
                     },
                 });
             dispatch({ type: UPDATE_RESTAURANT_SUCCESS, payload: res.data })
-            console.log("Restaurant update:", res.data);
         } catch (error) {
             dispatch({ type: UPDATE_RESTAURANT_FAILURE, payload: error })
             console.log("Error:", error);
@@ -144,7 +131,6 @@ export const deleteRestaurant = ({ restaurantId, jwt }) => {
                     },
                 });
             dispatch({ type: DELETE_RESTAURANT_SUCCESS, payload: restaurantId })
-            console.log("Restaurant deleted!", restaurantId);
         } catch (error) {
             dispatch({ type: DELETE_RESTAURANT_FAILURE, payload: error })
             console.log("Error:", error);
@@ -166,7 +152,6 @@ export const updateRestaurantStatus = ({ restaurantId, jwt }) => {
                     },
                 });
             dispatch({ type: UPDATE_RESTAURANT_STATUS_SUCCESS, payload: res.data })
-            console.log("Restaurant status updated!", res.data);
         } catch (error) {
             dispatch({ type: UPDATE_RESTAURANT_STATUS_FAILURE, payload: error })
             console.log("Error:", error);
@@ -188,7 +173,6 @@ export const createEventAction = ({ data, jwt, restaurantId }) => {
                     },
                 });
             dispatch({ type: CREATE_EVENTS_SUCCESS, payload: res.data })
-            console.log("Event created: ", res.data);
         } catch (error) {
             dispatch({ type: CREATE_EVENTS_FAILURE, payload: error })
             console.log("Error:", error);
@@ -209,7 +193,6 @@ export const getAllEvents = ({ jwt }) => {
                     },
                 });
             dispatch({ type: GET_ALL_EVENTS_SUCCESS, payload: res.data })
-            console.log("Events : ", res.data);
         } catch (error) {
             dispatch({ type: GET_ALL_EVENTS_FAILURE, payload: error })
             console.log("Error:", error);
@@ -230,7 +213,6 @@ export const deleteEventAction = ({ eventId, jwt }) => {
                     },
                 });
             dispatch({ type: DELETE_EVENTS_SUCCESS, payload: eventId })
-            console.log("Events deleted : ", eventId);
         } catch (error) {
             dispatch({ type: DELETE_EVENTS_FAILURE, payload: error })
             console.log("Error:", error);
@@ -251,7 +233,6 @@ export const getRestaurantEvents = ({ restaurantId, jwt }) => {
                     },
                 });
             dispatch({ type: GET_RESTAURANT_EVENTS_SUCCESS, payload: res.data })
-            console.log("Events : ", res.data);
         } catch (error) {
             dispatch({ type: GET_RESTAURANT_EVENTS_FAILURE, payload: error })
             console.log("Error:", error);
@@ -273,7 +254,6 @@ export const createCategoryAction = ({ reqData, jwt }) => {
                     },
                 });
             dispatch({ type: CREATE_CATEGORY_SUCCESS, payload: res.data })
-            console.log("Create category : ", res.data);
         } catch (error) {
             dispatch({ type: CREATE_CATEGORY_FAILURE, payload: error })
             console.log("Error:", error);
@@ -281,20 +261,13 @@ export const createCategoryAction = ({ reqData, jwt }) => {
     }
 }
 
-export const getRestaurantCategory = ({ jwt, restaurantId }) => {
-
+export const getRestaurantCategory = ({ restaurantId }) => {
     return async (dispatch) => {
         dispatch({ type: GET_RESTAURANT_CATEGORY_REQUEST });
         try {
             const res = await api.get(
-                `/api/category/restaurant/${restaurantId}`,               
-                {
-                    headers: {
-                        Authorization: `Bearer ${jwt}`,
-                    },
-                });
+                `/api/restaurants/category/${restaurantId}`);
             dispatch({ type: GET_RESTAURANT_CATEGORY_SUCCESS, payload: res.data })
-            console.log("Create category : ", res.data);
         } catch (error) {
             dispatch({ type: GET_RESTAURANT_CATEGORY_FAILURE, payload: error })
             console.log("Error:", error);

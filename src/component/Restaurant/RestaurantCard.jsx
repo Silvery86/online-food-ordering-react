@@ -12,12 +12,11 @@ const RestaurantCard = ({ item }) => {
     const dispatch = useDispatch();
     const jwt = localStorage.getItem("jwt");
     const auth = useSelector(store => store.auth);
-    console.log("Auth:",auth);
     const handleAddToFavorite = () => {
-        dispatch(addToFavorite({ jwt , restaurantId: item.id }))
+        dispatch(addToFavorite({ jwt, restaurantId: item.id }))
     }
     const handleNavigateToRestaurant = () => {
-        if(item.open){
+        if (item.open) {
             navigate(`/restaurant/${item.address.city}/${item.name}/${item.id}`)
         }
     }
@@ -31,16 +30,20 @@ const RestaurantCard = ({ item }) => {
 
             <div className='p-4 textPart lg:flex w-full justify-between'>
                 <div className='space-y-1'>
-                    <p onClick={handleNavigateToRestaurant}  className='font-semibold text-lg cursor-pointer'>{item.name}</p>
+                    <p onClick={handleNavigateToRestaurant} className='font-semibold text-lg cursor-pointer'>{item.name}</p>
                     <p className='text-gray-500 text-sm'>
                         {item.description}
                     </p>
                 </div>
-                <div>
-                    <IconButton onClick={handleAddToFavorite}>
-                        {isPresentInFavorites(auth.favorites,item) ? <FavoriteIcon /> : <FavoriteBorderIcon />}
-                    </IconButton>
-                </div>
+                {auth.user
+                    ?
+                    <div>
+                        <IconButton onClick={handleAddToFavorite}>
+                            {isPresentInFavorites(auth.favorites, item) ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+                        </IconButton>
+                    </div>
+                    : <></>}
+
             </div>
         </Card>
 

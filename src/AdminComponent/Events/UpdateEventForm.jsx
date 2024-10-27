@@ -1,4 +1,4 @@
-import { AddPhotoAlternate, Close, Height } from '@mui/icons-material';
+import { AddPhotoAlternate, Close } from '@mui/icons-material';
 import { Box, Button, Chip, CircularProgress, FormControl, Grid, IconButton, InputLabel, MenuItem, OutlinedInput, Select, TextField } from '@mui/material';
 import { useFormik } from 'formik';
 import React, { useEffect, useState } from 'react';
@@ -7,32 +7,16 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { uploadImageToCloudinary } from '../util/UploadToCloudinary';
 import { useDispatch, useSelector } from 'react-redux';
-import { createEvent } from '../../component/State/Event/Action';
+import { updateEvent } from '../../component/State/Event/Action';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { Quill } from 'react-quill';
 import ImageUploader from 'quill-image-uploader';
-import { getUser } from '../../component/State/Authentication/Action';
+import { getEventById } from '../../component/State/Event/Action';
 import dayjs from 'dayjs';
 
 Quill.register('modules/imageUploader', ImageUploader);
 
-const initialValues = {
-  restaurantId: null,
-  title: "",
-  startAt: null,
-  endAt: null,
-  description: "",
-  location: [],
-  images: [],
-  header: "",
-  content: "",
-};
-const selectLocation = [
-  { slug: "ha_noi", location: "TP.Hà Nội", zipCode: "" },
-  { slug: "ho_chi_minh", location: "TP.Hồ Chí Minh", zipCode: "" },
-  { slug: "hai_phong", location: "TP.Hải Phòng", zipCode: "" },
-];
 const modules = {
   toolbar: [
     [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
@@ -54,6 +38,7 @@ const modules = {
     }
   }
 };
+
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -64,14 +49,32 @@ const MenuProps = {
     },
   },
 };
-export const CreateEvent = () => {
+
+export const UpdateEventForm = ({ eventId }) => {
   const [uploadImage, setUploadImage] = useState(false);
   const dispatch = useDispatch();
-  const restaurant = useSelector(state => state.restaurant)
   const jwt = localStorage.getItem("jwt");
-  console.log("Restaurant::::::", restaurant)
+  const event = useSelector(state => state.event.currentEvent);
+  const restaurant = useSelector(state => state.restaurant);
+
+  useEffect(() => {
+    // Fetch the event data by ID when the component mounts
+    dispatch(getEventById(eventId));
+  }, [dispatch, eventId]);
+
   const formik = useFormik({
-    initialValues,
+    enableReinitialize: true,
+    initialValues: {
+      restaurantId: event?.restaurantId || null,
+      title: event?.title || "",
+      startAt: event?.startAt ? dayjs(event.startAt) : null,
+      endAt: event?.endAt ? dayjs(event.endAt) : null,
+      description: event?.description || "",
+      location: event?.location || [],
+      images: event?.images || [],
+      header: event?.details?.[0]?.header || "",
+      content: event?.details?.[0]?.content || "",
+    },
     onSubmit: (values) => {
       const formattedStartAt = values.startAt
         ? dayjs(values.startAt, 'DD/MM/YYYY hh:mm A').toISOString()
@@ -82,25 +85,23 @@ export const CreateEvent = () => {
 
       const data = {
         event: {
-          title: values.title, // Correctly map to event object
+          title: values.title,
           startAt: formattedStartAt,
           endAt: formattedEndAt,
           description: values.description,
           location: values.location,
           images: values.images,
         },
-        restaurantId: restaurant.usersRestaurant.id, // Keep restaurantId as is
-        details:
-          [
-            {
-              header: values.header,
-              content: values.content,
-            }
-          ]
-
+        restaurantId: restaurant.usersRestaurant.id,
+        details: [
+          {
+            header: values.header,
+            content: values.content,
+          }
+        ]
       };
-      console.log("Event.......:", data)
-      dispatch(createEvent({ eventData: data, jwt: jwt }));
+
+      dispatch(updateEvent({ id: eventId, eventData: data, jwt }));
     },
   });
 
@@ -126,7 +127,7 @@ export const CreateEvent = () => {
     <div className='py-10 px-5 lg:flex items-center justify-center min-h-screen'>
       <div className='lg:max-w-4xl'>
         <h1 className='font-bold text-2xl text-center py-2'>
-          Create New Event
+          Update Event
         </h1>
         <form onSubmit={formik.handleSubmit} className='space-y-4'>
           <Grid container spacing={2}>
@@ -227,9 +228,9 @@ export const CreateEvent = () => {
                 <Select
                   labelId="location-multiple-chip-label"
                   id="location-multiple-chip"
-                  name="location" // This should match your Formik field name
+                  name="location"
                   multiple
-                  value={formik.values.location} // This should be an array of slugs
+                  value={formik.values.location}
                   onChange={(event) => {
                     const {
                       target: { value },
@@ -238,7 +239,6 @@ export const CreateEvent = () => {
                   }}
                   input={<OutlinedInput id="select-multiple-chip" label="Location" />}
                   renderValue={(selected) => {
-                    // Map slugs to location names
                     const selectedLocations = selectLocation.filter(loc => selected.includes(loc.slug));
                     return (
                       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
@@ -250,9 +250,9 @@ export const CreateEvent = () => {
                   }}
                   MenuProps={MenuProps}
                 >
-                  {selectLocation.map((item) => (
-                    <MenuItem key={item.slug} value={item.slug}>
-                      {item.location}
+                  {location.map((loc) => (
+                    <MenuItem key={loc.slug} value={loc.slug}>
+                      {loc.location}
                     </MenuItem>
                   ))}
                 </Select>
@@ -271,20 +271,21 @@ export const CreateEvent = () => {
               />
             </Grid>
             <Grid item xs={12}>
-              <div style={{ height: '50vh', marginBottom: '2rem' }}>
-                <ReactQuill
-                  value={formik.values.content}
-                  onChange={(value) => formik.setFieldValue('content', value)}
-                  modules={modules}
-                  placeholder="Enter event details here..."
-                  style={{ height: '100%' }}
-                />
-              </div>
+              <ReactQuill
+                id="content"
+                name="content"
+                theme="snow"
+                modules={modules}
+                value={formik.values.content}
+                onChange={(content) => formik.setFieldValue("content", content)}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Button variant='contained' color='primary' fullWidth type='submit'>
+                Update Event
+              </Button>
             </Grid>
           </Grid>
-          <Button className='pt-5' variant='contained' color='primary' type='submit'>
-            Create Event
-          </Button>
         </form>
       </div>
     </div>

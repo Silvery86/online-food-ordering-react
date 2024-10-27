@@ -16,9 +16,19 @@ const foodTypes = [
     { label: "Đồ Tươi Sống", value: "non_vegetarian" },
     { label: "Theo Mùa", value: "seasonal" }
 ]
-
-const menu = [1, 1, 1, 1, 1, 1, 1]
-
+const slidingContent = [
+    {
+        title: "Content Title",
+        description: "Content Description",
+        image: "https://images01.nicepage.com/a1389d7bc73adea1e1c1fb7e/f55c87d06a345e9c94021f3e/3007283.jpg"
+    },
+    {
+        title: "Content Title1",
+        description: "Content Description1",
+        image: "https://images01.nicepage.com/a1389d7bc73adea1e1c1fb7e/f55c87d06a345e9c94021f3e/3007283.jpg"
+    },
+    // Add more content objects as needed
+  ];
 const RestaurantDetails = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -26,24 +36,29 @@ const RestaurantDetails = () => {
     const auth = useSelector(store => store.auth);
     const restaurant = useSelector(store => store.restaurant);
     const menu = useSelector(store => store.menu);
-
     const [selectedCategory, setSelectedCategory] = useState("");
-    const { id, city } = useParams();
+    const { id } = useParams();
     const [foodType, setFoodType] = useState("");
     const [category, setCategory] = useState("");
     const handleFilter = (e) => {
         setFoodType(e.target.value)
         console.log(e.target.value, e.target.name)
     }
-
     const handleFilterCategory = (e, value) => {
         setSelectedCategory(value);
         console.log(e.target.value, e.target.name)
     }
-
+    const [currentIndex, setCurrentIndex] = useState(0);
     useEffect(() => {
-        dispatch(getRestaurantById({ jwt, restaurantId: id }));
-        dispatch(getRestaurantCategory({ jwt, restaurantId: id }));
+        const interval = setInterval(() => {
+            setCurrentIndex((prevIndex) => (prevIndex + 1) % slidingContent.length);
+        }, 5000); // Change every 3 seconds
+  
+        return () => clearInterval(interval); // Cleanup on unmount
+    }, []);
+    useEffect(() => {
+        dispatch(getRestaurantById({ restaurantId: id }));
+        dispatch(getRestaurantCategory({ restaurantId: id }));
 
     }, []
     )
@@ -59,9 +74,27 @@ const RestaurantDetails = () => {
     }, [selectedCategory, foodType])
     // console.log("Restaurant:", restaurant)
     return (
+        <div>
+        <section>
+                <section className="banner -z-50 relative flex flex-col justify-center items-center">
+                    <div className="w-[50nw] z-10 text-center">
+                        <h1 className="text-2xl lg:text-6xl font-bold z-10 py-5">{slidingContent[currentIndex].title}</h1>
+                        <p className="z-10 text-gray-300 text-xl lg:text-4xl">{slidingContent[currentIndex].description}</p>
+                    </div>
+                    <div className="cover absolute top-0 left-0 right-0">
+                        <img
+                            src={slidingContent[currentIndex].image}
+                            alt={slidingContent[currentIndex].title}
+                            className="object-cover w-full h-full opacity-90"
+                        />
+                    </div>
+                    <div className="fadout"></div>
+                </section>
+            </section>
+    
         <div className='px-5 lg:px-20'>
-            <section>
-                <h3 className='text-gray-500 py-2 mt-10'>Home/Restaurants/FastFood/2</h3>
+            
+            <section className='pt-5'>
                 <div>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
@@ -111,6 +144,7 @@ const RestaurantDetails = () => {
                 </div>
             </section>
             <Divider />
+
             <section className='pt-[2rem] lg:flex relative'>
                 <div className='space-y-10 lg:w-[20%] filter'>
                     <div className='box space-y-5 lg:sticky top-28'>
@@ -159,6 +193,7 @@ const RestaurantDetails = () => {
                     {menu.menuItems.map((item) => <MenuCard key={item.id} item={item} />)}
                 </div>
             </section>
+        </div>
         </div>
     )
 }

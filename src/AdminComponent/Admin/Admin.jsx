@@ -13,14 +13,24 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getRestaurantCategory } from '../../component/State/Restaurant/Action'
 import { fetchRestaurantsOrder } from '../../component/State/RestaurantOrder/Action'
 import { OrdersDetails } from '../Orders/OrdersDetails'
+import { CreateEvent} from '../Events/CreateEvent'
+import { getUser } from '../../component/State/Authentication/Action'
 
 export const Admin = () => {
   const dispatch = useDispatch()
   const jwt = localStorage.getItem("jwt")
   const restaurant = useSelector(state => state.restaurant)
-  const handleClose = () => {
-
+  const auth = useSelector(state => state.auth)
+  const handleClose = () => {   
+  
+   
   }
+  useEffect(() => {
+    if(jwt){
+      dispatch(getUser(jwt));
+    }
+     
+  }, [jwt || auth.jwt]);
   useEffect(() => {
     dispatch(getRestaurantCategory({
       jwt: jwt,
@@ -51,6 +61,7 @@ export const Admin = () => {
             <Route path='/event' element={<Events />} />
             <Route path='/details' element={<RestaurantDetails />} />
             <Route path='/add-menu' element={<CreateMenuForm />} />
+            <Route path='/add-event' element={<CreateEvent />} />
           </Routes>
         </div>
       </div>

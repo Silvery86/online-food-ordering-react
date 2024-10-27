@@ -14,12 +14,14 @@ function App() {
   const auth = useSelector((store) => store.auth);
   const cart = useSelector((store) => store.cart);  
   useEffect(() => {
+    if(auth.jwt){
       dispatch(getUser(jwt));
       dispatch(findCart(jwt));
-  }, [jwt || auth.jwt]);
-  useEffect(() => {  
       dispatch(getRestaurantByUserId(jwt));
+    }
+     
   }, [jwt || auth.jwt]);
+  
   
   return (
     <ThemeProvider theme={darkTheme}>

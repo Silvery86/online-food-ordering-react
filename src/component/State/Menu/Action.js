@@ -30,22 +30,13 @@ export const getMenuItemsByRestaurantId = (reqData) => {
             if (reqData?.vegetarian !== undefined) queryParams.push(`vegetarian=${reqData.vegetarian}`);
             if (reqData?.nonveg !== undefined) queryParams.push(`nonveg=${reqData.nonveg}`);
             if (reqData?.seasonal !== undefined) queryParams.push(`seasonal=${reqData.seasonal}`);
-            if (reqData?.foodCategory !== undefined) queryParams.push(`food_category=${reqData.foodCategory}`);
-            
+            if (reqData?.foodCategory !== undefined) queryParams.push(`food_category=${reqData.foodCategory}`);            
             // Join the query parameters to form the final query string
             const queryString = queryParams.length ? `?${queryParams.join('&')}` : '';
-
             const { data } = await api.get(
-                `/api/food/restaurant/${reqData.restaurantId}${queryString}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${reqData.jwt}`,
-                    },
-                }
+                `/api/restaurants/food/${reqData.restaurantId}${queryString}`
             );
-
             dispatch({ type: GET_MENU_ITEMS_BY_RESTAURANT_ID_SUCCESS, payload: data });
-            console.log("Menu items by restaurant:", data);
         } catch (error) {
             dispatch({ type: GET_MENU_ITEMS_BY_RESTAURANT_ID_FAILURE, payload: error });
             console.log("Error:", error);

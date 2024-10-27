@@ -5,8 +5,9 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { FormGroup, FormControlLabel, Checkbox, Button } from '@mui/material';
 import { categorizeIngredients } from '../util/categorizeIngredients';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addItemToCart } from '../State/Cart/Action';
+import { useNavigate } from 'react-router-dom';
 
 
 const demo = [
@@ -21,7 +22,9 @@ const demo = [
 ]
 
 const MenuCard = ({ item }) => {
+    const navigate = useNavigate()
     const [selectedIngredients, setSelectedIngredients] = useState([]);
+    const auth = useSelector(state => state.auth)
     const dispatch = useDispatch();
     const handleAddItemToCart = (e) => {
         e.preventDefault();
@@ -34,7 +37,6 @@ const MenuCard = ({ item }) => {
             }
         }
         dispatch(addItemToCart(reqData));
-        console.log(reqData);
     };
     const handleCheckBoxChange = (itemName) => {
         console.log(itemName);
@@ -46,7 +48,6 @@ const MenuCard = ({ item }) => {
             setSelectedIngredients([...selectedIngredients, itemName])
         }
     }
-
     return (
         <Accordion>
             <AccordionSummary
@@ -93,7 +94,13 @@ const MenuCard = ({ item }) => {
                         }
                     </div>
                     <div className='pt-5'>
-                        <Button variant='contained' disable={true} type='submit'>{true ? "Add to Cart" : "Out Of Stock"}</Button>
+                        {auth.user 
+                        ? 
+                        <Button variant='contained' disable={ item.available ? true : false} type='submit'>{item.available ? "Add to Cart" : "Out Of Stock"}</Button>
+                        :
+                        <Button onClick={() => navigate(`/account/login`)} variant='contained' disable={true} type='submit'>Đăng nhập để đặt hàng</Button>
+                        }
+                        
                     </div>
                 </form>
             </AccordionDetails>

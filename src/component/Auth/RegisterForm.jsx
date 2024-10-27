@@ -58,13 +58,10 @@ export const RegisterForm = () => {
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
                             name="role"
-                            //value={age}
                             label="Role"
-                        //onChange={handleChange}
                         >
                             <MenuItem value={"ROLE_CUSTOMER"}>Customer</MenuItem>
                             <MenuItem value={"ROLE_RESTAURANT_OWNER"}>Restaurant Owner</MenuItem>
-
                         </Field>
                     </FormControl>
                     <Button sx={{ mt: 2, padding: "1rem" }} fullWidth type='submit' variant='contained'>Login</Button>

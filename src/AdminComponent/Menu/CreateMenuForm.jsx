@@ -62,8 +62,6 @@ export const CreateMenuForm = () => {
             jwt
         }))
     }, [])
-    console.log("Restaurant.....",restaurant)
-    console.log("Ingredients.....",ingredients)
     return (
         <div className='py-10 px-5 lg:flex items-center justify-center min-h-screen'>
             <div className='lg:max-w-4xl'>

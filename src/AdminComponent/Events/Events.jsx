@@ -6,6 +6,8 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import dayjs from 'dayjs';
 import React from 'react'
 import { hasFormSubmit } from '@testing-library/user-event/dist/utils';
+import { useNavigate } from 'react-router-dom';
+import { EventCard } from './EventCard';
 
 const style = {
   position: 'absolute',
@@ -26,23 +28,24 @@ const initialValue = {
   endAt: null
 }
 export const Events = () => {
+  const navigate = useNavigate()
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [formValues, setFormValues] = React.useState(initialValue)
 
   const handleSubmit = (e) => {
-   e.preventDefault();  
+    e.preventDefault();
     const formattedStartAt = formValues.startAt ? dayjs(formValues.startAt).format('DD/MM/YYYY hh:mm A') : null;
     const formattedEndAt = formValues.endAt ? dayjs(formValues.endAt).format('DD/MM/YYYY hh:mm A') : null;
-  
+
     console.log({
       ...formValues,
       startAt: formattedStartAt,
       endAt: formattedEndAt,
     });
-  
-  
+
+
     setFormValues(initialValue)
   }
   const handleFormChange = (e) => {
@@ -55,10 +58,20 @@ export const Events = () => {
   return (
     <div>
       <div className='p-5'>
-        <Button onClick={handleOpen} variant='contained'>
+        <Button onClick={() => navigate(`/admin/restaurant/add-event`)} variant='contained'>
           Create New Event
         </Button>
-        <Modal
+        <Grid container spacing={2} className='pt-5'>
+
+          {[1, 1, 1].map((item) => 
+          <Grid item sx={12} lg={12}>
+              <EventCard />
+          </Grid>
+          
+          )}
+
+        </Grid>
+        {/* <Modal
           open={open}
           onClose={handleClose}
           aria-labelledby="modal-modal-title"
@@ -141,7 +154,7 @@ export const Events = () => {
               </Grid>
             </form>
           </Box>
-        </Modal>
+        </Modal> */}
       </div>
     </div>
   )
