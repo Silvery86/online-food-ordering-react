@@ -27,6 +27,18 @@ export const Navbar = () => {
                     Foodsou
                 </li>
             </div>
+            <div className='flex space-x-5 justify-between'>
+                {/* Navigation Links */}
+                <button onClick={() => navigate("/about-us")} className='text-white hover:underline text-xl'>
+                    Về chúng tôi
+                </button>
+                <button onClick={() => navigate("/news")} className='text-white hover:underline text-xl'>
+                    Tin tức
+                </button>
+                <button onClick={() => navigate("/contact")} className='text-white hover:underline text-xl'>
+                    Liên hệ
+                </button>               
+            </div>
             <div className='flex items-center space-x-2 lg:space-x-10'>
                 <div className=''>
                     <IconButton>

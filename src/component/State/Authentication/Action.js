@@ -32,11 +32,13 @@ export const loginUser = (reqData) => async (dispatch) => {
         else {
             reqData.navigate("/")
         }
-        dispatch({ type: LOGIN_SUCCESS, payload: data.jwt })
-        console.log("Login success:", data)
+        dispatch({ type: LOGIN_SUCCESS, payload: data.jwt })       
     } catch (error) {
-        dispatch({ type: LOGIN_FAILURE, payload: error })
-        console.log("Error:", error)
+        const errorMessage = error.response?.status === 403
+            ? "Sai thông tin đăng nhập vui lòng kiểm tra lại"
+            : error.response?.data?.message || "An error occurred during login";
+
+        dispatch({ type: LOGIN_FAILURE, payload: errorMessage });
     }
 }
 
