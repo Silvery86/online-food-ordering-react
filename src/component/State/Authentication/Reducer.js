@@ -14,6 +14,11 @@ const authReducer = (state = initialState, action) => {
     switch (action.type) {
         // Set loading state on request actions
         case REGISTER_REQUEST:
+            return {
+                ...state,
+                isLoading: true,
+                error: null,
+            };
         case LOGIN_REQUEST:
         case GET_USER_REQUEST:
         case ADD_TO_FAVORITE_REQUEST:
@@ -66,6 +71,12 @@ const authReducer = (state = initialState, action) => {
 
         // Failure actions
         case REGISTER_FAILURE:
+            return {
+                ...state,
+                isLoading: false,
+                error: action.payload,  
+                success: null,
+            };
         case LOGIN_FAILURE:
             return {
                 ...state,

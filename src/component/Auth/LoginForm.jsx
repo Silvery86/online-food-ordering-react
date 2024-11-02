@@ -16,7 +16,7 @@ export const LoginForm = () => {
     const dispatch = useDispatch();
 
     // Access Redux states for login status, success, and error messages
-    const { isLoading, success, error } = useSelector((state) => state.auth);
+    const {  success, error } = useSelector((state) => state.auth);
 
     // Local states to control Snackbar display
     const [open, setOpen] = React.useState(false);
