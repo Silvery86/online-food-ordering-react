@@ -27,7 +27,7 @@ export const Navbar = () => {
                     Foodsou
                 </li>
             </div>
-            <div className='flex space-x-5 justify-between'>
+            <div className='flex space-x-5 w-full justify-start items-center'>
                 {/* Navigation Links */}
                 <button onClick={() => navigate("/about-us")} className='text-white hover:underline text-xl'>
                     Về chúng tôi

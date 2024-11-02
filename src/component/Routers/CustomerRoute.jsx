@@ -9,6 +9,7 @@ import { PaymentSuccess } from '../PaymentSuccess/PaymentSuccess'
 import { AboutUs } from '../Home/AboutUs'
 import { Contact } from '../Home/Contact'
 import { News } from '../Home/News'
+import Profile from '../Profile/Profile'
 const CustomerRoute = () => {
     return (
         <div>
@@ -19,6 +20,7 @@ const CustomerRoute = () => {
                     <Route path='/restaurant/:city/:title/:id' element={<RestaurantDetails />} />
                     <Route path='/about-us' element={<AboutUs />} />
                     <Route path='/contact' element={<Contact />} />
+                    <Route path="/my-profile/*" element={<Profile />} />
                     <Route path='/news' element={<News />} />
                     <Route path='/cart' element={<Cart />} />
                     <Route path='/payment/success/:id' element={<PaymentSuccess/>} />

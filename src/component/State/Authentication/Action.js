@@ -1,4 +1,3 @@
-import axios from "axios"
 import { ADD_TO_FAVORITE_FAILURE, ADD_TO_FAVORITE_REQUEST, ADD_TO_FAVORITE_SUCCESS, GET_USER_FAILURE, GET_USER_REQUEST, GET_USER_SUCCESS, LOGIN_FAILURE, LOGIN_REQUEST, LOGIN_SUCCESS, LOGOUT, REGISTER_FAILURE, REGISTER_REQUEST, REGISTER_SUCCESS } from "./ActionType"
 import { api, API_URI } from "../../config/api"
 
@@ -32,7 +31,8 @@ export const loginUser = (reqData) => async (dispatch) => {
         else {
             reqData.navigate("/")
         }
-        dispatch({ type: LOGIN_SUCCESS, payload: data.jwt })       
+        dispatch({ type: LOGIN_SUCCESS, payload: data.jwt }) 
+        window.location.reload()      
     } catch (error) {
         const errorMessage = error.response?.status === 403
             ? "Sai thông tin đăng nhập vui lòng kiểm tra lại"

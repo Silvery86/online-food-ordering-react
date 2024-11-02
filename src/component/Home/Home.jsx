@@ -4,76 +4,115 @@ import MultiItemCarousel from './MultiItemCarousel'
 import RestaurantCard from '../Restaurant/RestaurantCard';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllRestaurantsAction } from '../State/Restaurant/Action';
+
+import banner1 from '../assets/images/banner1.jpg'
+import banner2 from '../assets/images/banner2.jpg'
+import banner3 from '../assets/images/banner3.jpg'
+import Slider from 'react-slick';
 import { getAllEvents } from '../State/Event/Action';
 
+const defaultEventList = [
+  {
+    title: "Banner 1",
+    description: "Banner 1 description",
+    image_url: banner1,
+  },
+  {
+    title: "Banner 2",
+    description: "Banner 2 description",
+    image_url: banner2,
+  },
+  {
+    title: "Banner 3",
+    description: "Banner 3 description",
+    image_url: banner3,
+  }
+]
 
 function Home() {
   const dispatch = useDispatch();
   const jwt = localStorage.getItem("jwt");
-  const  restaurant  = useSelector(store => store.restaurant)
-  const  auth  = useSelector(store => store.auth)
+  const restaurant = useSelector(store => store.restaurant)
+  const auth = useSelector(store => store.auth)
   const event = useSelector(store => store.event)
   const eventsList = event.events
-  console.log("Event....",eventsList)
+  const combinedEventsList = eventsList.length > 0
+    ? [...eventsList, ...defaultEventList]
+    : defaultEventList;
   useEffect(() => {
-      dispatch(getAllRestaurantsAction())
-      dispatch(getAllEvents())
-  },[jwt])
-  const [currentIndex, setCurrentIndex] = useState(0);
-  useEffect(() => {
-      const interval = setInterval(() => {
-          setCurrentIndex((prevIndex) => (prevIndex + 1) % eventsList.length);
-      }, 3000); // Change every 3 seconds
+    dispatch(getAllRestaurantsAction())
+    dispatch(getAllEvents())
+  }, [])
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 1000,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 2000,
+    arrows: false,
+  };
 
-      return () => clearInterval(interval); // Cleanup on unmount
-  }, []);
+
+
   return (
     <div className='pb-10'>
       {/* Banner */}
-        <section className="banner -z-50 relative flex flex-col justify-center items-center">
-            <div className="w-[50nw] z-10 text-center">
-                <h1 className="text-2xl lg:text-6xl font-bold z-10 py-5">{eventsList[currentIndex]?.title}</h1>
-                <p className="z-10 text-gray-300 text-xl lg:text-4xl">{eventsList[currentIndex]?.description}</p>
+
+      <Slider {...settings}>
+        {combinedEventsList.map((banner, index) =>
+          <section key={index} className="banner z-50 relative flex flex-col items-center justify-center align-middle pt-10">
+            <div className="z-10 text-center mt-10">
+              <h1 className="text-2xl lg:text-6xl font-bold pt-5">
+                {banner.title || "Default Title"}
+              </h1>
+              <p className="text-gray-300 text-xl lg:text-4xl">
+                {banner.description || "Default Description"}
+              </p>
             </div>
             <div className="cover absolute top-0 left-0 right-0">
-                <img
-                    src={eventsList[currentIndex]?.image}
-                    alt={eventsList[currentIndex]?.title}
-                    className="object-cover w-full h-full opacity-90"
-                />
+              <img
+                src={banner.image_url || "../assets/images/default.jpg"}
+                alt={banner.title || "Default Title"}
+                className="object-cover w-full h-full opacity-99 brightness-110"
+              />
             </div>
-            <div className="fadout"></div>
-        </section>
+            <div className="fadout absolute top-0 left-0 right-0 bottom-0 bg-gradient-to-b from-black/30 via-black/20 to-black/90"></div>
+          </section>
+        )}
+      </Slider>
 
-        {/* Menu */}
-        <section className='p-10 lg:py-10 lg:px-20'>
-            <p className='text-2xl font-semibold text-gray-400 py-3 pb-10'>Món ăn nổi tiếng</p>
-            <MultiItemCarousel/>
-        </section>
+      {/* Menu */}
+      <section className='p-10 lg:py-10 lg:px-20'>
+        <p className='text-2xl font-semibold text-gray-400 py-3 pb-10'>Món ăn nổi tiếng</p>
+        <MultiItemCarousel />
+      </section>
 
-        {/* Favourited Restaurant */}
-        {auth.user 
+      {/* Favourited Restaurant */}
+      {auth.user
         ?
         <section className='px-5 lg:px-20 pt-10'>
           <h1 className='text-2xl font-semibold text-gray-400 pb-3'>Nhà hàng của bạn</h1>
           <div className='flex flex-wrap items-center justify-left gap-5'>
             {
-              restaurant.restaurants.map((item)=><RestaurantCard item={item}/>)
+              restaurant.restaurants.map((item) => <RestaurantCard item={item} />)
             }
           </div>
-        </section> 
+        </section>
         : <></>}
 
-        {/* All Restaurant */}
-        <section className='px-5 lg:px-20 pt-10'>
-          <h1 className='text-2xl font-semibold text-gray-400 pb-3'>Nhà hàng nổi tiếng</h1>
-          <div className='flex flex-wrap items-center justify-left gap-5'>
-            {
-              restaurant.restaurants.map((item)=><RestaurantCard item={item}/>)
-            }
-          </div>
-        </section> 
-        
+      {/* All Restaurant */}
+      <section className='px-5 lg:px-20 pt-10'>
+        <h1 className='text-2xl font-semibold text-gray-400 pb-3'>Nhà hàng nổi tiếng</h1>
+        <div className='flex flex-wrap items-center justify-left gap-5'>
+          {
+            restaurant.restaurants.map((item) => <RestaurantCard item={item} />)
+          }
+        </div>
+      </section>
+
+     
     </div>
   )
 }

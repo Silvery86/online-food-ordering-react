@@ -3,11 +3,10 @@ import React from 'react'
 import DeleteIcon from '@mui/icons-material/Delete';
 
 export const EventCard = () => {
-    return (
-        <div>
-            <Card sx={{ width: 345 }}>
+    return (       
+            <Card sx={{ width: "100%" }}>
                 <CardMedia
-                    sx={{ height: 345 }}
+                    sx={{ height: "40vh" }}
                     src='https://ims.baoyenbai.com.vn/NewsImg/3_2024/319281_5-3-phobo.jpg'
                 />
                 <CardContent>
@@ -30,6 +29,5 @@ export const EventCard = () => {
                     </IconButton>
                 </CardActions>}
             </Card>
-        </div>
     )
 }

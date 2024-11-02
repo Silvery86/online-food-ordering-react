@@ -180,7 +180,7 @@ export const createEventAction = ({ data, jwt, restaurantId }) => {
     }
 }
 
-export const getAllEvents = ({ jwt }) => {
+export const getAllEventsByRestaurant = ({ jwt }) => {
 
     return async (dispatch) => {
         dispatch({ type: GET_ALL_EVENTS_REQUEST });

@@ -3,7 +3,7 @@ import RestaurantCard from '../Restaurant/RestaurantCard'
 import { useSelector } from 'react-redux'
 
 const Favourites = () => {
-  const {auth} = useSelector(store => store)
+  const auth = useSelector(store => store.auth)
   return (
     <div>
       <h1 className='py-5 text-xl font-semibold text-center'>Nhà Hàng Yêu Thích</h1>

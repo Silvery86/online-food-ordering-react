@@ -25,44 +25,47 @@ const menu = [
 
 
 const ProfileNavigation = ({ open, handleClose }) => {
-  const isSmallScreen = useMediaQuery('(max-width:900px)')
+  const isSmallScreen = useMediaQuery('(max-width:900px)');
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const handleNavigate = (item) => {
-    if(item.slug === "logout"){
-      dispatch(logout())
-      navigate("/")
-    }else{
-      navigate(`/my-profile/${item.slug.toLowerCase()}`)
-    }   
+    console.log(item)
+    if (item.slug === "logout") {
+      dispatch(logout());
+      navigate("/");
+    } else {
+      navigate(`/my-profile/${item.slug.toLowerCase()}`);
+    }
+  };
 
-  }
-  
-  
   return (
     <div>
       <Drawer
         variant={isSmallScreen ? "temporary" : "permanent"}
         onClose={handleClose}
         open={open}
-        anchor='left'
-        sx={{ zIndex: -1 }}
+        anchor="left"
+    
       >
-        <div className='w-[50vw] lg:w-[20vw] h-[100vh] flex flex-col justify-center text-xl gap-8 pt-16'>
-          {menu.map((item, i) => <>
-            <div onClick={() => handleNavigate(item)} className='px-5 flex items-center space-x-5 cursor-pointer'>
-              {item.icon}
-              <span>{item.title}</span>
-            </div>
-            {i !== menu.length - 1 && <Divider />}
-          </>)}
-
+        <div className="w-[50vw] lg:w-[20vw] h-full flex flex-col justify-center text-xl gap-3 pt-20 px-4">
+          {menu.map((item, i) => (
+            <React.Fragment key={item.slug}>
+              <div
+                onClick={() => handleNavigate(item)}
+                className="flex items-center space-x-5 cursor-pointer py-2"
+              >
+                {item.icon}
+                <span>{item.title}</span>
+              </div>
+              {i !== menu.length - 1 && <Divider />}
+            </React.Fragment>
+          ))}
         </div>
       </Drawer>
-
     </div>
-  )
-}
+  );
+};
+
 
 export default ProfileNavigation
