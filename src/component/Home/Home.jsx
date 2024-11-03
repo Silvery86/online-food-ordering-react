@@ -10,7 +10,7 @@ import banner3 from '../assets/banner/banner3.jpg'
 import Slider from 'react-slick';
 import { getAllEvents } from '../State/Event/Action';
 
-const defaultEventList = [
+export const defaultEventList = [
   {
     title: "Banner 1",
     description: "Banner 1 description",
@@ -42,7 +42,7 @@ function Home() {
     dispatch(getAllRestaurantsAction())
     dispatch(getAllEvents())
   }, [])
-  console.log("Combined Events .....", combinedEventsList)
+  
   const settings = {
     dots: true,
     infinite: true,

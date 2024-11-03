@@ -6,7 +6,7 @@ export const createOrder = (reqData) => {
         dispatch({ type: CREATE_ORDER_REQUEST });
         try {
             // Call the VNPay payment API
-            const { data } = await api.post(`/api/v1/payment/vnpay/create`, reqData.order, {
+            const { data } = await api.post(`/api/order`, reqData.order, {
                 headers: {
                     Authorization: `Bearer ${reqData.jwt}`,
                 },

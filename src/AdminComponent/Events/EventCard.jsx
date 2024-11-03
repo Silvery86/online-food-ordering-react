@@ -3,8 +3,7 @@ import React from 'react'
 import DeleteIcon from '@mui/icons-material/Delete';
 
 export const EventCard = ({event}) => {
-    console.log("Event......",event)
-    console.log(event.image);
+   
     return (
         <div>
             <Card sx={{ width: "100%" }}>

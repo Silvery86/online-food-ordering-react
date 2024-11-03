@@ -20,7 +20,7 @@ function App() {
       dispatch(getUser(storedJwt));
       dispatch(findCart(storedJwt));
     }
-  }, [storedJwt, auth.jwt, dispatch]);
+  }, [storedJwt, auth.jwt]);
 
   useEffect(() => {
     // Check if auth is loaded and user role is 'ROLE_RESTAURANT_OWNER'

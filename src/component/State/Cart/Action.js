@@ -50,8 +50,7 @@ export const addItemToCart = (reqData) => {
                         Authorization: `Bearer ${reqData.token}`,
                     },
                 });
-            dispatch({ type: ADD_ITEM_TO_CART_SUCCESS, payload: data })
-            console.log("Cart add :", data);
+            dispatch({ type: ADD_ITEM_TO_CART_SUCCESS, payload: data })            
         } catch (error) {
             dispatch({ type: ADD_ITEM_TO_CART_FAILURE, payload: error })
             console.log("Error:", error);

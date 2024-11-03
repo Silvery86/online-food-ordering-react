@@ -9,25 +9,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addItemToCart } from '../State/Cart/Action';
 import { useNavigate } from 'react-router-dom';
 
-
-const demo = [
-    {
-        category: "Lựa chọn",
-        ingredients: ["Thêm phở", "Thêm thịt bò"]
-    },
-    {
-        category: "Ăn kèm",
-        ingredients: ["Quẩy", "Trứng lộn"]
-    }
-]
-
 const MenuCard = ({ item }) => {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const [selectedIngredients, setSelectedIngredients] = useState([]);
-    const auth = useSelector(state => state.auth)
+    const auth = useSelector(state => state.auth);
     const dispatch = useDispatch();
-    const handleAddItemToCart = (e) => {
-        e.preventDefault();
+
+    const handleAddItemToCart = () => {  
+             
         const reqData = {
             token: localStorage.getItem("jwt"),
             cartItem: {
@@ -38,16 +27,15 @@ const MenuCard = ({ item }) => {
         }
         dispatch(addItemToCart(reqData));
     };
-    const handleCheckBoxChange = (itemName) => {
-        console.log(itemName);
+
+    const handleCheckBoxChange = (itemName) => {        
         if (selectedIngredients.includes(itemName)) {
-            setSelectedIngredients(selectedIngredients.filter((item) =>
-                item !== itemName
-            ))
+            setSelectedIngredients(selectedIngredients.filter((item) => item !== itemName));
         } else {
-            setSelectedIngredients([...selectedIngredients, itemName])
+            setSelectedIngredients([...selectedIngredients, itemName]);
         }
     }
+
     return (
         <Accordion>
             <AccordionSummary
@@ -59,9 +47,8 @@ const MenuCard = ({ item }) => {
                     <div className='lg:flex items-center lg:gap-5'>
                         <img
                             className='w-[7rem] h-[7rem] object-cover'
-                            src=
-                            {item.images[0]}
-                            alt=''
+                            src={item.images[0]}
+                            alt={item.name}
                         />
                         <div className='space-y-1 lg:space-y-5 lg:max-w-2xl'>
                             <p className='font-semibold text-xl'>{item.name}</p>
@@ -69,38 +56,51 @@ const MenuCard = ({ item }) => {
                             <p className='text-gray-400'>{item.description}</p>
                         </div>
                     </div>
-
                 </div>
             </AccordionSummary>
             <AccordionDetails>
                 <form onSubmit={handleAddItemToCart}>
                     <div className='flex gap-5 flex-wrap'>
                         {
-                            Object.keys(categorizeIngredients(item.ingredients)).map((category) =>
-                                <div>
+                            Object.keys(categorizeIngredients(item.ingredients)).map((category) => (
+                                <div key={category}>
                                     <p>{category}</p>
                                     <FormGroup>
-                                        {categorizeIngredients(item.ingredients)[category].map((item) =>
+                                        {categorizeIngredients(item.ingredients)[category].map((ingredient) => (
                                             <FormControlLabel
-                                                key={item.id}
+                                                key={ingredient.id}
                                                 control={
                                                     <Checkbox
-                                                        onChange={() => handleCheckBoxChange(item.name)}
-                                                    />} label={item.name} />
-                                        )}
+                                                        onChange={() => handleCheckBoxChange(ingredient.name)}
+                                                    />
+                                                } 
+                                                label={ingredient.name} 
+                                            />
+                                        ))}
                                     </FormGroup>
                                 </div>
-                            )
+                            ))
                         }
                     </div>
                     <div className='pt-5'>
-                        {auth.user 
-                        ? 
-                        <Button variant='contained' disable={ item.available ? true : false} type='submit'>{item.available ? "Add to Cart" : "Out Of Stock"}</Button>
-                        :
-                        <Button onClick={() => navigate(`/account/login`)} variant='contained' disable={true} type='submit'>Đăng nhập để đặt hàng</Button>
-                        }
-                        
+                        {auth.user ? (
+                            <Button 
+                                variant='contained' 
+                                disabled={!item.available} 
+                                onClick={handleAddItemToCart}
+                            >
+                                {item.available ? "Add to Cart" : "Out Of Stock"}
+                            </Button>
+                        ) : (
+                            <Button 
+                                onClick={() => navigate(`/account/login`)} 
+                                variant='contained' 
+                                disabled={true} 
+                                type='button' // Change to type='button' for login button
+                            >
+                                Đăng nhập để đặt hàng
+                            </Button>
+                        )}
                     </div>
                 </form>
             </AccordionDetails>
@@ -108,4 +108,4 @@ const MenuCard = ({ item }) => {
     )
 }
 
-export default MenuCard
+export default MenuCard;

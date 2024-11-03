@@ -10,6 +10,7 @@ const initialState = {
 
 const cartReducer = (state = initialState, action) => {
     switch (action.type) {
+        case actionTypes.ADD_ITEM_TO_CART_REQUEST:
         case actionTypes.FIND_CART_REQUEST:
         case actionTypes.GET_ALL_CART_ITEMS_REQUEST:
         case actionTypes.UPDATE_CART_ITEM_REQUEST:
@@ -29,11 +30,28 @@ const cartReducer = (state = initialState, action) => {
                 cartItems: action.payload.items,
             };
         case actionTypes.ADD_ITEM_TO_CART_SUCCESS:
+            const newItem = action.payload; // Ensure this payload has the correct structure
+            const existingItemIndex = state.cartItems.findIndex(item => item.foodId === newItem.foodId);
+
+            if (existingItemIndex >= 0) {
+                // If it exists, update the quantity
+                const updatedCartItems = [...state.cartItems];
+                // Safely update the quantity assuming it's set to 1 for this action.
+                updatedCartItems[existingItemIndex].quantity += 1; // Increment by 1, as you're adding one item at a time
+                return {
+                    ...state,
+                    loading: false,
+                    cartItems: updatedCartItems,
+                };
+            }
+
+            // If not found, add the new item with an initialized quantity
             return {
                 ...state,
                 loading: false,
-                cartItems: [action.payload, ...state.cartItems],
+                cartItems: [{ ...newItem, quantity: 1 }, ...state.cartItems],
             };
+
         case actionTypes.UPDATE_CART_ITEM_SUCCESS:
             return {
                 ...state,
