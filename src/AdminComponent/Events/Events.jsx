@@ -4,10 +4,12 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import dayjs from 'dayjs';
-import React from 'react'
+import React, { useEffect } from 'react'
 import { hasFormSubmit } from '@testing-library/user-event/dist/utils';
 import { useNavigate } from 'react-router-dom';
 import { EventCard } from './EventCard';
+import { useDispatch, useSelector } from 'react-redux';
+import { getRestaurantEvents } from '../../component/State/Restaurant/Action';
 
 const style = {
   position: 'absolute',
@@ -29,132 +31,30 @@ const initialValue = {
 }
 export const Events = () => {
   const navigate = useNavigate()
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-  const [formValues, setFormValues] = React.useState(initialValue)
+  const dispatch = useDispatch()
+  const restaurant = useSelector(state => state.restaurant)
+  console.log("Restaurant.....", restaurant)
+  const jwt = localStorage.getItem("jwt")
+  useEffect(() => {
+    dispatch(getRestaurantEvents({ restaurantId: restaurant.usersRestaurant?.id, jwt }))
+  },[jwt])
+  const restaurantEventList = restaurant.restaurantsEvents
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const formattedStartAt = formValues.startAt ? dayjs(formValues.startAt).format('DD/MM/YYYY hh:mm A') : null;
-    const formattedEndAt = formValues.endAt ? dayjs(formValues.endAt).format('DD/MM/YYYY hh:mm A') : null;
-
-    console.log({
-      ...formValues,
-      startAt: formattedStartAt,
-      endAt: formattedEndAt,
-    });
-
-
-    setFormValues(initialValue)
-  }
-  const handleFormChange = (e) => {
-    setFormValues({ ...formValues, [e.target.name]: e.target.value })
-  }
-  const handleDateChange = (date, dateType) => {
-
-    setFormValues({ ...formValues, [dateType]: date })
-  }
   return (
     <div>
       <div className='p-5'>
         <Button onClick={() => navigate(`/admin/restaurant/add-event`)} variant='contained'>
-          Create New Event
+          Tạo sự kiện
         </Button>
         <Grid container spacing={2} className='pt-5'>
 
-          {[1, 1, 1].map((item) => 
-          <Grid item sx={12} lg={12}>
-              <EventCard />
-          </Grid>
-          
+          {restaurantEventList.map((event) =>
+            <Grid item sx={12} lg={12}>
+              <EventCard event={event}/>
+            </Grid>
           )}
-
         </Grid>
-        {/* <Modal
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={style}>
-            <form onSubmit={handleSubmit}>
-              <Grid container spacing={3}>
-                <Grid item xs={12}>
-                  <TextField
-                    name='image'
-                    label="Image URL"
-                    variant='outlined'
-                    fullWidth
-                    value={formValues.image}
-                    onChange={handleFormChange}
-                  >
-                  </TextField>
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    name='location'
-                    label="Location"
-                    variant='outlined'
-                    fullWidth
-                    value={formValues.location}
-                    onChange={handleFormChange}
-                  >
-                  </TextField>
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    name='name'
-                    label="Event Name"
-                    variant='outlined'
-                    fullWidth
-                    value={formValues.name}
-                    onChange={handleFormChange}
-                  >
-                  </TextField>
-                </Grid>
 
-                <Grid item xs={12}>
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DateTimePicker
-                      renderInput={(props) => (
-                        <TextField
-                          {...props}                  
-                        />
-                      )}
-                      label="Start Date And Time"
-                      value={formValues.startAt}
-                      onChange={(newValue) => handleDateChange(newValue, "startAt")}
-                      className='w-full'
-                      sx={{ widows: "100%" }}
-                    />
-                  </LocalizationProvider>
-                </Grid>
-                <Grid item xs={12}>
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DateTimePicker
-                      renderInput={(props) => (
-                        <TextField
-                          {...props}                         
-                        />
-                      )}
-                      label="End Date And Time"
-                      value={formValues.endAt}
-                      onChange={(newValue) => handleDateChange(newValue, "endAt")}                
-                      className='w-full'
-                      sx={{ widows: "100%" }}
-                    />
-                  </LocalizationProvider>
-                </Grid>
-                <Grid item xs={12}>
-                  <Button onClick={handleSubmit} type="submit" variant="contained" color="primary">
-                    Add Event
-                  </Button>
-                </Grid>
-              </Grid>
-            </form>
-          </Box>
-        </Modal> */}
       </div>
     </div>
   )

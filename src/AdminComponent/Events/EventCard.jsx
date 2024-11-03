@@ -2,25 +2,28 @@ import { Card, CardActions, CardContent, CardMedia, IconButton, Typography } fro
 import React from 'react'
 import DeleteIcon from '@mui/icons-material/Delete';
 
-export const EventCard = () => {
+export const EventCard = ({event}) => {
+    console.log("Event......",event)
+    console.log(event.image);
     return (
         <div>
             <Card sx={{ width: "100%" }}>
                 <CardMedia
+                component="img"
                     sx={{ height: "50vh" }}
-                    src='https://ims.baoyenbai.com.vn/NewsImg/3_2024/319281_5-3-phobo.jpg'
+                    src={event.image}
                 />
                 <CardContent>
                     <Typography variant='h5' sx={{ textAlign: "center" }}>
-                        Lễ hội phở Việt Nam
+                        {event.title}
                     </Typography>
                     <Typography variant='body2' sx={{ textAlign: "center" }}>
-                        Giảm 50% cho tất cả đơn hàng
+                        {event.description}
                     </Typography>
                     <div className='py-2 space-y-2'>
-                        <p>{"Thành phố Nam Định"}</p>
-                        <p className='text-sm text-blue-500'>Từ:</p>
-                        <p className='text-sm text-red-500'>Đến:</p>
+                        <p>{event.location[0] == "ha_noi" ? "TP.Hà Nội" : ""}</p>
+                        <p className='text-sm text-blue-500'>Từ: {event.startAt}</p>
+                        <p className='text-sm text-red-500'>Đến:{event.endAt}</p>
 
                     </div>
                 </CardContent>

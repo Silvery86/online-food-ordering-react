@@ -5,13 +5,8 @@ export const registerUser = (reqData) => async (dispatch) => {
     dispatch({ type: REGISTER_REQUEST })
     try {
         const { data } = await api.post(`/api/auth/signup`, reqData.userData)
-        if (data.jwt) localStorage.setItem("jwt", data.jwt);
-        if (data.role === "ROLE_RESTAURANT_OWNER") {
-            reqData.navigate("/admin/restaurant")
-        }
-        else {
-            reqData.navigate("/")
-        }
+        // if (data.jwt) localStorage.setItem("jwt", data.jwt);
+        reqData.navigate("/")        
         dispatch({ type: REGISTER_SUCCESS, payload: data.jwt })
         console.log("Register success:", data)
         window.location.reload()     

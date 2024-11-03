@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getRestaurantCategory } from '../../component/State/Restaurant/Action'
 import { fetchRestaurantsOrder } from '../../component/State/RestaurantOrder/Action'
 import { OrdersDetails } from '../Orders/OrdersDetails'
-import { CreateEvent} from '../Events/CreateEvent'
+import { CreateEvent } from '../Events/CreateEvent'
 import { getUser } from '../../component/State/Authentication/Action'
 
 export const Admin = () => {
@@ -21,15 +21,15 @@ export const Admin = () => {
   const jwt = localStorage.getItem("jwt")
   const restaurant = useSelector(state => state.restaurant)
   const auth = useSelector(state => state.auth)
-  const handleClose = () => {   
-  
-   
+  const handleClose = () => {
+
+
   }
   useEffect(() => {
-    if(jwt){
+    if (jwt) {
       dispatch(getUser(jwt));
     }
-     
+
   }, [jwt || auth.jwt]);
   useEffect(() => {
     dispatch(getRestaurantCategory({
@@ -40,14 +40,13 @@ export const Admin = () => {
       jwt: jwt,
       restaurantId: restaurant.usersRestaurant?.id,
     }))
-    //dispatch(getMenuItemsByRestaurantId())
-    //dispatch(getRestaurantById())
+
   }, [jwt])
   return (
 
     <div>
       <div className='lg:flex justify-between'>
-        <div>
+        <div className="sticky lg:w-[20%] z-10">
           <AdminSideBar handleClose={handleClose} />
         </div>
         <div className='lg:w-[80%]'>

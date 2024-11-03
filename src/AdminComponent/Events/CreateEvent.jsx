@@ -1,7 +1,8 @@
-import { AddPhotoAlternate, Close, Height } from '@mui/icons-material';
-import { Box, Button, Chip, CircularProgress, FormControl, Grid, IconButton, InputLabel, MenuItem, OutlinedInput, Select, TextField } from '@mui/material';
+import { AddPhotoAlternate, Close } from '@mui/icons-material';
+import { Box, Button, Chip, CircularProgress, FormControl, IconButton, InputLabel, MenuItem, OutlinedInput, Select, Stack, TextField, Typography } from '@mui/material';
+import Grid from '@mui/material/Grid';
 import { useFormik } from 'formik';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -12,8 +13,9 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { Quill } from 'react-quill';
 import ImageUploader from 'quill-image-uploader';
-import { getUser } from '../../component/State/Authentication/Action';
+
 import dayjs from 'dayjs';
+import { useNavigate } from 'react-router-dom';
 
 Quill.register('modules/imageUploader', ImageUploader);
 
@@ -30,8 +32,6 @@ const initialValues = {
 };
 const selectLocation = [
   { slug: "ha_noi", location: "TP.Hà Nội", zipCode: "" },
-  { slug: "ho_chi_minh", location: "TP.Hồ Chí Minh", zipCode: "" },
-  { slug: "hai_phong", location: "TP.Hải Phòng", zipCode: "" },
 ];
 const modules = {
   toolbar: [
@@ -65,11 +65,11 @@ const MenuProps = {
   },
 };
 export const CreateEvent = () => {
+  const navigate = useNavigate()
   const [uploadImage, setUploadImage] = useState(false);
   const dispatch = useDispatch();
   const restaurant = useSelector(state => state.restaurant)
-  const jwt = localStorage.getItem("jwt");
-  console.log("Restaurant::::::", restaurant)
+  const jwt = localStorage.getItem("jwt");  
   const formik = useFormik({
     initialValues,
     onSubmit: (values) => {
@@ -98,9 +98,9 @@ export const CreateEvent = () => {
             }
           ]
 
-      };
-      console.log("Event.......:", data)
+      };      
       dispatch(createEvent({ eventData: data, jwt: jwt }));
+      navigate("/admin/restaurant/event")
     },
   });
 
@@ -126,11 +126,12 @@ export const CreateEvent = () => {
     <div className='py-10 px-5 lg:flex items-center justify-center min-h-screen'>
       <div className='lg:max-w-4xl'>
         <h1 className='font-bold text-2xl text-center py-2'>
-          Create New Event
+          Tạo sự kiện cho nhà hàng
         </h1>
         <form onSubmit={formik.handleSubmit} className='space-y-4'>
           <Grid container spacing={2}>
             <Grid item xs={12}>
+              <Typography>Ảnh sự kiện</Typography>
               <input
                 accept='image/*'
                 id='fileInput'
@@ -172,7 +173,7 @@ export const CreateEvent = () => {
                 fullWidth
                 id='title'
                 name='title'
-                label="Event Title"
+                label="Tiêu đề sự kiện (Hiện thị tại banner quảng cáo)"
                 variant='outlined'
                 onChange={formik.handleChange}
                 value={formik.values.title}
@@ -180,12 +181,26 @@ export const CreateEvent = () => {
               />
             </Grid>
             <Grid item xs={12}>
+              <TextField
+                fullWidth
+                id='description'
+                name='description'
+                label="Tóm tắt sự kiện (Hiển thị tại banner quảng cáo)"
+                variant='outlined'
+                onChange={formik.handleChange}
+                value={formik.values.description}
+                multiline
+                rows={3}
+                required
+              />
+            </Grid>
+            <Grid item xs={6}>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DateTimePicker
                   renderInput={(props) => (
                     <TextField {...props} />
                   )}
-                  label="Start Date And Time"
+                  label="Thời gian bắt đầu"
                   value={formik.values.startAt}
                   onChange={(newValue) => handleDateChange(newValue, "startAt")}
                   className='w-full'
@@ -193,13 +208,13 @@ export const CreateEvent = () => {
                 />
               </LocalizationProvider>
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={6}>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DateTimePicker
                   renderInput={(props) => (
                     <TextField {...props} />
                   )}
-                  label="End Date And Time"
+                  label="Thời gian kết thúc"
                   value={formik.values.endAt}
                   onChange={(newValue) => handleDateChange(newValue, "endAt")}
                   className='w-full'
@@ -208,22 +223,8 @@ export const CreateEvent = () => {
               </LocalizationProvider>
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                fullWidth
-                id='description'
-                name='description'
-                label="Event Description"
-                variant='outlined'
-                onChange={formik.handleChange}
-                value={formik.values.description}
-                multiline
-                rows={4}
-                required
-              />
-            </Grid>
-            <Grid item xs={12}>
               <FormControl fullWidth>
-                <InputLabel id="location-multiple-chip-label">Locations</InputLabel>
+                <InputLabel id="location-multiple-chip-label">Địa điểm áp dụng</InputLabel>
                 <Select
                   labelId="location-multiple-chip-label"
                   id="location-multiple-chip"
@@ -263,15 +264,16 @@ export const CreateEvent = () => {
                 fullWidth
                 id='header'
                 name='header'
-                label="Event Detail Header"
+                label="Tiêu đề chi tiết sự kiện"
                 variant='outlined'
                 onChange={formik.handleChange}
                 value={formik.values.header}
                 required
               />
             </Grid>
-            <Grid item xs={12}>
-              <div style={{ height: '50vh', marginBottom: '2rem' }}>
+            <Grid item xs={12} style={{ display: 'flex', flexDirection: 'column', height: '80vh' }}>
+              <Typography>Nội dung chi tiết sự kiện</Typography>
+              <Box width="100%" flexGrow={1} mb={2}>
                 <ReactQuill
                   value={formik.values.content}
                   onChange={(value) => formik.setFieldValue('content', value)}
@@ -279,12 +281,13 @@ export const CreateEvent = () => {
                   placeholder="Enter event details here..."
                   style={{ height: '100%' }}
                 />
-              </div>
+              </Box>
+              <Button variant='contained' color='primary' type='submit'>
+                Tạo sự kiện
+              </Button>
             </Grid>
           </Grid>
-          <Button className='pt-5' variant='contained' color='primary' type='submit'>
-            Create Event
-          </Button>
+
         </form>
       </div>
     </div>

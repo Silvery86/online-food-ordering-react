@@ -220,18 +220,13 @@ export const deleteEventAction = ({ eventId, jwt }) => {
     }
 }
 
-export const getRestaurantEvents = ({ restaurantId, jwt }) => {
+export const getRestaurantEvents = ({ restaurantId }) => {
 
     return async (dispatch) => {
         dispatch({ type: GET_RESTAURANT_EVENTS_REQUEST });
         try {
             const res = await api.get(
-                `/api/admin/events/restaurant/${restaurantId}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${jwt}`,
-                    },
-                });
+                `/api/public/event/restaurant/${restaurantId}`);
             dispatch({ type: GET_RESTAURANT_EVENTS_SUCCESS, payload: res.data })
         } catch (error) {
             dispatch({ type: GET_RESTAURANT_EVENTS_FAILURE, payload: error })

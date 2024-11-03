@@ -4,10 +4,9 @@ import MultiItemCarousel from './MultiItemCarousel'
 import RestaurantCard from '../Restaurant/RestaurantCard';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllRestaurantsAction } from '../State/Restaurant/Action';
-
-import banner1 from '../assets/images/banner1.jpg'
-import banner2 from '../assets/images/banner2.jpg'
-import banner3 from '../assets/images/banner3.jpg'
+import banner1 from '../assets/banner/banner1.jpg'
+import banner2 from '../assets/banner/banner2.jpg'
+import banner3 from '../assets/banner/banner3.jpg'
 import Slider from 'react-slick';
 import { getAllEvents } from '../State/Event/Action';
 
@@ -15,17 +14,17 @@ const defaultEventList = [
   {
     title: "Banner 1",
     description: "Banner 1 description",
-    image_url: banner1,
+    image: banner1,
   },
   {
     title: "Banner 2",
     description: "Banner 2 description",
-    image_url: banner2,
+    image: banner2,
   },
   {
     title: "Banner 3",
     description: "Banner 3 description",
-    image_url: banner3,
+    image: banner3,
   }
 ]
 
@@ -43,6 +42,7 @@ function Home() {
     dispatch(getAllRestaurantsAction())
     dispatch(getAllEvents())
   }, [])
+  console.log("Combined Events .....", combinedEventsList)
   const settings = {
     dots: true,
     infinite: true,
@@ -73,18 +73,20 @@ function Home() {
             </div>
             <div className="cover absolute top-0 left-0 right-0">
               <img
-                src={banner.image_url || "../assets/images/default.jpg"}
+                src={banner.image || "../assets/images/default.jpg"}
                 alt={banner.title || "Default Title"}
-                className="object-cover w-full h-full opacity-99 brightness-110"
+                className="object-cover w-full h-full brightness-110"
               />
             </div>
-            <div className="fadout absolute top-0 left-0 right-0 bottom-0 bg-gradient-to-b from-black/30 via-black/20 to-black/90"></div>
+            <div className="fadout absolute top-0 left-0 right-0 bottom-0 bg-gradient-to-b from-black/0 via-black/10 to-black/100"></div>
           </section>
         )}
       </Slider>
 
       {/* Menu */}
-      <section className='p-10 lg:py-10 lg:px-20'>
+      
+      <section className='relative p-10 lg:py-10 lg:px-20'>
+      <div className="fadout absolute top-0 left-0 right-0 bottom-0 bg-gradient-to-b from-black/100 via-black/90 to-black/0"></div>
         <p className='text-2xl font-semibold text-gray-400 py-3 pb-10'>Món ăn nổi tiếng</p>
         <MultiItemCarousel />
       </section>

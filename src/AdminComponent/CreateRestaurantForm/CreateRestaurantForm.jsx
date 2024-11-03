@@ -1,32 +1,96 @@
-import { AddPhotoAlternate, Close } from '@mui/icons-material'
-import { Button, CircularProgress, Grid, IconButton, TextField } from '@mui/material'
-import { useFormik } from 'formik'
-import React, { useState } from 'react'
-import { uploadImageToCloudinary } from '../util/UploadToCloudinary'
-import { useDispatch } from 'react-redux'
-import { createRestaurant } from '../../component/State/Restaurant/Action'
+import { AddPhotoAlternate, Close } from '@mui/icons-material';
+import { Button, CircularProgress, FormControl, Grid, IconButton, InputLabel, MenuItem, Select, TextField } from '@mui/material';
+import { useFormik } from 'formik';
+import * as Yup from 'yup'; // Import Yup
+import React, { useEffect, useState } from 'react';
+import { uploadImageToCloudinary } from '../util/UploadToCloudinary';
+import { useDispatch } from 'react-redux';
+import { createRestaurant } from '../../component/State/Restaurant/Action';
+
 const initialValues = {
     name: "",
     description: "",
     cuisineType: "",
     streetAddress: "",
-    city: "",
+    city: "Hà Nội",
     state: "",
     district: "",
     email: "",
     mobile: "",
-    facebook: "",
-    instargram: "",
-    openingHours: "Mon-Sun : 9:00 - 21:00",
+    facebook: "https://www.facebook.com/",
+    instargram: "https://www.instagram.com/",
+    openingHours: "Thứ 2 - Chủ Nhật : 9:00 - 21:00",
     images: []
+};
 
-}
+const stateDistrictMapping = {
+    "Hoàn Kiếm": [
+        "Hàng Bạc", "Hàng Đào", "Hàng Gai", "Tràng Tiền", "Phan Chu Trinh", "Chả Cá", "Cửa Đông"
+    ],
+    "Đống Đa": [
+        "Phương Liên", "Kim Liên", "Đống Đa", "Thịnh Quang", "Nam Đồng", "Khâm Thiên", "Láng Thượng", "Nguyễn Phương"
+    ],
+    "Cầu Giấy": [
+        "Dịch Vọng", "Dịch Vọng Hậu", "Mai Dịch", "Nghĩa Tân", "Trung Hòa", "Yên Hòa", "Dịch Vọng"
+    ],
+    "Hai Bà Trưng": [
+        "Bạch Đằng", "Trần Khát Chân", "Lê Đại Hành", "Đồng Nhân", "Phố Huế", "Quỳnh Mai", "Vĩnh Tuy", "Thanh Lương"
+    ],
+    "Tây Hồ": [
+        "Phú Thượng", "Tứ Liên", "Nhật Tân", "Quảng An", "Xuân La", "Thụy Khuê", "Nhật Tân"
+    ],
+    "Thanh Xuân": [
+        "Khương Đình", "Khương Mai", "Hạ Đình", "Thanh Xuân Bắc", "Thanh Xuân Nam", "Thượng Đình", "Trường Thịnh", "Nguyễn Trãi"
+    ],
+    "Ba Đình": [
+        "Phúc Xá", "Trúc Bạch", "Vĩnh Phúc", "Đội Cấn", "Ngọc Hà", "Ngọc Khánh", "Kim Mã", "Liễu Giai", "Chung Kỳ", "Cống Vị"
+    ],
+    "Hoàng Mai": [
+        "Đại Kim", "Định Công", "Hoàng Liệt", "Hoàng Văn Thụ", "Lĩnh Nam", "Thịnh Liệt", "Yên Sở"
+    ],
+    "Long Biên": [
+        "Thạch Bàn", "Gia Thụy", "Ngọc Lâm", "Phúc Lợi", "Long Biên", "Bồ Đề", "Việt Hưng", "Sài Đồng"
+    ],
+    "Nam Từ Liêm": [
+        "Mỹ Đình 1", "Mỹ Đình 2", "Phú Đô", "Phương Canh", "Nam Từ Liêm", "Cầu Diễn", "Đại Mỗ", "Tây Mỗ"
+    ],   
+    "Gia Lâm": [
+        "Gia Lâm", "Dương Xá", "Đức Giang", "Kiêu Kỵ", "Lương Điền", "Phú Thị", "Trung Màu"
+    ],
+    "Thanh Trì": [
+        "Đại Kim", "Ngọc Hồi", "Liên Ninh", "Tam Hiệp", "Tứ Hiệp", "Tây Tựu"
+    ],
+   
+};
+
+
+// Add Yup validation schema
+const validationSchema = Yup.object({
+    name: Yup.string().required("Vui lòng nhập tên nhà hàng"),
+    description: Yup.string().required("Vui lòng nhập mô tả nhà hàng"),
+    cuisineType: Yup.string().required("Vui lòng loại nhà hàng"),
+    streetAddress: Yup.string().required("Vui lòng nhập tên nhà hàng"),
+    city: Yup.string(),
+    state: Yup.string().required("Vui lòng nhập tên quận"),
+    district: Yup.string().required("Vui lòng nhập tên phường"),
+    email: Yup.string().email("Email không đúng định dạng").required("Vui lòng nhập email"),
+    mobile: Yup.string().required("Vui lòng nhập số điện thoại"),
+    openingHours: Yup.string().required("Vui lòng nhập thời gian mở - đóng cửa"),
+    images: Yup.array()
+        .of(Yup.string().url("Định dạng ảnh không đúng"))
+        .min(3, "Bạn cần tải 3 ảnh")
+        .max(3, "Bạn chỉ có thể tải 3 ảnh") // Limit to 3 images
+        .required("Vui lòng tải ảnh về nhà hàng"),
+});
+
 export const CreateRestaurantForm = () => {
-    const [uploadImage, setUploadImage] = useState(false)
+    const [uploadImage, setUploadImage] = useState(false);
     const dispatch = useDispatch();
-    const jwt = localStorage.getItem("jwt")
+    const jwt = localStorage.getItem("jwt");
+
     const formik = useFormik({
         initialValues,
+        validationSchema, // Add the validation schema
         onSubmit: (values) => {
             const data = {
                 name: values.name,
@@ -37,7 +101,6 @@ export const CreateRestaurantForm = () => {
                     city: values.city,
                     state: values.state,
                     district: values.district,
-                    city: values.city,
                 },
                 openingHours: values.openingHours,
                 contactInformation: {
@@ -48,14 +111,33 @@ export const CreateRestaurantForm = () => {
                 },
                 images: values.images,
             };
-            dispatch(createRestaurant({data,token:jwt}))
+            dispatch(createRestaurant({ data, token: jwt }));
         }
-    })
+    });
+
+    const [districtOptions, setDistrictOptions] = useState([]);
+    useEffect(() => {
+        // Update district options based on selected state
+        if (formik.values.state) {
+            setDistrictOptions(stateDistrictMapping[formik.values.state] || []);
+            formik.setFieldValue("district", ""); // Reset district selection
+        } else {
+            setDistrictOptions([]); // Reset district options if state is not selected
+        }
+    }, [formik.values.state]);
+
     const handleImageChange = async (e) => {
-        const file = e.target.files[0];
+        const files = e.target.files;
+        if (files.length + formik.values.images.length > 3) {
+            alert("Bạn chỉ có thể tải lên 3 ảnh");
+            return;
+        }
+
         setUploadImage(true);
-        const image = await uploadImageToCloudinary(file);
-        formik.setFieldValue("images", [...formik.values.images, image]);
+        const uploadedImages = await Promise.all(
+            Array.from(files).map(file => uploadImageToCloudinary(file))
+        );
+        formik.setFieldValue("images", [...formik.values.images, ...uploadedImages]);
         setUploadImage(false);
     };
 
@@ -68,36 +150,36 @@ export const CreateRestaurantForm = () => {
     return (
         <div className='py-10 px-5 lg:flex items-center justify-center min-h-screen'>
             <div className='lg:max-w-4xl'>
-                <h1 className='font-bold text-2xl text-center py-2'>
-                    Add New Restaurant
+                <h1 className='font-bold text-2xl text-center py-3 text-primary'>
+                    Tạo nhà hàng của bạn
                 </h1>
                 <form onSubmit={formik.handleSubmit} className='space-y-4'>
                     <Grid container spacing={2}>
                         <Grid className='flex flex-wrap gap-5' item xs={12}>
+                            <h3 className='w-full font-semibold'>Ảnh nhà hàng: <span className='text-red-500'>(Vui lòng tải 3 ảnh về nhà hàng)</span></h3>
                             <input
                                 accept='image/*'
                                 id='fileInput'
                                 style={{ display: "none" }}
                                 onChange={handleImageChange}
                                 type='file'
+                                multiple // Allow multiple file uploads
                             />
                             <label className='relative' htmlFor='fileInput'>
                                 <span className='w-24 h-24 cursor-pointer items-center flex justify-center p-3 border rounded-md border-gray-600'>
                                     <AddPhotoAlternate className='text-white' />
-                                    {
-                                        uploadImage && <div className='absolute left-0 right-0 top-0 bottom-0 w-24 h-24 flex items-center justify-center'>
+                                    {uploadImage && (
+                                        <div className='absolute left-0 right-0 top-0 bottom-0 w-24 h-24 flex items-center justify-center'>
                                             <CircularProgress />
                                         </div>
-                                    }
+                                    )}
                                 </span>
                             </label>
                             <div className='flex flex-wrap gap-2'>
                                 {formik.values.images.map((image, index) => (
-            
-                                    <div className='relative'>
+                                    <div className='relative' key={index}>
                                         <img
                                             className='w-24 h-24 object-cover'
-                                            key={index}
                                             src={image}
                                             alt={image}
                                         />
@@ -107,139 +189,148 @@ export const CreateRestaurantForm = () => {
                                     </div>
                                 ))}
                             </div>
-
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
                                 fullWidth
                                 id='name'
                                 name='name'
-                                label="Name"
+                                label="Tên nhà hàng"
                                 variant='outlined'
                                 onChange={formik.handleChange}
                                 value={formik.values.name}
-                            >
-                            </TextField>
+                                error={formik.touched.name && Boolean(formik.errors.name)}
+                                helperText={formik.touched.name && formik.errors.name}
+                            />
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
                                 fullWidth
                                 id='description'
                                 name='description'
-                                label="Description"
+                                label="Mô tả nhà hàng"
                                 variant='outlined'
                                 onChange={formik.handleChange}
                                 value={formik.values.description}
-                            >
-                            </TextField>
+                                error={formik.touched.description && Boolean(formik.errors.description)}
+                                helperText={formik.touched.description && formik.errors.description}
+                            />
                         </Grid>
                         <Grid item xs={12} lg={6}>
                             <TextField
                                 fullWidth
                                 id='cuisineType'
                                 name='cuisineType'
-                                label="Cuisine Type"
+                                label="Loại nhà hàng"
                                 variant='outlined'
                                 onChange={formik.handleChange}
                                 value={formik.values.cuisineType}
-                            >
-                            </TextField>
+                                error={formik.touched.cuisineType && Boolean(formik.errors.cuisineType)}
+                                helperText={formik.touched.cuisineType && formik.errors.cuisineType}
+                            />
                         </Grid>
                         <Grid item xs={12} lg={6}>
                             <TextField
                                 fullWidth
                                 id='openingHours'
                                 name='openingHours'
-                                label="Opening Hours"
+                                label="Giờ mở cửa"
                                 variant='outlined'
                                 onChange={formik.handleChange}
                                 value={formik.values.openingHours}
-                            >
-                            </TextField>
+                                error={formik.touched.openingHours && Boolean(formik.errors.openingHours)}
+                                helperText={formik.touched.openingHours && formik.errors.openingHours}
+                            />
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
                                 fullWidth
                                 id='streetAddress'
                                 name='streetAddress'
-                                label="Street Address"
+                                label="Địa chỉ chi tiết"
                                 variant='outlined'
                                 onChange={formik.handleChange}
                                 value={formik.values.streetAddress}
-                            >
-                            </TextField>
+                                error={formik.touched.streetAddress && Boolean(formik.errors.streetAddress)}
+                                helperText={formik.touched.streetAddress && formik.errors.streetAddress}
+                            />
+                        </Grid>                       
+                        <Grid item xs={6}>
+                            <FormControl fullWidth variant="outlined">
+                                <InputLabel id="district-label">Phường</InputLabel>
+                                <Select
+                                    labelId="district-label"
+                                    id="district"
+                                    name="district"
+                                    value={formik.values.district}
+                                    onChange={formik.handleChange}
+                                    error={formik.touched.district && Boolean(formik.errors.district)}
+                                >
+                                    <MenuItem value=""><em>Vui lòng chọn phường</em></MenuItem>
+                                    {districtOptions.map(district => (
+                                        <MenuItem key={district} value={district}>{district}</MenuItem>
+                                    ))}
+                                </Select>
+                                {formik.touched.district && formik.errors.district && <div style={{ color: 'red' }}>{formik.errors.district}</div>}
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <FormControl fullWidth variant="outlined">
+                                <InputLabel id="state-label">Quận</InputLabel>
+                                <Select
+                                    labelId="state-label"
+                                    id="state"
+                                    name="state"
+                                    value={formik.values.state}
+                                    onChange={formik.handleChange}
+                                    error={formik.touched.state && Boolean(formik.errors.state)}
+                                >
+                                    <MenuItem value=""><em>Vui lòng chọn quận</em></MenuItem>
+                                    {Object.keys(stateDistrictMapping).map(state => (
+                                        <MenuItem key={state} value={state}>{state}</MenuItem>
+                                    ))}
+                                </Select>
+                                {formik.touched.state && formik.errors.state && <div style={{ color: 'red' }}>{formik.errors.state}</div>}
+                            </FormControl>
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
                                 fullWidth
                                 id='city'
                                 name='city'
-                                label="City"
+                                label="Thành phố"
                                 variant='outlined'
-                                onChange={formik.handleChange}
-                                value={formik.values.city}
-                            >
-                            </TextField>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                fullWidth
-                                id='state'
-                                name='state'
-                                label="State"
-                                variant='outlined'
-                                onChange={formik.handleChange}
-                                value={formik.values.state}
-                            >
-                            </TextField>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                fullWidth
-                                id='district'
-                                name='district'
-                                label="District"
-                                variant='outlined'
-                                onChange={formik.handleChange}
-                                value={formik.values.district}
-                            >
-                            </TextField>
+                                value={formik.values.city} 
+                                InputProps={{
+                                    readOnly: true, 
+                                }}
+                            />
                         </Grid>
                         <Grid item xs={12} lg={6}>
                             <TextField
                                 fullWidth
                                 id='email'
                                 name='email'
-                                label="Email"
+                                label="Email liên hệ"
                                 variant='outlined'
                                 onChange={formik.handleChange}
                                 value={formik.values.email}
-                            >
-                            </TextField>
+                                error={formik.touched.email && Boolean(formik.errors.email)}
+                                helperText={formik.touched.email && formik.errors.email}
+                            />
                         </Grid>
                         <Grid item xs={12} lg={6}>
                             <TextField
                                 fullWidth
                                 id='mobile'
                                 name='mobile'
-                                label="Mobile"
+                                label="Điện thoại liên hệ"
                                 variant='outlined'
                                 onChange={formik.handleChange}
                                 value={formik.values.mobile}
-                            >
-                            </TextField>
-                        </Grid>
-                        <Grid item xs={12} lg={6}>
-                            <TextField
-                                fullWidth
-                                id='instargram'
-                                name='instargram'
-                                label="Instargram"
-                                variant='outlined'
-                                onChange={formik.handleChange}
-                                value={formik.values.instargram}
-                            >
-                            </TextField>
+                                error={formik.touched.mobile && Boolean(formik.errors.mobile)}
+                                helperText={formik.touched.mobile && formik.errors.mobile}
+                            />
                         </Grid>
                         <Grid item xs={12} lg={6}>
                             <TextField
@@ -250,16 +341,30 @@ export const CreateRestaurantForm = () => {
                                 variant='outlined'
                                 onChange={formik.handleChange}
                                 value={formik.values.facebook}
-                            >
-                            </TextField>
+                            />
+                        </Grid>
+                        <Grid item xs={12} lg={6}>
+                            <TextField
+                                fullWidth
+                                id='instargram'
+                                name='instargram'
+                                label="Instagram"
+                                variant='outlined'
+                                onChange={formik.handleChange}
+                                value={formik.values.instargram}
+                            />
                         </Grid>
                     </Grid>
-                    <Button variant='contained' color='primary' type='submit'>
-                        Create Restaurant
+                    <Button
+                        type='submit'
+                        fullWidth
+                        variant='contained'
+                        color='primary'
+                    >
+                        Tạo nhà hàng
                     </Button>
-
                 </form>
             </div>
         </div>
-    )
-}
+    );
+};

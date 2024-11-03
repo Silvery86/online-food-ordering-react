@@ -10,6 +10,7 @@ import { AboutUs } from '../Home/AboutUs'
 import { Contact } from '../Home/Contact'
 import { News } from '../Home/News'
 import Profile from '../Profile/Profile'
+import { PaymentFail } from '../PaymentSuccess/PaymentFailed'
 const CustomerRoute = () => {
     return (
         <div>
@@ -24,6 +25,7 @@ const CustomerRoute = () => {
                     <Route path='/news' element={<News />} />
                     <Route path='/cart' element={<Cart />} />
                     <Route path='/payment/success/:id' element={<PaymentSuccess/>} />
+                    <Route path='/payment/fail' element={<PaymentFail/>} />
                 </Routes>
             <Auth/>
         </div>
