@@ -9,6 +9,7 @@ import * as Yup from 'yup'; // Import Yup
 const initialValues = {
     fullName: "",
     email: "",
+    phone: "",
     password: "",
     role: "ROLE_CUSTOMER"
 };
@@ -20,6 +21,9 @@ const validationSchema = Yup.object({
     email: Yup.string()
         .email("Email không đúng định dạng")
         .required("Vui lòng nhập email"),
+    phone: Yup.string()
+        .required("Vui lòng nhập số điện thoại")
+        .matches(/^[0-9]{10}$/, "Số điện thoại phải có 10 chữ số"),
     password: Yup.string()
         .required("Vui lòng nhập mật khẩu")
         .matches(/[A-Z]/, "Mật khẩu phải có một chữ in hoa")
@@ -93,6 +97,16 @@ export const RegisterForm = () => {
                             margin="normal"
                             error={touched.email && Boolean(errors.email)}
                             helperText={touched.email && errors.email}
+                        />
+                        <Field
+                            as={TextField}
+                            name="phone"
+                            label="Số điện thoại"
+                            fullWidth
+                            variant="outlined"
+                            margin="normal"
+                            error={touched.phone && Boolean(errors.phone)}
+                            helperText={touched.phone && errors.phone}
                         />
                         <Field
                             as={TextField}
