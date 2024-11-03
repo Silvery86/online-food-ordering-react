@@ -1,8 +1,8 @@
 import React from 'react'
-import TaskAltIcon from '@mui/icons-material/TaskAlt';
-import { green } from '@mui/material/colors';
 import { Button, Card } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { Cancel } from '@mui/icons-material';
+import { red } from '@mui/material/colors';
 
 export const PaymentFail = () => {
     const navigate = useNavigate();
@@ -10,7 +10,7 @@ export const PaymentFail = () => {
         <div className='min-h-screen px-5'>
             <div className='flex flex-col items-center justify-center h-[90vh]'>
                 <Card className='box w-full lg:w-1/4 flex flex-col items-center rounded-md p-5'>
-                    <TaskAltIcon sx={{fontSize:"5rem",color:green[500]}}/>
+                    <Cancel sx={{fontSize:"5rem",color:red[500]}}/>
                     <h1 className='py-5 text-2xl font-semibold'>
                         Order Failed !
                     </h1>

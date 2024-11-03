@@ -11,6 +11,7 @@ import { Contact } from '../Home/Contact'
 import { News } from '../Home/News'
 import Profile from '../Profile/Profile'
 import { PaymentFail } from '../PaymentSuccess/PaymentFailed'
+import PaymentProcess from '../PaymentSuccess/PaymentProcess'
 const CustomerRoute = () => {
     return (
         <div>
@@ -24,8 +25,9 @@ const CustomerRoute = () => {
                     <Route path="/my-profile/*" element={<Profile />} />
                     <Route path='/news' element={<News />} />
                     <Route path='/cart' element={<Cart />} />
+                    <Route path='/payment/process' element={<PaymentProcess/>} />
                     <Route path='/payment/success/:id' element={<PaymentSuccess/>} />
-                    <Route path='/payment/fail' element={<PaymentFail/>} />
+                    <Route path='/payment/fail/:id' element={<PaymentFail/>} />
                 </Routes>
             <Auth/>
         </div>

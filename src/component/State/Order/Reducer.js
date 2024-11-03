@@ -5,7 +5,8 @@ const initialState = {
     loading: false,
     orders: [],
     error: null,
-
+    updateStatusLoading: false,
+    updateStatusError: null,
 };
 
 const orderReducer = (state = initialState, action) => {
@@ -29,6 +30,27 @@ const orderReducer = (state = initialState, action) => {
                 loading: false,
                 error: action.payload
             };
+        case actionTypes.UPDATE_ORDER_STATUS_REQUEST:
+            return {
+                ...state,
+                updateStatusLoading: true,
+                updateStatusError: null,
+            };
+        case actionTypes.UPDATE_ORDER_STATUS_SUCCESS:
+            return {
+                ...state,
+                updateStatusLoading: false,
+                orders: state.orders.map(order =>
+                    order.id === action.payload.id ? { ...order, status: action.payload.orderStatus } : order
+                ),
+            };
+        case actionTypes.UPDATE_ORDER_STATUS_FAILURE:
+            return {
+                ...state,
+                updateStatusLoading: false,
+                updateStatusError: action.payload,
+            };
+
 
 
         default:

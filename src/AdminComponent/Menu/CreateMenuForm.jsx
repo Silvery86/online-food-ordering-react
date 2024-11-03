@@ -1,5 +1,5 @@
 import { AddPhotoAlternate, Close } from '@mui/icons-material'
-import { Box, Button, Chip, CircularProgress, FormControl, Grid, IconButton, InputLabel, MenuItem, OutlinedInput, Select, TextField } from '@mui/material'
+import { Box, Button, Chip, CircularProgress, FormControl, Grid, IconButton, InputAdornment, InputLabel, MenuItem, OutlinedInput, Select, TextField, Typography } from '@mui/material'
 import { useFormik } from 'formik'
 import React, { useEffect, useState } from 'react'
 import { uploadImageToCloudinary } from '../util/UploadToCloudinary'
@@ -38,7 +38,7 @@ export const CreateMenuForm = () => {
         onSubmit: (values) => {
             values.restaurantId = restaurant.usersRestaurant.id
             dispatch(createMenuItem({
-                menu:values,
+                menu: values,
                 jwt
             }))
             console.log("Data:", values)
@@ -66,11 +66,12 @@ export const CreateMenuForm = () => {
         <div className='py-10 px-5 lg:flex items-center justify-center min-h-screen'>
             <div className='lg:max-w-4xl'>
                 <h1 className='font-bold text-2xl text-center py-2'>
-                    Add New Menu
+                    Thêm món ăn
                 </h1>
                 <form onSubmit={formik.handleSubmit} className='space-y-4'>
                     <Grid container spacing={2}>
                         <Grid className='flex flex-wrap gap-5' item xs={12}>
+                            <Typography className='font-semibold '>Ảnh món ăn:</Typography>
                             <input
                                 accept='image/*'
                                 id='fileInput'
@@ -111,7 +112,7 @@ export const CreateMenuForm = () => {
                                 fullWidth
                                 id='name'
                                 name='name'
-                                label="Name"
+                                label="Tên món ăn"
                                 variant='outlined'
                                 onChange={formik.handleChange}
                                 value={formik.values.name}
@@ -123,47 +124,50 @@ export const CreateMenuForm = () => {
                                 fullWidth
                                 id='description'
                                 name='description'
-                                label="Description"
+                                label="Mô tả"
                                 variant='outlined'
                                 onChange={formik.handleChange}
                                 value={formik.values.description}
                             >
                             </TextField>
                         </Grid>
-                        <Grid item xs={12} lg={6}>
-                            <TextField
-                                fullWidth
-                                id='price'
-                                name='price'
-                                label="Price"
-                                variant='outlined'
-                                onChange={formik.handleChange}
-                                value={formik.values.price}
-                            >
-                            </TextField>
+                        <Grid item xs={12} lg={6}>                           
+                            <FormControl fullWidth>
+                                <InputLabel htmlFor="price-adornment-amount">Giá</InputLabel>
+                                <OutlinedInput
+                                    id="price-adornment-amount"                                
+                                    name='price'
+                                    label="Price"
+                                    variant='outlined'
+                                    onChange={formik.handleChange}
+                                    value={formik.values.price}
+                                    endAdornment={<InputAdornment position="end">đ</InputAdornment>}
+                                    
+                                />
+                            </FormControl>
                         </Grid>
                         <Grid item xs={12} lg={6}>
                             <FormControl fullWidth>
-                                <InputLabel id="category-simple-select-label">Category</InputLabel>
+                                <InputLabel id="category-simple-select-label">Danh mục món ăn</InputLabel>
                                 <Select
                                     labelId="category-simple-select-label"
                                     id="category-simple-select"
                                     value={formik.values.category}
-                                    label="Category"
+                                    label="Danh mục món ăn"
                                     onChange={formik.handleChange}
                                     name='category'
                                 >
-                                    {restaurant.categories?.map((item) => 
-                                          <MenuItem value={item}>{item.name}</MenuItem>
+                                    {restaurant.categories?.map((item) =>
+                                        <MenuItem value={item}>{item.name}</MenuItem>
                                     )}
-                                  
-                                   
+
+
                                 </Select>
                             </FormControl>
                         </Grid>
                         <Grid item xs={12}>
                             <FormControl fullWidth>
-                                <InputLabel id="ingredients-multiple-chip-label">Ingredients</InputLabel>
+                                <InputLabel id="ingredients-multiple-chip-label">Nguyên liệu</InputLabel>
                                 <Select
                                     labelId="ingredients-multiple-chip-label"
                                     id="ingredients-multiple-chip"
@@ -171,7 +175,7 @@ export const CreateMenuForm = () => {
                                     multiple
                                     value={formik.values.ingredients}
                                     onChange={formik.handleChange}
-                                    input={<OutlinedInput id="select-multiple-chip" label="Ingredients" />}
+                                    input={<OutlinedInput id="select-multiple-chip" label="Nguyên liệu" />}
                                     renderValue={(selected) => (
                                         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                                             {selected.map((value) => (
@@ -185,7 +189,6 @@ export const CreateMenuForm = () => {
                                         <MenuItem
                                             key={item.id}
                                             value={item}
-
                                         >
                                             {item.name}
                                         </MenuItem>
@@ -195,7 +198,7 @@ export const CreateMenuForm = () => {
                         </Grid>
                         <Grid item xs={12} lg={6}>
                             <FormControl fullWidth>
-                                <InputLabel id="vegetarian-simple-select-label">Is Vegetarian</InputLabel>
+                                <InputLabel id="vegetarian-simple-select-label">Món chay</InputLabel>
                                 <Select
                                     labelId="vegetarian-simple-select-label"
                                     id="vegetarian-simple-select"
@@ -211,7 +214,7 @@ export const CreateMenuForm = () => {
                         </Grid>
                         <Grid item xs={12} lg={6}>
                             <FormControl fullWidth>
-                                <InputLabel id="seasonal-simple-select-label">Is Seasonal</InputLabel>
+                                <InputLabel id="seasonal-simple-select-label">Theo mùa</InputLabel>
                                 <Select
                                     labelId="seasonal-simple-select-label"
                                     id="seasonal-simple-select"
@@ -227,7 +230,7 @@ export const CreateMenuForm = () => {
                         </Grid>
                     </Grid>
                     <Button variant='contained' color='primary' type='submit'>
-                        Create Menu
+                        Tạo món ăn
                     </Button>
 
                 </form>

@@ -52,7 +52,7 @@ const MenuCard = ({ item }) => {
                         />
                         <div className='space-y-1 lg:space-y-5 lg:max-w-2xl'>
                             <p className='font-semibold text-xl'>{item.name}</p>
-                            <p>{item.price} đ</p>
+                            <p>{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}</p>
                             <p className='text-gray-400'>{item.description}</p>
                         </div>
                     </div>
@@ -60,7 +60,7 @@ const MenuCard = ({ item }) => {
             </AccordionSummary>
             <AccordionDetails>
                 <form onSubmit={handleAddItemToCart}>
-                    <div className='flex gap-5 flex-wrap'>
+                    <div className='flex gap-5 flex-wrap hidden'>
                         {
                             Object.keys(categorizeIngredients(item.ingredients)).map((category) => (
                                 <div key={category}>
