@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Cancel } from '@mui/icons-material';
 import { red } from '@mui/material/colors';
 
-export const PaymentFail = () => {
+export const PaymentFailed = () => {
     const navigate = useNavigate();
     return (
         <div className='min-h-screen px-5'>
