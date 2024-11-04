@@ -33,16 +33,51 @@ const initialValues = {
     district: "",
     city: "Hà Nội",
 };
-
 const stateDistrictMapping = {
-    "Hoàn Kiếm": ["Hàng Bạc", "Hàng Đào", "Hàng Gai", "Tràng Tiền", "Phan Chu Trinh", "Chả Cá", "Cửa Đông"],
-    // ... other states and districts
+    "Hoàn Kiếm": [
+        "Hàng Bạc", "Hàng Đào", "Hàng Gai", "Tràng Tiền", "Phan Chu Trinh", "Chả Cá", "Cửa Đông"
+    ],
+    "Đống Đa": [
+        "Phương Liên", "Kim Liên", "Đống Đa", "Thịnh Quang", "Nam Đồng", "Khâm Thiên", "Láng Thượng", "Nguyễn Phương"
+    ],
+    "Cầu Giấy": [
+        "Dịch Vọng", "Dịch Vọng Hậu", "Mai Dịch", "Nghĩa Tân", "Trung Hòa", "Yên Hòa", "Dịch Vọng"
+    ],
+    "Hai Bà Trưng": [
+        "Bạch Đằng", "Trần Khát Chân", "Lê Đại Hành", "Đồng Nhân", "Phố Huế", "Quỳnh Mai", "Vĩnh Tuy", "Thanh Lương"
+    ],
+    "Tây Hồ": [
+        "Phú Thượng", "Tứ Liên", "Nhật Tân", "Quảng An", "Xuân La", "Thụy Khuê", "Nhật Tân"
+    ],
+    "Thanh Xuân": [
+        "Khương Đình", "Khương Mai", "Hạ Đình", "Thanh Xuân Bắc", "Thanh Xuân Nam", "Thượng Đình", "Trường Thịnh", "Nguyễn Trãi"
+    ],
+    "Ba Đình": [
+        "Phúc Xá", "Trúc Bạch", "Vĩnh Phúc", "Đội Cấn", "Ngọc Hà", "Ngọc Khánh", "Kim Mã", "Liễu Giai", "Chung Kỳ", "Cống Vị"
+    ],
+    "Hoàng Mai": [
+        "Đại Kim", "Định Công", "Hoàng Liệt", "Hoàng Văn Thụ", "Lĩnh Nam", "Thịnh Liệt", "Yên Sở"
+    ],
+    "Long Biên": [
+        "Thạch Bàn", "Gia Thụy", "Ngọc Lâm", "Phúc Lợi", "Long Biên", "Bồ Đề", "Việt Hưng", "Sài Đồng"
+    ],
+    "Nam Từ Liêm": [
+        "Mỹ Đình 1", "Mỹ Đình 2", "Phú Đô", "Phương Canh", "Nam Từ Liêm", "Cầu Diễn", "Đại Mỗ", "Tây Mỗ"
+    ],   
+    "Gia Lâm": [
+        "Gia Lâm", "Dương Xá", "Đức Giang", "Kiêu Kỵ", "Lương Điền", "Phú Thị", "Trung Màu"
+    ],
+    "Thanh Trì": [
+        "Đại Kim", "Ngọc Hồi", "Liên Ninh", "Tam Hiệp", "Tứ Hiệp", "Tây Tựu"
+    ],
+   
 };
+
 
 const validationSchema = Yup.object().shape({
     streetAddress: Yup.string().required("Vui lòng nhập địa chỉ giao hàng"),
-    state: Yup.string().required("Vui lòng nhập quận"),
-    district: Yup.string().required("Vui lòng nhập phường"),
+    state: Yup.string().required("Vui lòng chọn quận"),
+    district: Yup.string().required("Vui lòng chọn phường"),
     city: Yup.string().required("Vui lòng chọn thành phố"),
 });
 
@@ -179,8 +214,9 @@ const Cart = () => {
                             <Form>
                                 <Grid container spacing={2}>
                                     <Grid item xs={12}>
-                                        <Field
-                                            as={TextField}
+                                        <TextField
+                                            
+                                            id="streetAddress"
                                             name="streetAddress"
                                             label="Địa chỉ giao hàng"
                                             fullWidth
