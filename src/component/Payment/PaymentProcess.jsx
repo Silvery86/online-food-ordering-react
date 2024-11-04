@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 import { Box, CircularProgress } from '@mui/material';
 import { updateOrderStatus } from '../State/Order/Action';
 
-const PaymentProcess = () => {
+export const PaymentProcess = () => {
     const location = useLocation();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -41,4 +41,4 @@ const PaymentProcess = () => {
     );
 };
 
-export default PaymentProcess;
+

@@ -5,13 +5,15 @@ import RestaurantDetails from '../Restaurant/RestaurantDetails'
 import Cart from '../Cart/Cart'
 import { Navbar } from '../Navbar/Navbar'
 import { Auth } from '../Auth/Auth'
-import { PaymentSuccess } from '../PaymentSuccess/PaymentSuccess'
 import { AboutUs } from '../Home/AboutUs'
 import { Contact } from '../Home/Contact'
 import { News } from '../Home/News'
 import Profile from '../Profile/Profile'
-import { PaymentFail } from '../PaymentSuccess/PaymentFailed'
-import PaymentProcess from '../PaymentSuccess/PaymentProcess'
+
+import { PaymentProcess } from '../Payment/PaymentProcess'
+import { PaymentSuccess } from '../Payment/PaymentSuccess'
+import { PaymentFailed } from '../Payment/PaymentFailed'
+
 const CustomerRoute = () => {
     return (
         <div>
@@ -27,7 +29,7 @@ const CustomerRoute = () => {
                     <Route path='/cart' element={<Cart />} />
                     <Route path='/payment/process' element={<PaymentProcess/>} />
                     <Route path='/payment/success/:id' element={<PaymentSuccess/>} />
-                    <Route path='/payment/fail/:id' element={<PaymentFail/>} />
+                    <Route path='/payment/fail/:id' element={<PaymentFailed/>} />
                 </Routes>
             <Auth/>
         </div>
