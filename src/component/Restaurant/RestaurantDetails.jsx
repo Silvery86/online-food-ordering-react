@@ -70,9 +70,7 @@ const RestaurantDetails = () => {
         }));
     }, [selectedCategory, foodType])
     // console.log("Restaurant:", restaurant)
-    const combinedEventsList = eventsList.length > 0
-        ? [...eventsList]
-        : [];
+    
     const settings = {
         dots: true,
         infinite: true,
@@ -87,7 +85,7 @@ const RestaurantDetails = () => {
         <div>
             <section>
                 <Slider {...settings}>
-                    {combinedEventsList.map((banner, index) =>
+                    {eventsList.map((banner, index) =>
                         <section key={index} className="banner z-50 relative flex flex-col items-center justify-center align-middle pt-10">
                             <div className="z-10 text-center mt-10">
                                 <h1 className="text-2xl lg:text-6xl font-bold pt-5">
