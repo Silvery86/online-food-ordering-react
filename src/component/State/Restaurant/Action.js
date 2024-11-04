@@ -56,6 +56,7 @@ export const getRestaurantById = (reqData) => {
         try {
             const response = await api.get(`/api/restaurants/${reqData.restaurantId}`);
             dispatch({ type: GET_RESTAURANT_BY_ID_SUCCESS, payload: response.data })
+            return response.data;
         } catch (error) {
             dispatch({ type: GET_RESTAURANT_BY_ID_FAILURE, payload: error })
             console.log("Error:", error);

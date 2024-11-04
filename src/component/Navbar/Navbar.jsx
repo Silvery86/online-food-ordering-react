@@ -20,6 +20,9 @@ export const Navbar = () => {
             navigate("/admin/restaurant")
         }
     }
+    const handleButtonClick = () => {       
+          navigate("/cart");
+      };
     return (
         <div className='px-4 z-50 sticky py-[.8rem] bg-primary lg:px-20 flex justify-between'>
             <div className='lg:mr-10 cursor-pointer flex items-center space-x-4'>
@@ -54,7 +57,7 @@ export const Navbar = () => {
                     }
                 </div>
                 <div className=''>
-                    <IconButton onClick={() => navigate("/cart")}>
+                    <IconButton onClick={handleButtonClick}>
                         <div
                             style={{
                                 display: 'inline-block',

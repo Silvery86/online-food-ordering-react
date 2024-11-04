@@ -1,5 +1,5 @@
 import { AddPhotoAlternate, Close } from '@mui/icons-material';
-import { Box, Button, Chip, CircularProgress, FormControl, IconButton, InputLabel, MenuItem, OutlinedInput, Select, Stack, TextField, Typography } from '@mui/material';
+import { Box, Button, Chip, CircularProgress, Drawer, FormControl, IconButton, InputLabel, MenuItem, OutlinedInput, Select, Stack, TextField, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { useFormik } from 'formik';
 import React, { useState } from 'react';
@@ -69,7 +69,7 @@ export const CreateEvent = () => {
   const [uploadImage, setUploadImage] = useState(false);
   const dispatch = useDispatch();
   const restaurant = useSelector(state => state.restaurant)
-  const jwt = localStorage.getItem("jwt");  
+  const jwt = localStorage.getItem("jwt");
   const formik = useFormik({
     initialValues,
     onSubmit: (values) => {
@@ -98,7 +98,8 @@ export const CreateEvent = () => {
             }
           ]
 
-      };      
+      };
+      console.log(data);
       dispatch(createEvent({ eventData: data, jwt: jwt }));
       navigate("/admin/restaurant/event")
     },
@@ -281,11 +282,15 @@ export const CreateEvent = () => {
                   placeholder="Enter event details here..."
                   style={{ height: '100%' }}
                 />
-              </Box>
+              </Box>                 
+            </Grid>
+            <Drawer/>
+            <Grid item xs={12} className='mt-10'>
               <Button variant='contained' color='primary' type='submit'>
                 Tạo sự kiện
               </Button>
             </Grid>
+
           </Grid>
 
         </form>

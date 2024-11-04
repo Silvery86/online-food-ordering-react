@@ -21,7 +21,7 @@ function MultiItemCarousel() {
     <div>
         <Slider {...settings}>
             {topMeal.map((item) => 
-            <CarouselItem image={item.image} title={item.title}/>
+            <CarouselItem key={item.title} image={item.image} title={item.title}/>
             )}
         </Slider>
     </div>

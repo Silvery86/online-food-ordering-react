@@ -65,7 +65,10 @@ export const updateOrderStatus = (orderId, orderStatus, jwt) => {
     return async (dispatch) => {
         dispatch({ type: UPDATE_ORDER_STATUS_REQUEST });
         try {
-            const res = await api.put(`/api/order/${orderId}/status`, orderStatus, {
+            const req = {
+                "orderStatus" : orderStatus
+            }
+            const res = await api.put(`/api/order/${orderId}/status`, req, {
                 headers: {
                     Authorization: `Bearer ${jwt}`,
                 },

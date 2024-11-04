@@ -9,6 +9,7 @@ import banner2 from '../assets/banner/banner2.jpg'
 import banner3 from '../assets/banner/banner3.jpg'
 import Slider from 'react-slick';
 import { getAllEvents } from '../State/Event/Action';
+import FavouriteRestaurant from '../Restaurant/FavouriteRestaurant';
 
 export const defaultEventList = [
   {
@@ -42,7 +43,7 @@ function Home() {
     dispatch(getAllRestaurantsAction())
     dispatch(getAllEvents())
   }, [])
-  
+  console.log("Restaurant....",auth)
   const settings = {
     dots: true,
     infinite: true,
@@ -75,30 +76,29 @@ function Home() {
               <img
                 src={banner.image || "../assets/images/default.jpg"}
                 alt={banner.title || "Default Title"}
-                className="object-cover w-full h-full brightness-110"
+                className="object-cover w-full h-full brightness-110 opacity-100"
               />
             </div>
-            <div className="fadout absolute top-0 left-0 right-0 bottom-0 bg-gradient-to-b from-black/0 via-black/10 to-black/100"></div>
+            
           </section>
         )}
       </Slider>
 
       {/* Menu */}
       
-      <section className='relative p-10 lg:py-10 lg:px-20'>
-      <div className="fadout absolute top-0 left-0 right-0 bottom-0 bg-gradient-to-b from-black/100 via-black/90 to-black/0"></div>
+      <section className=' p-10 lg:py-10 lg:px-20'>     
         <p className='text-2xl font-semibold text-gray-400 py-3 pb-10'>Món ăn nổi tiếng</p>
         <MultiItemCarousel />
       </section>
 
       {/* Favourited Restaurant */}
-      {auth.user
+      {auth.favorites.length > 0
         ?
         <section className='px-5 lg:px-20 pt-10'>
-          <h1 className='text-2xl font-semibold text-gray-400 pb-3'>Nhà hàng của bạn</h1>
+          <h1 className='text-2xl font-semibold text-gray-400 pb-3'>Nhà hàng bạn thích</h1>
           <div className='flex flex-wrap items-center justify-left gap-5'>
             {
-              restaurant.restaurants.map((item) => <RestaurantCard item={item} />)
+              auth.favorites.map((item) => <FavouriteRestaurant key={item.id} item={item} />)
             }
           </div>
         </section>
@@ -106,10 +106,10 @@ function Home() {
 
       {/* All Restaurant */}
       <section className='px-5 lg:px-20 pt-10'>
-        <h1 className='text-2xl font-semibold text-gray-400 pb-3'>Nhà hàng nổi tiếng</h1>
+        <h1 className='text-2xl font-semibold text-gray-400 pb-3'>Nhà hàng nổi bật</h1>
         <div className='flex flex-wrap items-center justify-left gap-5'>
           {
-            restaurant.restaurants.map((item) => <RestaurantCard item={item} />)
+            restaurant.restaurants.map((item) => <RestaurantCard key={item.id} item={item} />)
           }
         </div>
       </section>

@@ -42,6 +42,11 @@ const cartReducer = (state = initialState, action) => {
                     ...state,
                     loading: false,
                     cartItems: updatedCartItems,
+                    cart: {
+                        ...state.cart,
+                        total: updatedCartItems.reduce((total, item) => total + (item.price * item.quantity), 0), // Directly calculate total
+                        items: updatedCartItems // Update items
+                    }
                 };
             }
 
