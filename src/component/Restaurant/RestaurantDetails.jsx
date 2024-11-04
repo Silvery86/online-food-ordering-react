@@ -83,7 +83,7 @@ const RestaurantDetails = () => {
     };
     return (
         <div>
-            <section>
+            {/* <section>
                 <Slider {...settings}>
                     {eventsList.map((banner, index) =>
                         <section key={index} className="banner z-50 relative flex flex-col items-center justify-center align-middle pt-10">
@@ -105,7 +105,7 @@ const RestaurantDetails = () => {
                         </section>
                     )}
                 </Slider>
-            </section>
+            </section> */}
 
             <div className='px-5 lg:px-20'>           
                 <section className='pt-5'>
