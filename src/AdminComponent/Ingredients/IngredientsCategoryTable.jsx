@@ -35,7 +35,7 @@ export const IngredientsCategoryTable = () => {
       jwt:jwt,
       id:restaurant.usersRestaurant?.id,
     }))
-  },[jwt])
+  },[jwt,dispatch])
   const ingredientCategoryList = ingredients.category
   return (
     <Box>

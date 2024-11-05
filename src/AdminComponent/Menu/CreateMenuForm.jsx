@@ -61,7 +61,7 @@ export const CreateMenuForm = () => {
             id: restaurant.usersRestaurant.id,
             jwt
         }))
-    }, [])
+    }, [dispatch])
     return (
         <div className='py-10 px-5 lg:flex items-center justify-center min-h-screen'>
             <div className='lg:max-w-4xl'>

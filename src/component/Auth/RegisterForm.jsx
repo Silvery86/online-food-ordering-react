@@ -36,28 +36,26 @@ const validationSchema = Yup.object({
 export const RegisterForm = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-
-    // Access Redux states for registration status, success, and error messages
-    const { error } = useSelector((state) => state.auth);
-
+    const { error, success } = useSelector(state => state.auth)
     // Local states to control Snackbar display
     const [open, setOpen] = React.useState(false);
     const [alertType, setAlertType] = React.useState('error');
     const [alertMessage, setAlertMessage] = React.useState('');
-
     const handleSubmit = (values) => {
         dispatch(registerUser({ userData: values, navigate }));
     }
-
-    // Effect to show success or error messages in Snackbar
     useEffect(() => {
-        if (error) {
+        if (success !== null && success == "Đăng ký thành công!") {
+            setAlertType('success');
+            setAlertMessage(success);
+            setOpen(true);
+        }
+        if (error !== null && error !== "") {
             setAlertType('error');
             setAlertMessage(error);
             setOpen(true);
         }
-    }, [error]);
-
+    }, [error, success]);
     // Snackbar close handler
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {

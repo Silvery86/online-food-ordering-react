@@ -7,9 +7,11 @@ import "./Navbar.css"
 import { Person } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useTheme } from '@emotion/react';
 
 
 export const Navbar = () => {
+    const theme = useTheme()
     const auth = useSelector(store => store.auth);
     const cart = useSelector(store => store.cart);
     const navigate = useNavigate();
@@ -50,7 +52,7 @@ export const Navbar = () => {
                 </div>
                 <div className=''>
                     {auth.user ?
-                        <Avatar onClick={handleAvatarClick} sx={{ bgcolor: "white", color: green[500] }}>{auth.user?.fullName[0].toUpperCase()}</Avatar>
+                        <Avatar onClick={handleAvatarClick} sx={{ bgcolor: theme.palette.white.main, color: green[500] }}>{auth.user?.fullName[0].toUpperCase()}</Avatar>
                         : <IconButton onClick={() => navigate("/account/login")}>
                             <Person />
                         </IconButton>

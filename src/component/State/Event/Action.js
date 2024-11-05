@@ -53,9 +53,8 @@ export const getEventById = (eventId) => {
     return async (dispatch) => {
         dispatch({ type: GET_EVENT_BY_ID_REQUEST });
         try {
-            const response = await api.get(`/api/events/${eventId}`);
-            const data = await response.json();
-            dispatch({ type: GET_EVENT_BY_ID_SUCCESS, payload: data });
+            const response = await api.get(`/api/public/event/${eventId}`);
+            dispatch({ type: GET_EVENT_BY_ID_SUCCESS, payload: response.data });
         } catch (error) {
             dispatch({ type: GET_EVENT_BY_ID_FAILURE, error: error.message });
         }
@@ -63,7 +62,7 @@ export const getEventById = (eventId) => {
 };
 
 // Create an event
-export const createEvent = ({eventData,jwt}) => {
+export const createEvent = ({eventData,jwt,navigate}) => {
     return async (dispatch) => {
         dispatch({ type: CREATE_EVENT_REQUEST });
         try {
@@ -73,12 +72,15 @@ export const createEvent = ({eventData,jwt}) => {
                 headers: {
                     Authorization: `Bearer ${jwt}`,
                 },
-            });           
+            });         
             dispatch({ type: CREATE_EVENT_SUCCESS, payload: response.data });
+            setTimeout(() => {
+                navigate("/admin/restaurant/event");
+            }, 2000);
         } catch (error) {
             dispatch({ type: CREATE_EVENT_FAILURE, error: error.message });
             
-            console.log("Error:",error)
+            
         }
     };
 };

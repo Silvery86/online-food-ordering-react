@@ -8,14 +8,15 @@ import Slider from 'react-slick';
 
 function MultiItemCarousel() {
     const settings = {
-        dots: true,
+        dots: false,
         infinite: true,
         speed: 1000,
         slidesToShow: 4,
         slidesToScroll: 1,
         autoplay: true,
-        autoplaySpeed:2000,
+        autoplaySpeed:3000,
         arrows:false,
+        
       };
   return (
     <div>

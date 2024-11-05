@@ -23,30 +23,29 @@ export const Admin = () => {
   const auth = useSelector(state => state.auth)
   const handleClose = () => {
 
-
   }
-  useEffect(() => {
+    useEffect(() => {
     if (jwt) {
       dispatch(getUser(jwt));
     }
+  }, [jwt, dispatch]);
 
-  }, [jwt || auth.jwt]);
   useEffect(() => {
-    dispatch(getRestaurantCategory({
-      jwt: jwt,
-      restaurantId: restaurant.usersRestaurant?.id,
-    }))
-    dispatch(fetchRestaurantsOrder({
-      jwt: jwt,
-      restaurantId: restaurant.usersRestaurant?.id,
-    }))
-
-  }, [jwt])
+    if (jwt && restaurant.usersRestaurant?.id) {
+      dispatch(getRestaurantCategory({
+        jwt: jwt,
+        restaurantId: restaurant.usersRestaurant.id,
+      }));
+      dispatch(fetchRestaurantsOrder({
+        jwt: jwt,
+        restaurantId: restaurant.usersRestaurant.id,
+      }));
+    }
+  }, [jwt, restaurant.usersRestaurant?.id, dispatch]);
   return (
-
     <div>
-      <div className='lg:flex justify-between'>
-        <div className="sticky lg:w-[20%] z-10">
+      <div className='flex lg:flex justify-between'>
+        <div className="sticky lg:w-[20%] z-0 pt-">
           <AdminSideBar handleClose={handleClose} />
         </div>
         <div className='lg:w-[80%]'>

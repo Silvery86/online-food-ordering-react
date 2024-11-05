@@ -4,9 +4,18 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { loginUser } from '../State/Authentication/Action'
+import * as Yup from 'yup';
 
-
-
+const validationSchema = Yup.object({
+    email: Yup.string()
+        .email("Email không đúng định dạng")
+        .required("Vui lòng nhập email"),
+    password: Yup.string()
+        .required("Vui lòng nhập mật khẩu")
+        .matches(/[A-Z]/, "Mật khẩu phải có một chữ in hoa")
+        .matches(/[!@#$%^&*(),.?":{}|<>]/, "Mật khẩu phải có một ký tự đặc biệt")
+        .min(8, "Mật khẩu phải có nhiều hơn 8 ký tự"),
+});
 const initialValues = {
     email: "",
     password: ""
@@ -14,33 +23,26 @@ const initialValues = {
 export const LoginForm = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-
-    // Access Redux states for login status, success, and error messages
-    const {  success, error } = useSelector((state) => state.auth);
-
     // Local states to control Snackbar display
     const [open, setOpen] = React.useState(false);
     const [alertType, setAlertType] = React.useState('error');
     const [alertMessage, setAlertMessage] = React.useState('');
-
-    // Submit handler to dispatch the login action
+    const { error, success } = useSelector(state => state.auth)
     const handleSubmit = (values) => {
-        dispatch(loginUser({ userData: values, navigate }));
+        const result = dispatch(loginUser({ userData: values, navigate }));
     };
-
-    // Effect to show success or error messages in Snackbar
     useEffect(() => {
-        if (success) {
+        if (success !== null && success == "Đăng nhập thành công!") {
             setAlertType('success');
             setAlertMessage(success);
             setOpen(true);
-        } else if (error) {
+        }
+        if (error !== null && error !== "") {
             setAlertType('error');
             setAlertMessage(error);
             setOpen(true);
         }
-    }, [success, error]);
-
+    }, [error, success]);
     // Snackbar close handler
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
@@ -53,27 +55,33 @@ export const LoginForm = () => {
             <Typography variant='h5' className='text-center'>
                 Đăng nhập
             </Typography>
-            <Formik onSubmit={handleSubmit} initialValues={initialValues}>
-                <Form>
-                    <Field
-                        as={TextField}
-                        name="email"
-                        label="Tên đăng nhập"
-                        fullWidth
-                        variant="outlined"
-                        margin="normal"
-                    />
-                    <Field
-                        as={TextField}
-                        name="password"
-                        label="Mật khẩu"
-                        fullWidth
-                        variant="outlined"
-                        margin="normal"
-                        type="password"
-                    />
-                    <Button sx={{ mt: 2, padding: "1rem" }} fullWidth type='submit' variant='contained'>Login</Button>
-                </Form>
+            <Formik onSubmit={handleSubmit} initialValues={initialValues} validationSchema={validationSchema}>
+                {({ errors, touched }) => (
+                    <Form>
+                        <Field
+                            as={TextField}
+                            name="email"
+                            label="Email"
+                            fullWidth
+                            variant="outlined"
+                            margin="normal"
+                            error={touched.email && Boolean(errors.email)}
+                            helperText={touched.email && errors.email}
+                        />
+                        <Field
+                            as={TextField}
+                            name="password"
+                            label="Mật khẩu"
+                            fullWidth
+                            variant="outlined"
+                            margin="normal"
+                            type="password"
+                            error={touched.password && Boolean(errors.password)}
+                            helperText={touched.password && errors.password}
+                        />
+                        <Button sx={{ mt: 2, padding: "1rem" }} fullWidth type='submit' variant='contained'>Login</Button>
+                    </Form>
+                )}
             </Formik>
             <Typography variant='body2' align="center" sx={{ mt: 3 }}>
                 Không có tài khoản?

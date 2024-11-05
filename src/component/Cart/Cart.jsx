@@ -96,6 +96,7 @@ const Cart = () => {
         if (!isInitialized) {
             dispatch(findCart(jwt)); // Assuming jwt is defined
             setIsInitialized(true);
+            
         }
     }, [isInitialized, dispatch]);
     const handleOpenAddressModal = () => setOpen(true);

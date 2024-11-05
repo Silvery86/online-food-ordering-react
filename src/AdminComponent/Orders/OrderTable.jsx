@@ -26,7 +26,7 @@ export const OrderTable = () => {
       restaurantId: restaurant.usersRestaurant.id,
       jwt
     }))
-  }, [])
+  }, [dispatch])
   const handleProcessOrder = ({orderStatus,id}) => {
     if(orderStatus === "PENDING"){
       navigate(`/admin/restaurant/order/${id}`)

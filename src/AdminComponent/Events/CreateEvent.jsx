@@ -1,23 +1,16 @@
 import { AddPhotoAlternate, Close } from '@mui/icons-material';
-import { Box, Button, Chip, CircularProgress, Drawer, FormControl, IconButton, InputLabel, MenuItem, OutlinedInput, Select, Stack, TextField, Typography } from '@mui/material';
-import Grid from '@mui/material/Grid';
+import { Box, Button, Chip, CircularProgress, FormControl, InputLabel, MenuItem, OutlinedInput, Select, Stack, TextField, Typography, Grid, IconButton, Snackbar, Alert } from '@mui/material';
 import { useFormik } from 'formik';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { uploadImageToCloudinary } from '../util/UploadToCloudinary';
 import { useDispatch, useSelector } from 'react-redux';
 import { createEvent } from '../../component/State/Event/Action';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
-import { Quill } from 'react-quill';
-import ImageUploader from 'quill-image-uploader';
-
-import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
-
-Quill.register('modules/imageUploader', ImageUploader);
+import { Editor } from '@tinymce/tinymce-react';
+import dayjs from 'dayjs';
 
 const initialValues = {
   restaurantId: null,
@@ -28,83 +21,75 @@ const initialValues = {
   location: [],
   images: [],
   header: "",
-  content: "",
+  content: "", // Use plain string for TinyMCE
 };
+
 const selectLocation = [
   { slug: "ha_noi", location: "TP.Hà Nội", zipCode: "" },
 ];
-const modules = {
-  toolbar: [
-    [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
-    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-    ['bold', 'italic', 'underline', 'strike'],
-    [{ 'color': [] }, { 'background': [] }],
-    [{ 'align': [] }],
-    ['link', 'image', 'video'],
-    ['clean']
-  ],
-  imageUploader: {
-    upload: file => {
-      return uploadImageToCloudinary(file)
-        .then(response => response)
-        .catch(error => {
-          console.error('Error uploading image:', error);
-          return '';
-        });
-    }
-  }
-};
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
+
 export const CreateEvent = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [uploadImage, setUploadImage] = useState(false);
   const dispatch = useDispatch();
-  const restaurant = useSelector(state => state.restaurant)
+  const restaurant = useSelector(state => state.restaurant);
   const jwt = localStorage.getItem("jwt");
+
   const formik = useFormik({
     initialValues,
     onSubmit: (values) => {
-      const formattedStartAt = values.startAt
-        ? dayjs(values.startAt, 'DD/MM/YYYY hh:mm A').toISOString()
-        : null;
-      const formattedEndAt = values.endAt
-        ? dayjs(values.endAt, 'DD/MM/YYYY hh:mm A').toISOString()
-        : null;
+      const formattedStartAt = values.startAt ? dayjs(values.startAt).toISOString() : null;
+      const formattedEndAt = values.endAt ? dayjs(values.endAt).toISOString() : null;
 
       const data = {
         event: {
-          title: values.title, // Correctly map to event object
+          title: values.title,
           startAt: formattedStartAt,
           endAt: formattedEndAt,
           description: values.description,
           location: values.location,
-          images: values.images,
+          image: values.images[0],
         },
-        restaurantId: restaurant.usersRestaurant.id, // Keep restaurantId as is
+        restaurantId: restaurant.usersRestaurant.id,
         details:
-          [
-            {
-              header: values.header,
-              content: values.content,
-            }
-          ]
+        {
+          header: values.header,
+          content: values.content, // Use raw content from TinyMCE
+        }
 
       };
-      console.log(data);
-      dispatch(createEvent({ eventData: data, jwt: jwt }));
-      navigate("/admin/restaurant/event")
+      dispatch(createEvent({ eventData: data, jwt: jwt ,navigate}));
+    
+
     },
   });
+  // Local states to control Snackbar display
+  const [open, setOpen] = React.useState(false);
+  const [alertType, setAlertType] = React.useState('error');
+  const [alertMessage, setAlertMessage] = React.useState('');
+  const { error, success } = useSelector(state => state.auth)
+  // Snack bar notification
+  useEffect(() => {
+    if (success !== null && success == "Tạo sự kiện thành công") {
+      setAlertType('success');
+      setAlertMessage(success);
+      setOpen(true);
+    }
+    if (error !== null && error !== "") {
+      setAlertType('error');
+      setAlertMessage(error);
+      setOpen(true);
+    }
+  }, [error, success]);
+  // Snackbar close handler
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
+  };
 
+  // Image upload
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
     setUploadImage(true);
@@ -121,6 +106,17 @@ export const CreateEvent = () => {
 
   const handleDateChange = (date, dateType) => {
     formik.setFieldValue(dateType, date);
+  };
+
+  // Function to handle image uploads in TinyMCE
+  const handleImageUpload = async (blobInfo, success, failure) => {
+    const file = blobInfo.blob(); // Get the image file from blobInfo
+    try {
+      const uploadedImage = await uploadImageToCloudinary(file); // Upload the image to Cloudinary
+      success(uploadedImage); // Call success with the uploaded image URL
+    } catch (error) {
+      failure("Image upload failed."); // Call failure with an error message
+    }
   };
 
   return (
@@ -142,7 +138,7 @@ export const CreateEvent = () => {
               />
               <label className='relative' htmlFor='fileInput'>
                 <span className='w-24 h-24 cursor-pointer flex justify-center items-center p-3 border rounded-md border-gray-600'>
-                  <AddPhotoAlternate className='text-white' />
+                  <AddPhotoAlternate className='text-black' />
                   {uploadImage && (
                     <div className='absolute left-0 right-0 top-0 bottom-0 w-24 h-24 flex items-center justify-center'>
                       <CircularProgress />
@@ -154,7 +150,7 @@ export const CreateEvent = () => {
                 {formik.values.images.map((image, index) => (
                   <div className='relative' key={index}>
                     <img
-                      className='h-[80vh] object-cover'
+                      className='h-[30vh] object-cover'
                       src={image}
                       alt={`Event Image ${index}`}
                     />
@@ -229,9 +225,9 @@ export const CreateEvent = () => {
                 <Select
                   labelId="location-multiple-chip-label"
                   id="location-multiple-chip"
-                  name="location" // This should match your Formik field name
+                  name="location"
                   multiple
-                  value={formik.values.location} // This should be an array of slugs
+                  value={formik.values.location}
                   onChange={(event) => {
                     const {
                       target: { value },
@@ -240,7 +236,6 @@ export const CreateEvent = () => {
                   }}
                   input={<OutlinedInput id="select-multiple-chip" label="Location" />}
                   renderValue={(selected) => {
-                    // Map slugs to location names
                     const selectedLocations = selectLocation.filter(loc => selected.includes(loc.slug));
                     return (
                       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
@@ -250,7 +245,6 @@ export const CreateEvent = () => {
                       </Box>
                     );
                   }}
-                  MenuProps={MenuProps}
                 >
                   {selectLocation.map((item) => (
                     <MenuItem key={item.slug} value={item.slug}>
@@ -272,29 +266,57 @@ export const CreateEvent = () => {
                 required
               />
             </Grid>
-            <Grid item xs={12} style={{ display: 'flex', flexDirection: 'column', height: '80vh' }}>
-              <Typography>Nội dung chi tiết sự kiện</Typography>
-              <Box width="100%" flexGrow={1} mb={2}>
-                <ReactQuill
-                  value={formik.values.content}
-                  onChange={(value) => formik.setFieldValue('content', value)}
-                  modules={modules}
-                  placeholder="Enter event details here..."
-                  style={{ height: '100%' }}
-                />
-              </Box>                 
+            <Grid item xs={12}>
+              <Editor
+                apiKey='3u4fydpe7yhax17ypsxcb053drfd9iq66mmhvl9oiqp310x8'
+                init={{
+                  plugins: [
+                    'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists',
+                    'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
+                    'checklist', 'mediaembed', 'casechange', 'export', 'formatpainter',
+                    'pageembed', 'a11ychecker', 'tinymcespellchecker', 'permanentpen', 'powerpaste',
+                    'advtable', 'advcode', 'editimage', 'advtemplate', 'ai', 'mentions',
+                    'tinycomments', 'tableofcontents', 'footnotes', 'mergetags', 'autocorrect',
+                    'typography', 'inlinecss', 'markdown',
+                    'importword', 'exportword', 'exportpdf'
+                  ],
+                  toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+                  tinycomments_mode: 'embedded',
+                  tinycomments_author: 'Author name',
+                  mergetags_list: [
+                    { value: 'First.Name', title: 'First Name' },
+                    { value: 'Email', title: 'Email' },
+                  ],
+                  ai_request: (request, respondWith) => respondWith.string(() => Promise.reject('See docs to implement AI Assistant')),
+                  exportpdf_converter_options: { format: 'Letter', margin_top: '1in', margin_right: '1in', margin_bottom: '1in', margin_left: '1in' },
+                  exportword_converter_options: { document: { size: 'Letter' } },
+                  importword_converter_options: { formatting: { styles: 'inline', resets: 'inline', defaults: 'inline' } },
+                }}
+                initialValue="Welcome to TinyMCE!"
+                onEditorChange={(content) => formik.setFieldValue('content', content)} // Update formik value
+                images_upload_handler={handleImageUpload} // Custom image upload handler
+              />
             </Grid>
-            <Drawer/>
-            <Grid item xs={12} className='mt-10'>
-              <Button variant='contained' color='primary' type='submit'>
+            <Grid item xs={12} className='flex justify-center py-4'>
+              <Button
+                type='submit'
+                variant='contained'
+                color='primary'
+                className='w-full'
+              >
                 Tạo sự kiện
               </Button>
             </Grid>
-
           </Grid>
-
+          <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+            <Alert onClose={handleClose} severity={alertType} sx={{ width: '100%' }}>
+              {alertMessage}
+            </Alert>
+          </Snackbar>
         </form>
       </div>
     </div>
   );
 };
+
+export default CreateEvent;

@@ -13,6 +13,7 @@ import Profile from '../Profile/Profile'
 import { PaymentProcess } from '../Payment/PaymentProcess'
 import { PaymentSuccess } from '../Payment/PaymentSuccess'
 import { PaymentFailed } from '../Payment/PaymentFailed'
+import { EventDetails } from '../Event/EventDetails'
 
 const CustomerRoute = () => {
     return (
@@ -25,6 +26,7 @@ const CustomerRoute = () => {
                     <Route path='/about-us' element={<AboutUs />} />
                     <Route path='/contact' element={<Contact />} />
                     <Route path="/my-profile/*" element={<Profile />} />
+                    <Route path="/events/event/:id" element={<EventDetails />} />
                     <Route path='/news' element={<News />} />
                     <Route path='/cart' element={<Cart />} />
                     <Route path='/payment/process' element={<PaymentProcess/>} />

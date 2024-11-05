@@ -29,7 +29,7 @@ const CartItem = ({ item }) => {
             quantity: newQuantity
         };
         await dispatch(updateCartitem({ data, jwt }));
-
+       
         // Refresh the cart after the update
         dispatch(findCart(jwt));
     };

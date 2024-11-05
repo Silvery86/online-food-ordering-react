@@ -1,34 +1,52 @@
-export const topMeal = [
+import food1 from "../assets/images/food/food1.webp"
+import food2 from "../assets/images/food/food2.webp"
+import food3 from "../assets/images/food/food3.webp"
+import food4 from "../assets/images/food/food4.webp"
+import food5 from "../assets/images/food/food5.webp"
+import food6 from "../assets/images/food/food6.webp"
+import food7 from "../assets/images/food/food7.webp"
+import food8 from "../assets/images/food/food8.webp"
+import food9 from "../assets/images/food/food9.webp"
+
+
+
+export const topMeal = [   
     {
-        image:"https://canthomekongtour.com/static/media/banh-mi-dan-to-tu-liem-ha-noi-578815210521.jpg",
-        title:"Bánh mỳ"
+        image: food2,
+        title:"Lẩu bò"
     },
     {
-        image:"https://bizweb.dktcdn.net/100/442/328/products/pho-bo-dac-biet.jpg?v=1644836498627",
-        title:"Phở"
+        image: food3,
+        title:"Lẩu riêu cua"
     },
     {
-        image:"https://cdn.nhathuoclongchau.com.vn/unsafe/800x0/https://cms-prod.s3-sgn09.fptcloud.com/goc_giai_dap_thac_mac_nem_nuong_bao_nhieu_calo_1_170ce8afd3.jpg",
-        title:"Nem nướng"
+        image: food1,
+        title:"Set lẩu"
     },
     {
-        image:"https://www.cet.edu.vn/wp-content/uploads/2018/08/cha-ca-la-vong.jpg",
-        title:"Chả cá"
+        image: food9,
+        title:"Set rau nhứng lẩu"
     },
     {
-        image:"https://cdn.tgdd.vn/Files/2022/04/13/1425479/bi-quyet-hap-xoi-bang-xung-ngon-xoi-deo-thom-y-het-ngoai-hang-quan-202204130952362076.jpg",
-        title:"Xôi"
+        image: food4,
+        title:"Vịt quay"
     },
     {
-        image:"https://danviet.mediacdn.vn/296231569849192448/2022/5/23/1909049444079514428832718541679521887968997n-16530103508921754757614-1653245013612485719228.jpeg",
-        title:"Bún cá"
+        image: food5,
+        title:"Má heo nướng ngũ vị"
     },
     {
-        image:"https://cdn.tgdd.vn/Files/2017/03/24/964495/cach-nau-bun-bo-hue-gio-heo-ngon-cong-thuc-chuan-vi-202208251617593627.jpg",
-        title:"Bún bò huế"
+        image: food6,
+        title:"Măng trúc xào nấm"
     },
     {
-        image:"https://daotaobeptruong.vn/wp-content/uploads/2020/01/banh-xeo-mien-tay.jpg",
-        title:"Bánh xèo"
-    }
+        image: food7,
+        title:"Bò xào hoa bí"
+    },
+    {
+        image: food8,
+        title:"Chả ốc viên"
+    },
+    
+   
 ]

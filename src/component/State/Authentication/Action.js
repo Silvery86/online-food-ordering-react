@@ -6,14 +6,33 @@ export const registerUser = (reqData) => async (dispatch) => {
     try {
         const { data } = await api.post(`/api/auth/signup`, reqData.userData)
         // if (data.jwt) localStorage.setItem("jwt", data.jwt);
-        reqData.navigate("/")        
         dispatch({ type: REGISTER_SUCCESS, payload: data.jwt })
-        console.log("Register success:", data)
-        window.location.reload()     
+        setTimeout(() => {
+            reqData.navigate("/account/login");
+           // window.location.reload();
+        }, 2000);
     } catch (error) {
-        const errorMessage = "Đăng ký không thành công! Hãy kiểm tra lại thông tin.";
-        dispatch({ type: REGISTER_FAILURE, payload: errorMessage });
-        console.log("Error:", error);
+        let message;
+        switch (error.response?.status) {
+            case 400:
+                message = "Bad Request - Please check your input."
+                break;
+            case 401:
+                message = "Unauthorized - Invalid credentials."
+                break;
+            case 403:
+                message = "Đăng ký không thành công! Hãy kiểm tra lại thông tin."
+                break;
+            case 404:
+                message = "Not Found - The requested resource was not found."
+                break;
+            case 500:
+                message = null
+                break;
+            default:
+                message = "Đăng ký không thành công! Hãy kiểm tra lại thông tin."
+        }
+        dispatch({ type: REGISTER_FAILURE, payload: message });
     }
 }
 
@@ -22,20 +41,38 @@ export const loginUser = (reqData) => async (dispatch) => {
     try {
         const { data } = await api.post(`/api/auth/signin`, reqData.userData)
         if (data.jwt) localStorage.setItem("jwt", data.jwt);
-        if (data.role === "ROLE_RESTAURANT_OWNER") {
-            reqData.navigate("/admin/restaurant")
-        }
-        else {
-            reqData.navigate("/")
-        }
-        dispatch({ type: LOGIN_SUCCESS, payload: data.jwt }) 
-        window.location.reload()      
+        dispatch({ type: LOGIN_SUCCESS, payload: data.jwt })
+        setTimeout(() => {
+            if (data.role === "ROLE_RESTAURANT_OWNER") {
+                reqData.navigate("/admin/restaurant")
+            }
+            else {
+                reqData.navigate("/")
+            }
+           // window.location.reload()
+        }, 2000);
     } catch (error) {
-        const errorMessage = error.response?.status === 403
-            ? "Sai thông tin đăng nhập vui lòng kiểm tra lại"
-            : error.response?.data?.message || "An error occurred during login";
-
-        dispatch({ type: LOGIN_FAILURE, payload: errorMessage });
+        let message;
+        switch (error.response?.status) {
+            case 400:
+                message = "Bad Request - Please check your input."
+                break;
+            case 401:
+                message = "Unauthorized - Invalid credentials."
+                break;
+            case 403:
+                message = "Vui lòng kiểm tra lại thông tin đăng nhập"
+                break;
+            case 404:
+                message = "Not Found - The requested resource was not found."
+                break;
+            case 500:
+                message = null
+                break;
+            default:
+                message = "Vui lòng kiểm tra lại thông tin đăng nhập"
+        }
+        dispatch({ type: LOGIN_FAILURE, payload: message });
     }
 }
 
@@ -51,8 +88,29 @@ export const getUser = (jwt) => async (dispatch) => {
         dispatch({ type: GET_USER_SUCCESS, payload: data })
         console.log("User profile", data)
     } catch (error) {
-        dispatch({ type: GET_USER_FAILURE, payload: error })
-        console.log("Error:", error)
+        let message;
+        switch (error.response?.status) {
+            case 400:
+                message = "Bad Request - Please check your input."
+                break;
+            case 401:
+                message = "Unauthorized - Invalid credentials."
+                break;
+            case 403:
+                message = "Vui lòng kiểm tra lại thông tin đăng nhập"
+                break;
+            case 404:
+                message = "Not Found - The requested resource was not found."
+                break;
+            case 500:
+                message = null
+                break;
+            default:
+                message = null
+        }
+
+        dispatch({ type: GET_USER_FAILURE, payload: message })
+
     }
 }
 

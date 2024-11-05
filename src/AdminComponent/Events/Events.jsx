@@ -4,7 +4,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import dayjs from 'dayjs';
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { hasFormSubmit } from '@testing-library/user-event/dist/utils';
 import { useNavigate } from 'react-router-dom';
 import { EventCard } from './EventCard';
@@ -33,12 +33,21 @@ export const Events = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const restaurant = useSelector(state => state.restaurant)
-  console.log("Restaurant.....", restaurant)
   const jwt = localStorage.getItem("jwt")
+  const [eventsLoaded, setEventsLoaded] = useState(false);
+
   useEffect(() => {
-    dispatch(getRestaurantEvents({ restaurantId: restaurant.usersRestaurant?.id, jwt }))
-  },[jwt])
-  const restaurantEventList = restaurant.restaurantsEvents
+    if (restaurant.usersRestaurant?.id && jwt && !eventsLoaded) {
+      dispatch(getRestaurantEvents({ restaurantId: restaurant.usersRestaurant.id, jwt }));
+      setEventsLoaded(true); // Set flag to true after events are fetched
+    }
+ 
+  }, [restaurant.usersRestaurant?.id, jwt, eventsLoaded, dispatch]);
+
+  const restaurantEventList = restaurant.restaurantsEvents;
+
+  console.log("Restaurant.....", restaurantEventList);
+
 
   return (
     <div>

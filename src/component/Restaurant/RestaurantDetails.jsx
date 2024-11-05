@@ -57,7 +57,7 @@ const RestaurantDetails = () => {
         dispatch(getRestaurantCategory({ restaurantId: id }));
         dispatch(getRestaurantEvents({ restaurantId: id }))
 
-    }, [])
+    }, [dispatch])
     
     useEffect(() => {
         dispatch(getMenuItemsByRestaurantId({

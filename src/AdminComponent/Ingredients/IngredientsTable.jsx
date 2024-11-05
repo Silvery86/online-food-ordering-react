@@ -37,7 +37,7 @@ export const IngredientsTable = () => {
             id: restaurant.usersRestaurant.id,
             jwt
         }))
-    }, [])
+    }, [dispatch])
     const handleUpdateStoke = (id) => {
         dispatch(updateStockOfIngredient({
             id,

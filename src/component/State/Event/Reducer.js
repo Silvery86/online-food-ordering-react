@@ -27,6 +27,7 @@ const initialState = {
     selectedEvent: null, // Add a field to store the selected event
     loading: false,
     error: null,
+    success:null,
 };
 
 const eventReducer = (state = initialState, action) => {
@@ -37,7 +38,7 @@ const eventReducer = (state = initialState, action) => {
         case UPDATE_EVENT_REQUEST:
         case DELETE_EVENT_REQUEST:
         case GET_EVENT_BY_ID_REQUEST: // Add this case
-            return { ...state, loading: true, error: null };
+            return { ...state, loading: true, error: null, success:null };
 
         case GET_ALL_EVENT_SUCCESS:
             return { ...state, loading: false, events: action.payload };
@@ -46,7 +47,7 @@ const eventReducer = (state = initialState, action) => {
             return { ...state, loading: false, restaurantEvents: action.payload };
 
         case CREATE_EVENT_SUCCESS:
-            return { ...state, loading: false, events: [...state.events, action.payload] };
+            return { ...state, loading: false, events: [...state.events, action.payload] , success: "Tạo sự kiện thành công"};
 
         case UPDATE_EVENT_SUCCESS:
             return {

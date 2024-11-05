@@ -89,7 +89,7 @@ const authReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: false,
-                error: action.payload?.message || "An error occurred",
+                error: action.payload,
                 success: null
             };
 

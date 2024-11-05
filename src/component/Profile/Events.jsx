@@ -11,7 +11,7 @@ const Events = () => {
   const eventsList = event.events
   useEffect(() => {
     dispatch(getAllEvents())
-  }, [])
+  }, [dispatch])
   const settings = {
     dots: true,
     infinite: true,

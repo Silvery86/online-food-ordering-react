@@ -1,37 +1,49 @@
 import './App.css';
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import { darkTheme } from './Theme/DarkTheme';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getUser, loginUser } from './component/State/Authentication/Action';
+import { getUser } from './component/State/Authentication/Action';
 import { findCart } from './component/State/Cart/Action';
 import { Routers } from './component/Routers/Routers';
 import { getRestaurantByUserId } from './component/State/Restaurant/Action';
+import { lightTheme } from './Theme/LightTheme';
 
 function App() {
   const dispatch = useDispatch();
-  const storedJwt = localStorage.getItem("jwt");
+  const jwt = localStorage.getItem("jwt");
   const auth = useSelector(store => store.auth);
+  const restaurant = useSelector(store => store.restaurant);
   const cart = useSelector(store => store.cart);
-  
-  useEffect(() => {
-    // If JWT is in local storage and not already in auth, dispatch getUser
-    if (storedJwt && !auth.jwt) {
-      dispatch(getUser(storedJwt));
-      dispatch(findCart(storedJwt));
-    }
-  }, [storedJwt, auth.jwt]);
 
   useEffect(() => {
-    // Check if auth is loaded and user role is 'ROLE_RESTAURANT_OWNER'
-    if (auth.user && auth.user.role === "ROLE_RESTAURANT_OWNER") {
-      dispatch(getRestaurantByUserId(storedJwt));
+    // If JWT is in local storage and not already in auth, dispatch getUser
+    if (jwt && !auth.jwt) {
+      dispatch(getUser(jwt));
     }
-  }, [auth.user, storedJwt, dispatch]);
-  
-  
+  }, [jwt, auth.jwt, dispatch]);
+
+  useEffect(() => {
+    // Dispatch findCart whenever the cart state updates
+    if (jwt && auth.jwt) {
+      dispatch(findCart(jwt));
+    }
+  }, [cart.cartItems.id, jwt, auth.jwt, dispatch]);
+
+  useEffect(() => {
+    const isRestaurantOwner = auth.user && auth.user.role === "ROLE_RESTAURANT_OWNER";
+    const hasRestaurant = restaurant.usersRestaurant !== null;
+
+    // Check if conditions are met before dispatching
+    if (isRestaurantOwner && hasRestaurant) {
+      dispatch(getRestaurantByUserId(jwt));
+    }
+  }, [auth.user?.role, restaurant.usersRestaurant?.id, jwt, dispatch]);
+
+
+
+
   return (
-    <ThemeProvider theme={darkTheme}>
+    <ThemeProvider theme={lightTheme}>
       <CssBaseline />
       <Routers />
     </ThemeProvider>

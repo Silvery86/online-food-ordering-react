@@ -25,7 +25,7 @@ export const MenuTable = () => {
       restaurantId: restaurant.usersRestaurant.id,
       jwt: jwt
     }))
-  }, [])
+  }, [dispatch])
   const handleDeleteFood = (foodId) => {
     dispatch(deleteFoodAction({ foodId, jwt }))
   }
