@@ -1,35 +1,101 @@
-import { Avatar, Box, Card, CardHeader, Chip, IconButton } from '@mui/material'
-import React, { useEffect } from 'react'
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import { Create, Delete } from '@mui/icons-material';
+import { Avatar, Box, Card, CardHeader, Chip, IconButton, CircularProgress, TextField } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { DataGrid } from '@mui/x-data-grid';
+import { Create, Delete, Edit } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { deleteFoodAction, getMenuItemsByRestaurantId } from '../../component/State/Menu/Action';
 import { useDispatch, useSelector } from 'react-redux';
+import { formatCurrency } from '../../component/util/currencyFormat';
 
 export const MenuTable = () => {
-  const dispatch = useDispatch()
-  const restaurant = useSelector(state => state.restaurant)
-  const ingredients = useSelector(state => state.ingredients)
-  const menu = useSelector(state => state.menu)
-  const jwt = localStorage.getItem("jwt")
+  const dispatch = useDispatch();
+  const restaurant = useSelector(state => state.restaurant);
+  const menu = useSelector(state => state.menu);
+  const jwt = localStorage.getItem("jwt");
   const navigate = useNavigate();
 
+  const [isLoading, setIsLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [pageSize, setPageSize] = useState(5);
+
   useEffect(() => {
-    dispatch(getMenuItemsByRestaurantId({
-      restaurantId: restaurant.usersRestaurant.id,
-      jwt: jwt
-    }))
-  }, [dispatch])
+    if (restaurant?.usersRestaurant?.id) {
+      setIsLoading(true);
+      dispatch(getMenuItemsByRestaurantId({
+        restaurantId: restaurant.usersRestaurant.id,
+        jwt: jwt
+      })).finally(() => setIsLoading(false));
+    }
+  }, [dispatch, restaurant?.usersRestaurant?.id, jwt]);
+
   const handleDeleteFood = (foodId) => {
-    dispatch(deleteFoodAction({ foodId, jwt }))
-  }
-  console.log("Menu....", menu)
+    dispatch(deleteFoodAction({ foodId, jwt }));
+  };
+  const handleEditFood = (foodId) => {
+   
+  };
+  
+  const columns = [
+    {
+      field: 'images',
+      headerName: 'Ảnh',
+      width: 150,
+      renderCell: (params) => (
+        <Avatar src={params.value[0]} sx={{ width: 120, height: 120 }} />
+      ),
+    },
+    {
+      field: 'name',
+      headerName: 'Món ăn',
+      width: 200,
+      sortable: false,
+    },
+    {
+      field: 'foodCategory',
+      headerName: 'Danh mục',
+      width: 150,
+      renderCell: (params) => {
+        const categoryName = params.row?.foodCategory?.name || "N/A";
+        return <Chip color="primary" label={categoryName} />;
+      },
+      sortable: true,
+      valueGetter: (params) => (params.row?.foodCategory ? params.row.foodCategory.name : 'N/A'),
+    },
+    {
+      field: 'price',
+      headerName: 'Giá',
+      width: 120,
+      renderCell: (params) => formatCurrency(params.value),
+      sortable: true,
+    },
+    {
+      field: 'available',
+      headerName: 'Tồn kho',
+      width: 130,
+      renderCell: (params) => (
+        params.value
+          ? <Chip label="Có hàng" color="success" variant="outlined" />
+          : <Chip label="Hết hàng" color="primary" variant="outlined" />
+      ),
+    },
+    {
+      field: 'actions',
+      headerName: 'Hành động',
+      width: 180,
+      renderCell: (params) => (
+        <Box display="flex" justifyContent="center">
+          <IconButton color="primary" onClick={() => handleEditFood(params.row.id)}>
+            <Edit />
+          </IconButton>
+          <IconButton color="primary" onClick={() => handleDeleteFood(params.row.id)}>
+            <Delete />
+          </IconButton>
+        </Box>
+      ),
+      sortable: false,
+    },
+  ];
+
   return (
     <Box>
       <Card>
@@ -40,47 +106,61 @@ export const MenuTable = () => {
             </IconButton>
           }
           title={"Danh sách món ăn"}
-          sx={{ pt: 2, alignItems: "center" }}
+          sx={{ pt: 2, alignItems: "center", textAlign: "center" }}
         />
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <TableCell align="center">Ảnh</TableCell>
-                <TableCell align="right">Món ăn</TableCell>
-                <TableCell align="center">Nguyên liệu</TableCell>
-                <TableCell align="right">Giá</TableCell>
-                <TableCell align="right">Tồn kho</TableCell>
-                <TableCell align="right">Xóa</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {menu.menuItems.map((item) => (
-                <TableRow
-                  key={item.id}
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                >
-                  <TableCell align="center" component="th" scope="row">
-                    <Avatar src={item.images[0]} sx={{ width: "100px", height: "100px" }}></Avatar>
-                  </TableCell>
-                  <TableCell align="right">{item.name}</TableCell>
-                  <TableCell align="center">
-                    {item.ingredients.map((ingredient) => <Chip label={ingredient.name} />)}
-                  </TableCell>
-                  <TableCell align="right">{item.price}</TableCell>
-                  <TableCell align="right">{item.available ? "Có hàng" : "Hết hàng"}</TableCell>
+        <Box m={2}>
+          <TextField
+            label="Tìm kiếm món ăn"
+            variant="outlined"
+            fullWidth
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </Box>
+        {isLoading ? (
+          <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+            <CircularProgress />
+          </Box>
+        ) : menu?.menuItems?.length > 0 ? (
+          <Box m={2} sx={{ width: '100%' }}>
+            <DataGrid
+              rows={menu.menuItems.filter((item) =>
+                item.name.toLowerCase().includes(search.toLowerCase())
+              )}
+              columns={columns}
+              pageSize={pageSize} 
+              rowsPerPageOptions={[5, 10, 15]}  
+              pagination
+              onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}  
+              getRowId={(row) => row.id}
+              rowHeight={150}
+              sx={{
+                width: '100%',
+                '& .MuiDataGrid-cell': {
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  whiteSpace: 'normal',
+                  textAlign: 'center', // Center align cell content
+                },
+                '& .MuiDataGrid-columnHeaders': {
+                  backgroundColor: '#f5f5f5',
+                  textAlign: 'center', 
+                  width:"100%",
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
 
-                  <TableCell align="right">
-                    <IconButton color='primary' onClick={() => handleDeleteFood(item.id)}>
-                      <Delete />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+                },
+              }}
+            />
+          </Box>
+        ) : (
+          <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+            Không có món ăn nào
+          </Box>
+        )}
       </Card>
     </Box>
-  )
-}
+  );
+};

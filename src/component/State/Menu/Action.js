@@ -1,7 +1,7 @@
 import { api } from "../../config/api"
 import { CREATE_MENU_ITEM_FAILURE, CREATE_MENU_ITEM_REQUEST, CREATE_MENU_ITEM_SUCCESS, DELETE_MENU_ITEM_FAILURE, DELETE_MENU_ITEM_REQUEST, DELETE_MENU_ITEM_SUCCESS, GET_MENU_ITEMS_BY_RESTAURANT_ID_FAILURE, GET_MENU_ITEMS_BY_RESTAURANT_ID_REQUEST, GET_MENU_ITEMS_BY_RESTAURANT_ID_SUCCESS, SEARCH_MENU_ITEM_FAILURE, SEARCH_MENU_ITEM_REQUEST, SEARCH_MENU_ITEM_SUCCESS, UPDATE_MENU_ITEMS_AVAILABILITY_FAILURE, UPDATE_MENU_ITEMS_AVAILABILITY_REQUEST, UPDATE_MENU_ITEMS_AVAILABILITY_SUCCESS } from "./ActionType";
 
-export const createMenuItem = ({ menu, jwt }) => {
+export const createMenuItem = ({ menu, jwt , navigate}) => {
     return async (dispatch) => {
         dispatch({ type: CREATE_MENU_ITEM_REQUEST });
         try {
@@ -13,7 +13,7 @@ export const createMenuItem = ({ menu, jwt }) => {
                     },
                 });
             dispatch({ type: CREATE_MENU_ITEM_SUCCESS, payload: data })
-            console.log("Menu created :", data);
+            navigate(`/admin/restaurant/menu`)
         } catch (error) {
             dispatch({ type: CREATE_MENU_ITEM_FAILURE, payload: error })
             console.log("Error:", error);

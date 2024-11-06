@@ -7,8 +7,8 @@ import { logout } from '../../component/State/Authentication/Action';
 const menu = [
     { title: "Trang Chủ", slug: "dashboard", icon: <Dashboard />, path: "/" },
     { title: "Đơn Hàng", slug: "orders", icon: <ShoppingBag />, path: "/orders" },
-    { title: "Thực Đơn", slug: "menu", icon: <MenuBook />, path: "/menu" },
-    { title: "Món Ăn", slug: "category", icon: <LocalDining />, path: "/category" },
+    { title: "Món Ăn", slug: "menu", icon: <MenuBook />, path: "/menu" },
+    { title: "Danh Mục", slug: "category", icon: <LocalDining />, path: "/category" },
     { title: "Nguyên Liệu", slug: "ingredients", icon: <SoupKitchen />, path: "/ingredients" },
     { title: "Sự Kiện", slug: "event", icon: <Event />, path: "/event" },
     { title: "Chi Tiết", slug: "details", icon: <Storefront />, path: "/details" },

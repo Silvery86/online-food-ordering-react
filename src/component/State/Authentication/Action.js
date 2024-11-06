@@ -8,8 +8,8 @@ export const registerUser = (reqData) => async (dispatch) => {
         // if (data.jwt) localStorage.setItem("jwt", data.jwt);
         dispatch({ type: REGISTER_SUCCESS, payload: data.jwt })
         setTimeout(() => {
-            reqData.navigate("/account/login");
-           // window.location.reload();
+            reqData.navigate("/");
+           window.location.reload();
         }, 2000);
     } catch (error) {
         let message;
@@ -49,7 +49,7 @@ export const loginUser = (reqData) => async (dispatch) => {
             else {
                 reqData.navigate("/")
             }
-           // window.location.reload()
+            window.location.reload()
         }, 2000);
     } catch (error) {
         let message;

@@ -6,6 +6,8 @@ import { uploadImageToCloudinary } from '../util/UploadToCloudinary'
 import { useDispatch, useSelector } from 'react-redux'
 import { createMenuItem } from '../../component/State/Menu/Action'
 import { getIngredientsOfRestaurant } from '../../component/State/Ingredients/Action'
+import { useNavigate } from 'react-router-dom'
+import { useTheme } from '@emotion/react'
 const initialValues = {
     name: "",
     description: "",
@@ -29,6 +31,8 @@ const MenuProps = {
 };
 export const CreateMenuForm = () => {
     const dispatch = useDispatch()
+    const navigate = useNavigate()
+    const theme = useTheme()
     const jwt = localStorage.getItem("jwt")
     const restaurant = useSelector(state => state.restaurant)
     const ingredients = useSelector(state => state.ingredients)
@@ -39,9 +43,9 @@ export const CreateMenuForm = () => {
             values.restaurantId = restaurant.usersRestaurant.id
             dispatch(createMenuItem({
                 menu: values,
-                jwt
+                jwt,
+                navigate
             }))
-            console.log("Data:", values)
         }
     })
     const handleImageChange = async (e) => {
@@ -65,7 +69,9 @@ export const CreateMenuForm = () => {
     return (
         <div className='py-10 px-5 lg:flex items-center justify-center min-h-screen'>
             <div className='lg:max-w-4xl'>
-                <h1 className='font-bold text-2xl text-center py-2'>
+                <h1
+                style={{color : theme.palette.primary.main}} 
+                className='font-bold text-2xl text-center py-2'>
                     Thêm món ăn
                 </h1>
                 <form onSubmit={formik.handleSubmit} className='space-y-4'>
@@ -81,7 +87,7 @@ export const CreateMenuForm = () => {
                             />
                             <label className='relative' htmlFor='fileInput'>
                                 <span className='w-24 h-24 cursor-pointer items-center flex justify-center p-3 border rounded-md border-gray-600'>
-                                    <AddPhotoAlternate className='text-white' />
+                                    <AddPhotoAlternate className='text-black' />
                                     {
                                         uploadImage && <div className='absolute left-0 right-0 top-0 bottom-0 w-24 h-24 flex items-center justify-center'>
                                             <CircularProgress />

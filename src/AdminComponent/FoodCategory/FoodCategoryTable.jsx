@@ -48,8 +48,8 @@ export const FoodCategoryTable = () => {
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell align="right">Id</TableCell>
-                <TableCell align="right">Dạnh mục</TableCell>
+                <TableCell align="center">Id</TableCell>
+                <TableCell align="center">Dạnh mục</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -58,10 +58,10 @@ export const FoodCategoryTable = () => {
                   key={row.name}
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
-                  <TableCell component="th" scope="row">
+                  <TableCell align="center" component="th" scope="row">
                     {row.id}
                   </TableCell>
-                  <TableCell align="right">{row.name}</TableCell>
+                  <TableCell align="center">{row.name}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

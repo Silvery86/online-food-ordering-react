@@ -2,8 +2,10 @@ import { Button, TextField } from '@mui/material'
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { createCategoryAction } from '../../component/State/Restaurant/Action'
+import { useTheme } from '@emotion/react'
 
 export const CreateFoodCategoryForm = () => {
+    const theme = useTheme()
     const restaurant = useSelector(state => state.restaurant)
     const dispatch = useDispatch()
     const [formData, setFormData] = useState({ categoryName: "", restaurantId: "" })
@@ -30,20 +32,22 @@ export const CreateFoodCategoryForm = () => {
     return (
         <div className=''>
             <div className='p-5'>
-                <h1 className='text-gray-400 text-center text-xl pb-10'>Create Category</h1>
+                <h1 
+                style={{color:theme.palette.primary.main}}
+                className='text-center text-xl pb-10'>Tạo danh mục món ăn</h1>
                 <form className='space-y-5' onSubmit={handleSubmit}>
                     <TextField
                         fullWidth
                         id='categoryName'
                         name='categoryName'
-                        label="Category Name"
+                        label="Danh mục món ăn"
                         variant='outlined'
                         onChange={handleInputChange}
                         value={formData.categoryName}
                     >
                     </TextField>
-                    <Button variant='contained' type='submit'>
-                        Create
+                    <Button variant='contained' type='submit' fullWidth>
+                        Tạo danh mục
                     </Button>
                 </form>
             </div>

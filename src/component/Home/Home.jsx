@@ -7,7 +7,6 @@ import { getAllRestaurantsAction } from '../State/Restaurant/Action';
 import banner1 from '../assets/banner/banner1.jpg'
 import banner2 from '../assets/banner/banner2.jpg'
 import banner3 from '../assets/banner/banner3.jpg'
-import background from '../assets/images/background/background.webp'
 import background_full from '../assets/images/background/background-full.webp'
 import Slider from 'react-slick';
 import { getAllEvents } from '../State/Event/Action';
@@ -64,6 +63,7 @@ function Home() {
   };
   return (
     <div className='home relative pb-10'>
+
       {/* Banner */}
       <Slider {...settings}>
         {defaultEventList.map((banner, index) => (
@@ -94,14 +94,12 @@ function Home() {
       </Slider>
 
       {/* Menu */}
-
       <section className='foods-section pt-10 lg:py-20'>
         <p
           style={{ color: theme.palette.primary.main }}
           className='w-full text-center text-5xl font-semibold pb-20'
         >Món ăn ngon nổi bật</p>
         <MultiItemCarousel />
-
       </section>
 
       {/* Favourited Restaurant */}
@@ -148,7 +146,6 @@ function Home() {
                   Xem Chi Tiết
                 </Button>
               </div>
-
             </div>
             <div className="cover absolute top-0 left-0 right-0 bottom-0 -z-10">
               <img
