@@ -32,9 +32,7 @@ export const fetchTableOrderById = (id, token) => async (dispatch) => {
 export const createTableOrder = ({ orderData, token, navigate }) => async (dispatch) => {
     dispatch({ type: actionTypes.CREATE_TABLE_ORDER_REQUEST });
     try {
-        const response = await api.post('/api/public/table-orders', orderData, {
-            headers: { Authorization: `Bearer ${token}` }
-        });
+        const response = await api.post('/api/public/table-orders', orderData);
         dispatch({ type: actionTypes.CREATE_TABLE_ORDER_SUCCESS, payload: response.data });
         console.log("Create table order success .....", response.data)
         navigate(`/table-order/success/${response.data.id}`)
@@ -109,7 +107,7 @@ export const updateTableOrderStatus = (orderId, orderStatus, jwt) => {
                 headers: {
                     Authorization: `Bearer ${jwt}`,
                 },
-            });
+            });            
             dispatch({ type: actionTypes.UPDATE_ORDER_STATUS_SUCCESS, payload: res.data });
             console.log("Order status updated:", res.data);
         } catch (error) {

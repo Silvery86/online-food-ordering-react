@@ -39,37 +39,45 @@ export const TableOrderTable = () => {
         setPage(0);
     };
 
-    const [anchorEl, setAnchorEl] = useState(null);
+    const [menuAnchorEl, setMenuAnchorEl] = useState({});
+    const [modalData, setModalData] = useState({ open: false, id: null });
     const [openModal, setOpenModal] = useState(false);
     const [selectedAction, setSelectedAction] = useState('');
 
-    const handleMenuClick = (event) => {
-        setAnchorEl(event.currentTarget);
+    const handleMenuClick = (event, id) => {
+        // Open the menu for the specific row
+        setMenuAnchorEl(prevState => ({ ...prevState, [id]: event.currentTarget }));
     };
 
-    const handleMenuClose = () => {
-        setAnchorEl(null);
+    const handleMenuClose = (id) => {
+        // Close the menu for the specific row
+        setMenuAnchorEl(prevState => {
+            const newState = { ...prevState };
+            delete newState[id];
+            return newState;
+        });
     };
 
-    const handleActionClick = (action) => {
+    const handleActionClick = (action, id) => {
         setSelectedAction(action);
-        setOpenModal(true);
+        setModalData({ open: true, id });  // Set the modal to open and store the id
         handleMenuClose();
+        console.log("Id", id);  // For debugging
     };
 
     const handleModalClose = () => {
-        setOpenModal(false);
+        setModalData({ open: false, id: null });  // Reset modal state and id
     };
-
-    const handleConfirm = ({ id }) => {
+    const handleConfirm = (id) => {
         if (selectedAction === 'confirm') {
             dispatch(updateTableOrderStatus(id, "CONFIRMED", jwt));
+            console.log("ID", id)
             window.location.reload()
-          
+
         } else if (selectedAction === 'cancel') {
             dispatch(updateTableOrderStatus(id, "CANCELLED", jwt));
             window.location.reload()
-           
+            console.log("ID", id)
         }
         setOpenModal(false);
     };
@@ -99,8 +107,9 @@ export const TableOrderTable = () => {
                             <Table stickyHeader aria-label="sticky table">
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell align='center'>ID</TableCell>
+                                        <TableCell style={{ display: "none" }} align='center'>ID</TableCell>
                                         <TableCell align='center'>Ngày đặt bàn</TableCell>
+                                        <TableCell align='center'>Thời gian đặt</TableCell>
                                         <TableCell align='center'>Nhà hàng</TableCell>
                                         <TableCell align='center'>Số điện thoại</TableCell>
                                         <TableCell align='center'>Số người</TableCell>
@@ -118,8 +127,9 @@ export const TableOrderTable = () => {
                                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                         .map((row) => (
                                             <TableRow key={row.id} hover>
-                                                <TableCell align='center'>{row.id}</TableCell>
+                                                <TableCell style={{ display: "none" }} align='center'>{row.id}</TableCell>
                                                 <TableCell align='center'>{dayjs(row.orderDate).format('DD/MM/YYYY')}</TableCell>
+                                                <TableCell align='center'>{row.orderTime}</TableCell>
                                                 <TableCell align='center'>{row.name}</TableCell>
                                                 <TableCell align='center'>{row.phone}</TableCell>
                                                 <TableCell align='center'>{row.numberOfPersons}</TableCell>
@@ -139,20 +149,28 @@ export const TableOrderTable = () => {
                                                     })()}
                                                 </TableCell>
                                                 <TableCell align='center'>
-                                                    <IconButton color="primary" onClick={handleMenuClick}>
+                                                    <IconButton color="primary" onClick={(event) => handleMenuClick(event, row.id)}>
                                                         <DomainVerificationIcon />
                                                     </IconButton>
                                                     <Menu
-                                                        anchorEl={anchorEl}
-                                                        open={Boolean(anchorEl)}
-                                                        onClose={handleMenuClose}
+                                                        anchorEl={menuAnchorEl[row.id]}  // Use unique anchorEl for each row
+                                                        open={Boolean(menuAnchorEl[row.id])}  // Check if the menu for this row is open
+                                                        onClose={() => handleMenuClose(row.id)}  // Close the menu for this row
+                                                        anchorOrigin={{
+                                                            vertical: 'top',
+                                                            horizontal: 'right',
+                                                        }}
+                                                        transformOrigin={{
+                                                            vertical: 'top',
+                                                            horizontal: 'right',
+                                                        }}
                                                     >
-                                                        <MenuItem onClick={() => handleActionClick('confirm')}>Xác nhận đặt hàng</MenuItem>
-                                                        <MenuItem onClick={() => handleActionClick('cancel')}>Hủy đơn hàng</MenuItem>
+                                                        <MenuItem onClick={() => handleActionClick('confirm', row.id)}>Xác nhận đặt hàng</MenuItem>
+                                                        <MenuItem onClick={() => handleActionClick('cancel', row.id)}>Hủy đơn hàng</MenuItem>
                                                     </Menu>
 
                                                     <Modal
-                                                        open={openModal}
+                                                        open={modalData.open}
                                                         onClose={handleModalClose}
                                                         aria-labelledby="confirmation-modal"
                                                         aria-describedby="confirmation-modal-description"
@@ -173,15 +191,16 @@ export const TableOrderTable = () => {
                                                                 {selectedAction === 'confirm' ? 'Bạn có chắc muốn xác nhận đặt bàn này?' : 'Bạn có chắc muốn hủy đặt bàn này?'}
                                                             </Typography>
                                                             <Box>
-                                                                <Button variant="contained" color="primary" onClick={() => handleConfirm({ id: row.id })} sx={{ mr: 1 }}>
+                                                                <Button variant="contained" color="primary" onClick={() => handleConfirm(modalData.id)} sx={{ mr: 1 }}>
                                                                     Xác nhận
                                                                 </Button>
-                                                                <Button variant="outlined" color="secondary" onClick={() => handleConfirm({ id: row.id })}>
+                                                                <Button variant="outlined" color="secondary" onClick={handleModalClose}>
                                                                     Hủy bỏ
                                                                 </Button>
                                                             </Box>
                                                         </Box>
                                                     </Modal>
+
                                                 </TableCell>
                                             </TableRow>
                                         ))}
