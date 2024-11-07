@@ -14,6 +14,7 @@ import { PaymentProcess } from '../Payment/PaymentProcess'
 import { PaymentSuccess } from '../Payment/PaymentSuccess'
 import { PaymentFailed } from '../Payment/PaymentFailed'
 import { EventDetails } from '../Event/EventDetails'
+import CreateTableOrder from '../TableOrder/CreateTableOrder'
 
 const CustomerRoute = () => {
     return (
@@ -27,6 +28,7 @@ const CustomerRoute = () => {
                     <Route path='/contact' element={<Contact />} />
                     <Route path="/my-profile/*" element={<Profile />} />
                     <Route path="/events/event/:id" element={<EventDetails />} />
+                    <Route path='/table-order' element={<CreateTableOrder />} />
                     <Route path='/news' element={<News />} />
                     <Route path='/cart' element={<Cart />} />
                     <Route path='/payment/process' element={<PaymentProcess/>} />
