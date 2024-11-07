@@ -25,8 +25,7 @@ const RestaurantDetails = () => {
     const menu = useSelector(store => store.menu)
     const [selectedCategory, setSelectedCategory] = useState("");
     const { id } = useParams();
-    const [foodType, setFoodType] = useState("");
-    const [category, setCategory] = useState("");
+    const [foodType, setFoodType] = useState("");   
     const handleFilter = (e) => {
         setFoodType(e.target.value)
         console.log(e.target.value, e.target.name)
@@ -40,7 +39,7 @@ const RestaurantDetails = () => {
         dispatch(getRestaurantCategory({ restaurantId: id }));
         dispatch(getRestaurantEvents({ restaurantId: id }))
 
-    }, [dispatch])
+    }, [dispatch, id])
     useEffect(() => {
         dispatch(getMenuItemsByRestaurantId({
             jwt,
@@ -50,7 +49,7 @@ const RestaurantDetails = () => {
             vegetarian: foodType === "vegetarian",
             foodCategory: selectedCategory,
         }));
-    }, [selectedCategory, foodType])
+    }, [selectedCategory, foodType, id , jwt , dispatch])
     return (
 
         <div className='relative px-5 lg:px-20'>
@@ -103,7 +102,7 @@ const RestaurantDetails = () => {
                         </div>
                     </div>
                     <div className='w-[20%] flex justify-center align-middle py-10'>
-                        <Button onClick={() => {navigate("/table-order")}} variant='contained' className='pulse-button'>Đặt bàn ngay!</Button>
+                        <Button onClick={() => { navigate("/table-order") }} variant='contained' className='pulse-button'>Đặt bàn ngay!</Button>
                     </div>
                 </div>
 
@@ -112,25 +111,7 @@ const RestaurantDetails = () => {
             <section className='pt-[2rem] lg:flex relative'>
                 <div className='space-y-10 lg:w-[20%] filter'>
                     <div className='box space-y-5 lg:sticky top-28'>
-                        <Typography variant='h5' sx={{ paddingBottom: "1rem" }}>
-                            Loại thực đơn :
-                        </Typography>
-                        <FormControl className='py-10 space-y-5' component={"fieldset"}>
-                            <RadioGroup onChange={handleFilter} aria-labelledby="demo-radio-buttons-group-label" defaultValue="all" name='food_type'>
-                                {foodTypes.map((item) => (
-                                    <FormControlLabel
-                                        key={item.value}
-                                        value={item.value}
-                                        control={<Radio />}
-                                        label={item.label}
-                                    />
-                                ))}
-                            </RadioGroup>
-                        </FormControl>
-
-                        <Divider />
-
-                        <Typography variant='h5' sx={{ paddingBottom: "1rem" }}>
+                        <Typography variant='h5'>
                             Thực đơn :
                         </Typography>
                         <FormControl className='py-10 space-y-5' component={"fieldset"}>
@@ -147,6 +128,22 @@ const RestaurantDetails = () => {
                                         label={item.name}
                                     />
                                 )}
+                            </RadioGroup>
+                        </FormControl>
+                        <Divider />
+                        <Typography variant='h5'>
+                            Loại thực đơn :
+                        </Typography>
+                        <FormControl className='space-y-5' component={"fieldset"}>
+                            <RadioGroup onChange={handleFilter} aria-labelledby="demo-radio-buttons-group-label" defaultValue="all" name='food_type'>
+                                {foodTypes.map((item) => (
+                                    <FormControlLabel
+                                        key={item.value}
+                                        value={item.value}
+                                        control={<Radio />}
+                                        label={item.label}
+                                    />
+                                ))}
                             </RadioGroup>
                         </FormControl>
                     </div>
