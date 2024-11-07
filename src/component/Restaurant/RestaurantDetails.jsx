@@ -103,7 +103,7 @@ const RestaurantDetails = () => {
                         </div>
                     </div>
                     <div className='w-[20%] flex justify-center align-middle py-10'>
-                        <Button variant='contained' className='pulse-button'>Đặt bàn ngay!</Button>
+                        <Button onClick={() => {navigate("/table-order")}} variant='contained' className='pulse-button'>Đặt bàn ngay!</Button>
                     </div>
                 </div>
 

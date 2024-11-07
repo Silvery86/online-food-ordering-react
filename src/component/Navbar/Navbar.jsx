@@ -1,4 +1,4 @@
-import { Avatar, Badge, IconButton } from '@mui/material'
+import { Avatar, Badge, Button, IconButton } from '@mui/material'
 import React from 'react'
 import SearchIcon from '@mui/icons-material/Search';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
@@ -32,7 +32,7 @@ export const Navbar = () => {
                     Foodsou
                 </li>
             </div>
-            <div className='flex space-x-5 w-full justify-start items-center'>
+            <div className='flex space-x-5 w-full justify-start items-center lg:space-x-8'>
                 {/* Navigation Links */}
                 <button onClick={() => navigate("/about-us")} className='text-white hover:underline text-xl'>
                     Về chúng tôi
@@ -42,7 +42,10 @@ export const Navbar = () => {
                 </button>
                 <button onClick={() => navigate("/contact")} className='text-white hover:underline text-xl'>
                     Liên hệ
-                </button>               
+                </button>    
+                <Button color="error"  variant='contained' onClick={() => navigate("/table-order")} className='ml-3 pulse-button'>
+                    Đặt bàn ngay
+                </Button >            
             </div>
             <div className='flex items-center space-x-2 lg:space-x-10'>
                 <div className=''>

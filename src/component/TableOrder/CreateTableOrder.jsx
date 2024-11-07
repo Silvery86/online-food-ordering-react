@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getAllRestaurantsAction } from '../State/Restaurant/Action';
 import { createTableOrder } from '../State/OrderTable/Action';
 import { useTheme } from '@emotion/react';
+import { useNavigate } from 'react-router-dom';
 
 
 const CreateTableOrder = () => {
@@ -27,9 +28,11 @@ const CreateTableOrder = () => {
     useEffect(() => {
         dispatch(getAllRestaurantsAction());
     }, []);
-
+    const navigate = useNavigate()
     const restaurant = useSelector((state) => state.restaurant);
-
+    const auth = useSelector((state) => state.auth);
+    
+    var restaurantsList = restaurant.restaurants
     // Generate time options from 9:00 to 21:00
     const timeOptions = Array.from({ length: 25 }, (_, i) => {
         const hours = 9 + Math.floor(i / 2);  // Get the hour (9 to 21)
@@ -42,7 +45,7 @@ const CreateTableOrder = () => {
     const maxDate = minDate.add(2, 'months'); // Two months from today
 
     const validationSchema = Yup.object({
-        restaurant: Yup.string().required('Vui lòng chọn nhà hàng'),
+        restaurantId: Yup.string().required('Vui lòng chọn nhà hàng'),
         dateOrder: Yup.date()
             .min(minDate.toDate(), 'Date must be today or later')  // Ensure the date is today or later
             .max(maxDate.toDate(), `Date must be within the next 2 months`)  // Ensure the date is within the next 2 months
@@ -56,12 +59,15 @@ const CreateTableOrder = () => {
         customerName: Yup.string().required('Vui lòng nhập tên người đặt bàn'),
         customerPhone: Yup.string()
             .matches(/^[0-9]+$/, 'Số điện thoại không đúng')
+            .min(10, "Vui lòng kiểm tra lại số điện thoại")
+            .max(10, "Vui lòng kiểm tra lại số điện thoại")
             .required('Vui lòng nhập số điện thoại đặt bàn'),
     });
-    
+    const jwt = localStorage.getItem("jwt")
     const formik = useFormik({
         initialValues: {
-            restaurant: '',
+            restaurantId: null,
+            userId: null,
             dateOrder: minDate.toDate(),  // Default to today's date
             timeOrder: '',
             numberOfGuests: '',
@@ -71,12 +77,21 @@ const CreateTableOrder = () => {
         },
         validationSchema,
         onSubmit: (values) => {
+            const data = {
+                restaurantId : values.restaurantId,
+                userId : auth.user?.id,
+                orderDate : values.dateOrder,
+                orderTime : values.timeOrder,
+                numberOfPersons: values.numberOfGuests,
+                note: values.customerNote,
+                name: values.customerName,
+                phone: values.customerPhone
+            }
             // Convert the date to the desired format (DD/MM/YYYY) before submitting
             const formattedDate = dayjs(values.dateOrder).format('DD/MM/YYYY');
-            // Pass the formatted date along with the other form values
-            values = { ...values, dateOrder: formattedDate }
-            console.log(values)
-            //dispatch(createTableOrder({ ...values, dateOrder: formattedDate }));
+            // Pass the formatted date along with the other form values            
+            console.log(data)
+            dispatch(createTableOrder({orderData:data, token:jwt, navigate}));
         },
     });
 
@@ -94,20 +109,20 @@ const CreateTableOrder = () => {
                             <FormControl fullWidth margin="normal">
                                 <InputLabel>Nhà hàng</InputLabel>
                                 <Select
-                                    name="restaurant"
-                                    value={formik.values.restaurant}
+                                    name="restaurantId"
+                                    value={formik.values.restaurantId}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
-                                    error={formik.touched.restaurant && Boolean(formik.errors.restaurant)}
+                                    error={formik.touched.restaurantId && Boolean(formik.errors.restaurantId)}
                                 >
-                                    {restaurant.restaurants.map((restaurant) => (
+                                    {restaurantsList.map((restaurant) => (
                                         <MenuItem key={restaurant.id} value={restaurant.id}>
                                             {restaurant.name}
                                         </MenuItem>
                                     ))}
                                 </Select>
-                                {formik.touched.restaurant && formik.errors.restaurant && (
-                                    <Typography color="error">{formik.errors.restaurant}</Typography>
+                                {formik.touched.restaurantId && formik.errors.restaurantId && (
+                                    <Typography color="error">{formik.errors.restaurantId}</Typography>
                                 )}
                             </FormControl>
                         </Grid>

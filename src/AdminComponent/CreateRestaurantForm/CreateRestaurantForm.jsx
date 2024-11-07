@@ -132,15 +132,15 @@ export const CreateRestaurantForm = () => {
         }
     }, [formik.values.state]);
 
-    useEffect(() => {
-        const isRestaurantOwner = auth.user && auth.user.role === "ROLE_RESTAURANT_OWNER";
-        const hasRestaurant = restaurant.usersRestaurant !== null;
+    // useEffect(() => {
+    //     const isRestaurantOwner = auth.user && auth.user.role === "ROLE_RESTAURANT_OWNER";
+    //     const hasRestaurant = restaurant.usersRestaurant !== null;
     
-        // Check if conditions are met before dispatching
-        if (!isRestaurantOwner && !hasRestaurant) {
-            navigate("/")
-        }
-      }, [auth.user?.role, restaurant.usersRestaurant?.id, jwt, dispatch]);
+    //     // Check if conditions are met before dispatching
+    //     if (!isRestaurantOwner && !hasRestaurant) {
+    //         navigate("/")
+    //     }
+    //   }, [jwt]);
 
     const handleImageChange = async (e) => {
         const files = e.target.files;

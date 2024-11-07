@@ -29,15 +29,18 @@ export const fetchTableOrderById = (id, token) => async (dispatch) => {
 };
 
 // Create a table order
-export const createTableOrder = (orderData, token) => async (dispatch) => {
+export const createTableOrder = ({ orderData, token, navigate }) => async (dispatch) => {
     dispatch({ type: actionTypes.CREATE_TABLE_ORDER_REQUEST });
     try {
         const response = await api.post('/api/public/table-orders', orderData, {
             headers: { Authorization: `Bearer ${token}` }
         });
         dispatch({ type: actionTypes.CREATE_TABLE_ORDER_SUCCESS, payload: response.data });
+        console.log("Create table order success .....", response.data)
+        navigate(`/table-order/success/${response.data.id}`)
     } catch (error) {
         dispatch({ type: actionTypes.CREATE_TABLE_ORDER_FAILURE, payload: error.message });
+        console.log("Error.....", error)
     }
 };
 
@@ -81,14 +84,37 @@ export const fetchTableOrdersByUserId = (userId, token) => async (dispatch) => {
 };
 
 // Fetch table orders by restaurant ID
-export const fetchTableOrdersByRestaurantId = (restaurantId, token) => async (dispatch) => {
+export const fetchTableOrdersByRestaurantId = ({ restaurantId, token }) => async (dispatch) => {
     dispatch({ type: actionTypes.FETCH_TABLE_ORDERS_BY_RESTAURANT_ID_REQUEST });
     try {
-        const response = await api.get(`/api/public/table-orders/restaurant/${restaurantId}`, {
-            headers: { Authorization: `Bearer ${token}` }
-        });
+        const response = await api.get(`/api/public/table-orders/restaurant/${restaurantId}`,
+            {
+                headers: { Authorization: `Bearer ${token}` }
+            },
+        );
         dispatch({ type: actionTypes.FETCH_TABLE_ORDERS_BY_RESTAURANT_ID_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: actionTypes.FETCH_TABLE_ORDERS_BY_RESTAURANT_ID_FAILURE, payload: error.message });
     }
+};
+
+export const updateTableOrderStatus = (orderId, orderStatus, jwt) => {
+    return async (dispatch) => {
+        dispatch({ type: actionTypes.UPDATE_ORDER_STATUS_REQUEST });
+        try {
+            const req = {
+                "orderStatus" : orderStatus
+            }
+            const res = await api.put(`/api/table-orders/${orderId}/status`, req, {
+                headers: {
+                    Authorization: `Bearer ${jwt}`,
+                },
+            });
+            dispatch({ type: actionTypes.UPDATE_ORDER_STATUS_SUCCESS, payload: res.data });
+            console.log("Order status updated:", res.data);
+        } catch (error) {
+            dispatch({ type: actionTypes.UPDATE_ORDER_STATUS_FAILURE, payload: error });
+            console.log("Error updating order status:", error);
+        }
+    };
 };

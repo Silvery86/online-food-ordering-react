@@ -15,6 +15,7 @@ import { fetchRestaurantsOrder } from '../../component/State/RestaurantOrder/Act
 import { OrdersDetails } from '../Orders/OrdersDetails'
 import { CreateEvent } from '../Events/CreateEvent'
 import { getUser } from '../../component/State/Authentication/Action'
+import { TableOrders } from '../TableOrders/TableOrders'
 
 export const Admin = () => {
   const dispatch = useDispatch()
@@ -53,6 +54,7 @@ export const Admin = () => {
             <Route path='/' element={<Dashboard />} />
             <Route path='/orders' element={<Orders />} />
             <Route path='/order/:id' element={<OrdersDetails />} />
+            <Route path='/table-orders' element={<TableOrders />} />
             <Route path='/menu' element={<Menu />} />
             <Route path='/category' element={<FoodCategory />} />
             <Route path='/ingredients' element={<Ingredients />} />
