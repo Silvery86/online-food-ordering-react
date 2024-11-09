@@ -41,6 +41,7 @@ function MultiItemCarousel() {
           // Combine the results into a single array
           combinedMenuItems = combinedMenuItems.concat(menuItems);
         }
+        combinedMenuItems = shuffleArray(combinedMenuItems);
         // Join all menu items into a single list
         setAllMenuItems(combinedMenuItems);
       } catch (error) {
@@ -52,6 +53,15 @@ function MultiItemCarousel() {
       fetchAllMenuItems();
     }
   }, [dispatch, restaurantList, jwt]);
+  // Shuffle function to randomize the array
+  const shuffleArray = (array) => {
+    let shuffledArray = [...array]; // Create a copy of the original array
+    for (let i = shuffledArray.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]]; // Swap elements
+    }
+    return shuffledArray;
+  };
   return (
     <div>
       <Slider {...settings}>
