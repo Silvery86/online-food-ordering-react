@@ -1,4 +1,4 @@
-import { Button, Divider, FormControl, FormControlLabel, Grid, Radio, RadioGroup, Typography } from '@mui/material'
+import { Avatar, AvatarGroup, Button, Chip, Divider, FormControl, FormControlLabel, Grid, Radio, RadioGroup, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
@@ -9,6 +9,8 @@ import { getRestaurantById, getRestaurantCategory, getRestaurantEvents } from '.
 import { getMenuItemsByRestaurantId } from '../State/Menu/Action';
 import background_full from '../assets/images/background/background-full.webp'
 import "./RestaurantDetails.css"
+import { formatCurrency } from '../util/currencyFormat';
+import { ShoppingCart } from '@mui/icons-material';
 
 
 const foodTypes = [
@@ -23,9 +25,12 @@ const RestaurantDetails = () => {
     const jwt = localStorage.getItem("jwt");
     const restaurant = useSelector(store => store.restaurant);
     const menu = useSelector(store => store.menu)
+    const cart = useSelector(store => store.cart)
+    const cartList = cart.cartItems || []
+    console.log("Cart.....", cartList)
     const [selectedCategory, setSelectedCategory] = useState("");
     const { id } = useParams();
-    const [foodType, setFoodType] = useState("");   
+    const [foodType, setFoodType] = useState("");
     const handleFilter = (e) => {
         setFoodType(e.target.value)
         console.log(e.target.value, e.target.name)
@@ -49,7 +54,24 @@ const RestaurantDetails = () => {
             vegetarian: foodType === "vegetarian",
             foodCategory: selectedCategory,
         }));
-    }, [selectedCategory, foodType, id , jwt , dispatch])
+    }, [selectedCategory, foodType, id, jwt, dispatch])
+
+    // Stiky Cart Data
+    let stickyCart = {
+        images: [],
+        totalCart: 0,
+        cartQuantity: 0,
+        cartItems: 0
+    };
+    cartList.forEach(item => {
+        if (item.food.images && item.food.images.length > 0) {
+            stickyCart.images.push(item.food.images[0]);
+        }
+        stickyCart.totalCart += item.quantity * item.food.price;
+        stickyCart.cartQuantity += item.quantity;
+        stickyCart.cartItems += 1;
+    });
+    console.log("Sticky Data:", stickyCart);
     return (
 
         <div className='relative px-5 lg:px-20'>
@@ -153,6 +175,35 @@ const RestaurantDetails = () => {
                     {menu.menuItems.map((item) => <MenuCard key={item.id} item={item} />)}
                 </div>
             </section>
+            {/* Sticky Cart */}
+            {cartList.length > 0
+                ?
+                <div className="sticky-cart fixed bottom-0 left-0 right-0 bg-white p-4 shadow-lg z-50">
+                    <div className="flex justify-between items-center px-5 lg:px-12">
+                        <AvatarGroup max={5}>
+                            {stickyCart.images.length > 0
+                                ?
+                                stickyCart.images.map((image) => <Avatar alt="" src={image} sx={{ width: 50, height: 50 }} />)
+                                :
+                                <Avatar alt="Default" src="/static/images/avatar/1.jpg" />
+                            }
+                        </AvatarGroup>
+
+                        <Button 
+                        variant="contained" 
+                        onClick={() => navigate('/cart')} 
+                        endIcon={<ShoppingCart color='black'/>}
+                        size="large" 
+                        >
+                            {formatCurrency(stickyCart.totalCart)}
+                        </Button>
+                    </div>
+                </div>
+                :
+                <></>
+            }
+
+
             <div className="home__cover absolute top-0 left-0 right-0 bottom-0 -z-10">
                 <img
                     src={background_full || "../assets/images/default.jpg"}

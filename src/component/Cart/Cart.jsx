@@ -21,13 +21,6 @@ export const style = {
     boxShadow: 24,
     p: 4,
 };
-
-
-
-
-
-
-
 const Cart = () => {
     const [districtOptions, setDistrictOptions] = useState([]);
     const [open, setOpen] = useState(false);

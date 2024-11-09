@@ -24,10 +24,11 @@ function App() {
 
   useEffect(() => {
     // Dispatch findCart whenever the cart state updates
-    if (jwt && auth.jwt) {
+    if (jwt) {
       dispatch(findCart(jwt));
     }
   }, [cart.cartItems.id, jwt, auth.jwt, dispatch]);
+
 
   useEffect(() => {
     const isRestaurantOwner = auth.user && auth.user.role === "ROLE_RESTAURANT_OWNER";
