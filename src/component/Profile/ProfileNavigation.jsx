@@ -14,11 +14,13 @@ import { logout } from '../State/Authentication/Action';
 
 const menu = [
   { title: "Đơn hàng", slug: "orders", icon: <ShoppingBagIcon /> },
+  { title: "Đặt bàn", slug: "table-orders", icon: <EventIcon /> },
   { title: "Yêu thích", slug: "favorites", icon: <FavoriteIcon /> },
-  { title: "Địa chỉ", slug: "address", icon: <HomeIcon /> },
-  { title: "Thanh toán", slug: "payment", icon: <AccountBalanceWalletIcon /> },
+  
+  //{ title: "Địa chỉ", slug: "address", icon: <HomeIcon /> },
+  //{ title: "Thanh toán", slug: "payment", icon: <AccountBalanceWalletIcon /> },
   { title: "Thông báo", slug: "notification", icon: <NotificationsIcon /> },
-  { title: "Sự kiện", slug: "events", icon: <EventIcon /> },
+  
   { title: "Đăng xuất", slug: "logout", icon: <LogoutIcon /> },
 
 ]
@@ -30,7 +32,6 @@ const ProfileNavigation = ({ open, handleClose }) => {
   const dispatch = useDispatch();
 
   const handleNavigate = (item) => {
-    console.log(item)
     if (item.slug === "logout") {
       dispatch(logout());
       navigate("/");
@@ -45,10 +46,9 @@ const ProfileNavigation = ({ open, handleClose }) => {
         variant={isSmallScreen ? "temporary" : "permanent"}
         onClose={handleClose}
         open={open}
-        anchor="left"
-    
+        anchor="left"    
       >
-        <div className="w-[50vw] lg:w-[20vw] h-full flex flex-col justify-center text-xl gap-3 pt-20 px-4">
+        <div className="w-[50vw] lg:w-[20vw] h-full flex flex-col justify-center text-xl gap-6 pt-20 px-4">
           {menu.map((item, i) => (
             <React.Fragment key={item.slug}>
               <div

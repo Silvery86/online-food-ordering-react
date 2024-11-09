@@ -15,7 +15,7 @@ export const createOrder = (reqData) => {
 
             const orderId = order.data.id
             const totalPrice = order.data.totalPrice
-            console.log("Order created:", order.data);
+            //console.log("Order created:", order.data);
 
             // Get Order Id of Create Order
             const vnPayReqData = {
@@ -24,7 +24,7 @@ export const createOrder = (reqData) => {
             }
             // Call the VNPay payment API
             const res = await api.post(`/api/public/vn_pay/add_order?amount=${vnPayReqData.amount}&orderInfo=${vnPayReqData.orderInfo}`);
-            console.log("Order res....", res.data.data)
+            //console.log("Order res....", res.data.data)
             if (res.data.status == "Ok") {
                
                 window.location.href = res.data.data;
@@ -34,7 +34,7 @@ export const createOrder = (reqData) => {
 
         } catch (error) {
             dispatch({ type: CREATE_ORDER_FAILURE, payload: error });
-            console.log("Error:", error);
+            //console.log("Error:", error);
 
             // Redirect to failure page
             window.location.href = "/payment/fail";
@@ -53,7 +53,7 @@ export const getUserOrders = (jwt) => {
                     },
                 });
             dispatch({ type: GET_USERS_ORDERS_SUCCESS, payload: data })
-            console.log("User order :", data);
+            //console.log("User order :", data);
         } catch (error) {
             dispatch({ type: GET_USERS_ORDERS_FAILURE, payload: error })
             console.log("Error:", error);
@@ -74,7 +74,7 @@ export const updateOrderStatus = (orderId, orderStatus, jwt) => {
                 },
             });
             dispatch({ type: UPDATE_ORDER_STATUS_SUCCESS, payload: res.data });
-            console.log("Order status updated:", res.data);
+            //console.log("Order status updated:", res.data);
         } catch (error) {
             dispatch({ type: UPDATE_ORDER_STATUS_FAILURE, payload: error });
             console.log("Error updating order status:", error);

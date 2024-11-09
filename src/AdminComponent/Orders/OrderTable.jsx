@@ -1,4 +1,4 @@
-import { Avatar, AvatarGroup, Box, Card, CardHeader, IconButton } from '@mui/material'
+import { Avatar, AvatarGroup, Box, Card, CardHeader, Chip, Collapse, Icon, IconButton, Typography } from '@mui/material'
 import React, { useEffect } from 'react'
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -8,17 +8,31 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchRestaurantsOrder } from '../../component/State/RestaurantOrder/Action';
-import { Visibility } from '@mui/icons-material';
+import { fetchRestaurantsOrder} from '../../component/State/RestaurantOrder/Action';
 import { useNavigate } from 'react-router-dom';
+import { useTheme } from '@emotion/react';
+import { formatCurrency } from '../../component/util/currencyFormat';
+import dayjs from 'dayjs';
+import { OrderCard } from './OrderCard';
+import { updateOrderStatus } from '../../component/State/Order/Action';
 
-
+function createData(id, dateTime, totalPrice, address, shippingPhone, status, orderItems) {
+  return {
+    id,
+    dateTime,
+    totalPrice,
+    address,
+    shippingPhone,
+    status,
+    orderItems: orderItems,
+  };
+}
 export const OrderTable = () => {
   const dispatch = useDispatch()
   const restaurant = useSelector(state => state.restaurant)
   const ingredients = useSelector(state => state.ingredients)
   const menu = useSelector(state => state.menu)
-  const restaurantOrder = useSelector(state => state.restaurantOrder)
+  const order = useSelector(state => state.restaurantOrder)
   const jwt = localStorage.getItem("jwt")
   const navigate = useNavigate()
   useEffect(() => {
@@ -27,100 +41,60 @@ export const OrderTable = () => {
       jwt
     }))
   }, [dispatch])
-  const handleProcessOrder = ({orderStatus,id}) => {
-    if(orderStatus === "PENDING"){
-      navigate(`/admin/restaurant/order/${id}`)
-    }
+
+  const orderList = order.orders
+
+
+  console.log("Orders.....:", orderList)
+  const rows = Array.isArray(orderList)
+    ? orderList.map((item) =>
+      createData(
+        item.id,
+        dayjs(item.createdAt).format('DD/MM/YYYY H:m'),
+        formatCurrency(item.totalPrice),
+        `${item.deliveryAddress.streetAddress} - ${item.deliveryAddress.district} - ${item.deliveryAddress.state}`,
+        item.shippingPhone ?? item.customer.phone,
+        item.orderStatus,
+        item.items,
+      )
+    )
+    : [];
+  function handleStatusChange(orderId, newStatus) {
+    console.log("ID", orderId)
+    console.log("Status", newStatus)  
+    dispatch(updateOrderStatus(orderId,newStatus,jwt))
+    // Your logic to update the status of the order
+    console.log(`Order ID: ${orderId}, New Status: ${newStatus}`);
   }
-  console.log("Orders.....:", restaurantOrder)
+  const theme = useTheme()
   return (
-    <Box>
-      <Card>
-        <CardHeader
-          title={"Danh sách đơn hàng"}
-          sx={{ pt: 2, alignItems: "center" }}
-        />
+    <div className='flex w-full items-center flex-col'>
+
+      <div className='space-y-5 w-full'>
         <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <h1
+            style={{ color: theme.palette.primary.main }}
+            className='text-xl text-center py-7 font-semibold'>Đơn Hàng Của Bạn</h1>
+          <Table aria-label="collapsible table">
             <TableHead>
               <TableRow>
-                <TableCell>ID</TableCell>
-                <TableCell align="right">Ảnh</TableCell>
-                <TableCell align="right">Khách hàng</TableCell>
+                <TableCell />
+                <TableCell>Thời gian</TableCell>
                 <TableCell align="right">Thanh toán</TableCell>
-                <TableCell align="right">Liên hệ</TableCell>
-                <TableCell align="right">Địa chỉ</TableCell>
-                <TableCell align="right">Trạng thái</TableCell>
-                <TableCell align="right">Chi tiết</TableCell>
+                <TableCell align="right">Địa chỉ giao hàng</TableCell>
+                <TableCell align="right">Điện thoại</TableCell>
+                <TableCell align="center">Trạng thái</TableCell>
+                <TableCell align="center">Xử lý</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {restaurantOrder.orders.map((order) => (
-                <TableRow
-                  key={order.id}
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row">
-                    {order.id}
-                  </TableCell>
-                  <TableCell align="center">
-                    <AvatarGroup max={3}>
-                      {order.items.map((item) => <Avatar src={item.food.images[0]} />)}
-                    </AvatarGroup>
-                  </TableCell>
-                  <TableCell align="right">{order.customer.fullName}</TableCell>
-                  <TableCell align="right">{order.totalPrice}</TableCell>
-                  <TableCell align="right">{order.customer.email}</TableCell>
-                  <TableCell align="right">{order.deliveryAddress.streetAddress}</TableCell>
-                  <TableCell align="right">{order.orderStatus}</TableCell>
-                  <TableCell align="right">
-                    {(() => {
-                      switch (order.orderStatus) {
-                        case "PENDING":
-                          return (
-                            <IconButton onClick={() => handleProcessOrder({
-                              orderStatus:order.orderStatus,
-                              id:order.id
-                            })}>
-                              <Visibility/>
-                            </IconButton>
-                          );
-                        case "IN_PROGRESS":
-                          return (
-                            <IconButton component="a" href={`/admin/restaurant/order/${order.id}`}>
-                              <Visibility />
-                              <span style={{ marginLeft: 5 }}>View Progress</span>
-                            </IconButton>
-                          );
-                        case "COMPLETED":
-                          return (
-                            <IconButton component="a" href={`/admin/restaurant/order/${order.id}`}>
-                              <Visibility />
-                              <span style={{ marginLeft: 5 }}>View Details</span>
-                            </IconButton>
-                          );
-                        case "CANCELLED":
-                          return (
-                            <IconButton component="a" href={`/admin/restaurant/order/${order.id}`}>
-                              <Visibility />
-                              <span style={{ marginLeft: 5 }}>Order Cancelled</span>
-                            </IconButton>
-                          );
-                        default:
-                          return (
-                            <IconButton>
-                              <Visibility />
-                            </IconButton>
-                          );
-                      }
-                    })()}
-                  </TableCell>
-                </TableRow>
+              {rows.map((row) => (
+                <OrderCard key={row.id} row={row} onStatusChange={handleStatusChange} />
               ))}
             </TableBody>
           </Table>
         </TableContainer>
-      </Card>
-    </Box>
+      </div>
+    </div>
   )
 }

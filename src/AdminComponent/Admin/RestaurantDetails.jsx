@@ -10,7 +10,7 @@ export const RestaurantDetails = () => {
   const handleRestaurantStatus = () => {
     dispatch(updateRestaurantStatus({
       restaurantId: restaurant.usersRestaurant.id,
-      jwt:localStorage.getItem("jwt")
+      jwt: localStorage.getItem("jwt")
     }))
   }
 
@@ -27,44 +27,44 @@ export const RestaurantDetails = () => {
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Card>
-            <CardHeader title={<span className='text-gray-300'>Thông tin nhà hàng</span>} />
+            <CardHeader title={<span className='text-black-300'>Thông tin nhà hàng</span>} />
             <CardContent>
-              <div className='space-y-4 text-gray-200'>
+              <div className='space-y-4 text-black-200'>
                 <div className='flex'>
-                  <p className='w-48'>Chủ nhà hàng</p>
-                  <p className='text-gray-400'>
+                  <p className='w-[25%]'>Chủ nhà hàng</p>
+                  <p className='text-black-400'>
                     <span className='pr-55'> : </span>
                     {restaurant.usersRestaurant?.owner.fullName}
                   </p>
                 </div>
                 <div className='flex'>
-                  <p className='w-48'>Tên nhà hàng</p>
-                  <p className='text-gray-400'>
+                  <p className='w-[25%]'>Tên nhà hàng</p>
+                  <p className='text-black-400'>
                     <span className='pr-55'> : </span>
                     {restaurant.usersRestaurant?.name}
                   </p>
                 </div>
                 <div className='flex'>
-                  <p className='w-48'>Loại nhà hàng</p>
-                  <p className='text-gray-400'>
+                  <p className='w-[25%]'>Loại nhà hàng</p>
+                  <p className='text-black-400'>
                     <span className='pr-55'> : </span>
                     {restaurant.usersRestaurant?.cuisineType}
                   </p>
                 </div>
                 <div className='flex'>
-                  <p className='w-48'>Giờ mở cửa</p>
-                  <p className='text-gray-400'>
+                  <p className='w-[25%]'>Giờ mở cửa</p>
+                  <p className='text-black-400'>
                     <span className='pr-55'> : </span>
                     {restaurant.usersRestaurant?.openingHours}
                   </p>
                 </div>
                 <div className='flex'>
-                  <p className='w-48'>Trạng thái</p>
-                  <p className='text-gray-400'>
+                  <p className='w-[25%]'>Trạng thái</p>
+                  <p className='text-black-400'>
                     <span className='pr-55'> : </span>
                     {restaurant.usersRestaurant?.open
-                      ? <span className='px-5 py-2 rounded-full bg-green-400 text-gray-950'>Open</span>
-                      : <span className='px-5 py-2 rounded-full bg-red-500 text-gray-950'>Closed</span>}
+                      ? <span className='px-5 py-2 rounded-full bg-green-400 text-black-950'>Open</span>
+                      : <span className='px-5 py-2 rounded-full bg-red-500 text-black-950'>Closed</span>}
                   </p>
                 </div>
 
@@ -74,69 +74,70 @@ export const RestaurantDetails = () => {
         </Grid>
         <Grid item xs={12} lg={6}>
           <Card>
-            <CardHeader title={<span className='text-gray-300'>Địa chỉ</span>} />
+            <CardHeader title={<span className='text-black-300'>Địa chỉ</span>} />
             <CardContent>
-              <div className='space-y-4 text-gray-200'>
+              <div className='space-y-4 text-black-200'>
                 <div className='flex'>
-                  <p className='w-48'>Địa chỉ</p>
-                  <p className='text-gray-400'>
+                  <p className='w-[25%]'>Địa chỉ</p>
+                  <p className='text-black-400'>
                     <span className='pr-55'> : </span>
                     {restaurant.usersRestaurant?.address.streetAddress}
                   </p>
                 </div>
                 <div className='flex'>
-                  <p className='w-48'>Quận</p>
-                  <p className='text-gray-400'>
+                  <p className='w-[25%]'>Phường</p>
+                  <p className='text-black-400'>
+                    <span className='pr-55'> : </span>
+                    {restaurant.usersRestaurant?.address.district}
+                  </p>
+                </div>
+                <div className='flex'>
+                  <p className='w-[25%]'>Quận</p>
+                  <p className='text-black-400'>
                     <span className='pr-55'> : </span>
                     {restaurant.usersRestaurant?.address.state}
                   </p>
                 </div>
                 <div className='flex'>
-                  <p className='w-48'>Thành phố</p>
-                  <p className='text-gray-400'>
+                  <p className='w-[25%]'>Thành phố</p>
+                  <p className='text-black-400'>
                     <span className='pr-55'> : </span>
                     {restaurant.usersRestaurant?.address.city}
                   </p>
                 </div>
-
-
               </div>
             </CardContent>
           </Card>
         </Grid>
         <Grid item xs={12} lg={6}>
           <Card>
-            <CardHeader title={<span className='text-gray-300'>Thông tin liên hệ</span>} />
+            <CardHeader title={<span className='text-black-300'>Thông tin liên hệ</span>} />
             <CardContent>
-              <div className='space-y-4 text-gray-200'>
+              <div className='space-y-4 text-black-200'>
                 <div className='flex'>
-                  <p className='w-48'>Hộp thư</p>
-                  <p className='text-gray-400'>
+                  <p className='w-[25%]'>Hộp thư</p>
+                  <p className='text-black-400'>
                     <span className='pr-55'> : </span>
-                    123
+                    {restaurant.usersRestaurant.contactInformation.email}
                   </p>
                 </div>
                 <div className='flex'>
-                  <p className='w-48'>Điện thoại liên hệ</p>
-                  <p className='text-gray-400'>
+                  <p className='w-[25%]'>Điện thoại</p>
+                  <p className='text-black-400'>
                     <span className='pr-55'> : </span>
-                    123
+                    {restaurant.usersRestaurant.contactInformation.mobile}
                   </p>
                 </div>
                 <div className='flex'>
-                  <p className='w-48'>Fanpage</p>
-                  <p className='text-gray-400 flex items-center pb-3 gap-5'>
+                  <p className='w-[25%]'>Fanpage</p>
+                  <p className='text-black-400 flex items-center pb-3 gap-5'>
                     <span className='pr-55'> : </span>
-                    <a href='/' >
+                    <a href={restaurant.usersRestaurant.contactInformation.instagram} >
                       <Instagram sx={{ fontSize: "2rem" }} />
                     </a>
-                    <a href='/' >
+                    <a href={restaurant.usersRestaurant.contactInformation.facebook} >
                       <Facebook sx={{ fontSize: "2rem" }} />
                     </a>
-                    <a href='/' >
-                      <YouTube sx={{ fontSize: "2rem" }} />
-                    </a>
-
                   </p>
                 </div>
               </div>

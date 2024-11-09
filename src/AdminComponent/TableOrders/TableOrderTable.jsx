@@ -110,7 +110,7 @@ export const TableOrderTable = () => {
                                         <TableCell style={{ display: "none" }} align='center'>ID</TableCell>
                                         <TableCell align='center'>Ngày đặt bàn</TableCell>
                                         <TableCell align='center'>Thời gian đặt</TableCell>
-                                        <TableCell align='center'>Nhà hàng</TableCell>
+                                        <TableCell align='center'>Khách hàng</TableCell>
                                         <TableCell align='center'>Số điện thoại</TableCell>
                                         <TableCell align='center'>Số người</TableCell>
                                         <TableCell align='center'>Ghi chú</TableCell>

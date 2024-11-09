@@ -14,7 +14,7 @@ export const Orders = () => {
   }
   return (
     <div className='px-2'>
-      <Card className='p-5'>
+      {/* <Card className='p-5'>
         <Typography sx={{ paddingBottom: "1rem" }} variant='h5'>Trạng thái đơn hàng</Typography>
         <FormControl>
           <RadioGroup onChange={handleFilter} row name='category' value={ filterValue || "ALL"}>
@@ -27,7 +27,7 @@ export const Orders = () => {
             />)}
           </RadioGroup>
         </FormControl>
-      </Card>
+      </Card> */}
       <OrderTable/>
     </div>
   )

@@ -12,7 +12,6 @@ import { CreateMenuForm } from '../Menu/CreateMenuForm'
 import { useDispatch, useSelector } from 'react-redux'
 import { getRestaurantCategory } from '../../component/State/Restaurant/Action'
 import { fetchRestaurantsOrder } from '../../component/State/RestaurantOrder/Action'
-import { OrdersDetails } from '../Orders/OrdersDetails'
 import { CreateEvent } from '../Events/CreateEvent'
 import { getUser } from '../../component/State/Authentication/Action'
 import { TableOrders } from '../TableOrders/TableOrders'
@@ -53,7 +52,6 @@ export const Admin = () => {
           <Routes>
             <Route path='/' element={<Dashboard />} />
             <Route path='/orders' element={<Orders />} />
-            <Route path='/order/:id' element={<OrdersDetails />} />
             <Route path='/table-orders' element={<TableOrders />} />
             <Route path='/menu' element={<Menu />} />
             <Route path='/category' element={<FoodCategory />} />

@@ -164,7 +164,7 @@ function Home() {
           style={{ color: theme.palette.primary.main }}
           className='w-full text-center text-5xl font-semibold pb-20'
         >Nhà hàng Foodsou</h1>
-        <div className='flex flex-wrap items-center justify-left gap-5'>
+        <div className='flex flex-wrap items-center justify-center gap-5'>
           {
             restaurant.restaurants.map((item) => <RestaurantCard key={item.id} item={item} />)
           }

@@ -1,14 +1,42 @@
 import React from 'react';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import { Chip, IconButton } from '@mui/material';
+import { Chip, IconButton, TableCell, TableRow } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { findCart, removeCartItem, updateCartitem } from '../State/Cart/Action';
 import { formatCurrency } from '../util/currencyFormat';
+const TAX_RATE = 0.07;
+
+function ccyFormat(num) {
+    return `${num.toFixed(2)}`;
+}
+
+function priceRow(qty, unit) {
+    return qty * unit;
+}
+
+function createRow(desc, qty, unit) {
+    const price = priceRow(qty, unit);
+    return { desc, qty, unit, price };
+}
+
+function subtotal(items) {
+    return items.map(({ price }) => price).reduce((sum, i) => sum + i, 0);
+}
+
+const rows = [
+    createRow('Paperclips (Box)', 100, 1.15),
+    createRow('Paper (Case)', 10, 45.99),
+    createRow('Waste Basket', 2, 17.99),
+];
+
+const invoiceSubtotal = subtotal(rows);
+const invoiceTaxes = TAX_RATE * invoiceSubtotal;
+const invoiceTotal = invoiceTaxes + invoiceSubtotal;
 
 const CartItem = ({ item }) => {
-    
-    const { food, quantity, totalPrice, id, ingredients } = item;
+
+    const { food, quantity, totalPrice, id } = item;
     const auth = useSelector(store => store.auth);
     const dispatch = useDispatch();
     const jwt = localStorage.getItem("jwt");
@@ -29,7 +57,7 @@ const CartItem = ({ item }) => {
             quantity: newQuantity
         };
         await dispatch(updateCartitem({ data, jwt }));
-       
+
         // Refresh the cart after the update
         dispatch(findCart(jwt));
     };
@@ -38,44 +66,41 @@ const CartItem = ({ item }) => {
         await dispatch(removeCartItem({
             cartItemId: item.id,
             jwt: auth.jwt || jwt
-        }));     
-      
+        }));
+
     };
 
     return (
-        <div className='px-5'>
-            <div className='lg:flex items-center lg:space-x-5'>
-                <div>
-                    <img className='w-[5rem] h-[5rem] object-cover' src={food.images[0]} alt={food.name} />
+        <TableRow key={id}>
+            <TableCell align='center' >
+                <div className='flex justify-center items-center'>
+                    <img
+                        className="w-[8rem] h-[8rem] object-cover rounded-xl"
+                        src={food.images[0]}
+                        alt={food.name}
+                    />
                 </div>
-                <div className='flex items-center justify-between lg:w-[70%]'>
-                    <div className='space-y-1 lg:space-y-3 w-full'>
-                        <p>{food.name}</p>
-                        <div className='flex justify-between items-center'>
-                            <div className='flex items-center space-x-1'>
-                                <IconButton onClick={() => handleUpdateCartItem(-1)}>
-                                    <RemoveCircleOutlineIcon />
-                                </IconButton>
-                                <div className='w-5 h-5 text-xs flex items-center justify-center'>
-                                    {quantity}
-                                </div>
-                                <IconButton onClick={() => handleUpdateCartItem(1)}>
-                                    <AddCircleOutlineIcon />
-                                </IconButton>
-                            </div>
-                        </div>
+            </TableCell>
+            <TableCell align="center">{food.name}</TableCell>
+            <TableCell align="center">{formatCurrency(food.price)}</TableCell>
+            <TableCell align="center">
+                <div className='flex justify-center items-center flex-nowrap'>
+                    <IconButton onClick={() => handleUpdateCartItem(-1)}>
+                        <RemoveCircleOutlineIcon />
+                    </IconButton>
+                    <div className='w-5 h-5 text-xs flex items-center justify-center'>
+                        {quantity}
                     </div>
-                    <p>{formatCurrency(totalPrice)}</p>
+                    <IconButton onClick={() => handleUpdateCartItem(1)}>
+                        <AddCircleOutlineIcon />
+                    </IconButton>
                 </div>
-            </div>
-            {ingredients.length > 0 && (
-                <div className='pt-3 space-x-2'>
-                    {ingredients.map((ingredient, index) => (
-                        <Chip key={index} label={ingredient} />
-                    ))}
-                </div>
-            )}
-        </div>
+
+            </TableCell>
+            <TableCell align="right">{formatCurrency(item.totalPrice)}</TableCell>
+        </TableRow>
+
+
     );
 }
 

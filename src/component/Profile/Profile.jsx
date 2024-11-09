@@ -6,6 +6,7 @@ import Orders from './Orders'
 import Address from './Address'
 import Favourites from './Favourites'
 import Events from './Events'
+import { TableOrders } from './TableOrders'
 
 
 const Profile = () => {
@@ -21,7 +22,7 @@ const Profile = () => {
           <Route path="orders" element={<Orders />} />
           <Route path="address" element={<Address />} />
           <Route path="favorites" element={<Favourites />} />
-          <Route path="events" element={<Events />} />
+          <Route path="table-orders" element={<TableOrders />} />
         </Routes>
       </div>
     </div>

@@ -69,9 +69,10 @@ export const deleteTableOrder = (id, token) => async (dispatch) => {
 };
 
 // Fetch table orders by user ID
-export const fetchTableOrdersByUserId = (userId, token) => async (dispatch) => {
+export const fetchTableOrdersByUserId = ({userId,token}) => async (dispatch) => {
     dispatch({ type: actionTypes.FETCH_TABLE_ORDERS_BY_USER_ID_REQUEST });
     try {
+        console.log(userId)
         const response = await api.get(`/api/public/table-orders/user/${userId}`, {
             headers: { Authorization: `Bearer ${token}` }
         });

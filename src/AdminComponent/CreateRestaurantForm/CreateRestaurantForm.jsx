@@ -117,6 +117,7 @@ export const CreateRestaurantForm = () => {
                 },
                 images: values.images,
             };
+            console.log(data)
             dispatch(createRestaurant({ data, token: jwt }));
         }
     });
