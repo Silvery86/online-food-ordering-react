@@ -37,6 +37,7 @@ export const getMenuItemsByRestaurantId = (reqData) => {
                 `/api/restaurants/food/${reqData.restaurantId}${queryString}`
             );
             dispatch({ type: GET_MENU_ITEMS_BY_RESTAURANT_ID_SUCCESS, payload: data });
+            return data
         } catch (error) {
             dispatch({ type: GET_MENU_ITEMS_BY_RESTAURANT_ID_FAILURE, payload: error });
             console.log("Error:", error);
