@@ -5,6 +5,7 @@ import queryString from 'query-string';
 import { useDispatch } from 'react-redux';
 import { Box, CircularProgress } from '@mui/material';
 import { updateOrderStatus } from '../State/Order/Action';
+import { clearCartAction } from '../State/Cart/Action';
 
 export const PaymentProcess = () => {
     const location = useLocation();
@@ -24,6 +25,8 @@ export const PaymentProcess = () => {
         if (responseCode == "00") {
             // Update order status to "PAID"
             dispatch(updateOrderStatus(orderId, "PAID", jwt)); // Update to "PAID"
+            //Clear user cart after success 
+            dispatch(clearCartAction(jwt))
             // Navigate to the success page
             navigate(`/payment/success/${orderId}`);
         } else {

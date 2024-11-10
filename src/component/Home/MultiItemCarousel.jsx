@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { topMeal } from './topMeal';
 import { CarouselItem } from './CarouselItem';
 import Slider from 'react-slick';
 import { useDispatch, useSelector } from 'react-redux';
@@ -21,6 +20,18 @@ function MultiItemCarousel() {
     arrows: false,
 
   };
+  const settingsSmall = {
+    dots: false,
+    infinite: true,
+    speed: 1000,
+    slidesToShow: 3,
+    slidesToScroll: 2,
+    autoplay: true,
+    autoplaySpeed: 3000,
+    arrows: false,
+
+  };
+
   const jwt = localStorage.getItem("jwt");
   const restaurant = useSelector(state => state.restaurant)
   const restaurantList = restaurant.restaurants || []
@@ -64,12 +75,22 @@ function MultiItemCarousel() {
   };
   return (
     <div>
-      <Slider {...settings}>
-        {allMenuItems.map((item) =>
-          <CarouselItem key={item.name} images={item.images} title={item.name} />
-        )}
-      </Slider>
+      <div className='hidden md:block'>
+        <Slider {...settings}>
+          {allMenuItems.map((item) =>
+            <CarouselItem key={item.name} images={item.images} title={item.name} />
+          )}
+        </Slider>
+      </div>
+      <div className='md:hidden'>
+        <Slider {...settingsSmall}>
+          {allMenuItems.map((item) =>
+            <CarouselItem key={item.name} images={item.images} title={item.name} />
+          )}
+        </Slider>
+      </div>
     </div>
+
   )
 }
 

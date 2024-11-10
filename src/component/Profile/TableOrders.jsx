@@ -21,7 +21,7 @@ export const TableOrders = () => {
                 token: jwt
             })).finally(() => setIsLoading(false));
         }
-    }, [dispatch,auth.user.id, jwt, tableOrder.tableOrders?.status]);
+    }, [dispatch,auth.user?.id, jwt, tableOrder.tableOrders?.status]);
     const tableOrderByUser = tableOrder.tableOrders
     // Table render
     const [isLoading, setIsLoading] = useState(true);

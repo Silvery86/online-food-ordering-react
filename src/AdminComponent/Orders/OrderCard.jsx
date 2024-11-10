@@ -53,7 +53,7 @@ export const OrderCard = ({ row, onStatusChange }) => {
                 <TableCell align="right">{row.address}</TableCell>
                 <TableCell align="right">{row.shippingPhone}</TableCell>
                 <TableCell align="center"><StatusSwithcher status={row.status} /></TableCell>
-                <TableCell>
+                <TableCell align="center">
                     <div>
                         {(() => {
                             switch (row.status) {

@@ -62,31 +62,30 @@ function Home() {
     navigate(`/events/event/${id}`);
   };
   return (
-    <div className='home relative pb-10'>
-
+    <div className='home relative pb-5 md:pb-10'>
       {/* Banner */}
       <Slider {...settings}>
         {defaultEventList.map((banner, index) => (
-          <section key={index} className="banner relative flex flex-col items-center justify-center align-middle pt-10">
-            <div className="w-[60%] z-20 text-left mt-20 relative px-10">
+          <section key={index} className="banner relative flex flex-col items-center justify-center align-middle pt-10 md:h-[100vh] h-[60vh]">
+            <div className="w-[80%] md:w-[60%] z-20 text-left mt-10 md:mt-20 relative px-10">
               <h1
                 style={{ color: theme.palette.primary.main }}
-                className="text-2xl lg:text-6xl font-bold pt-10"
+                className="text-5xl pt-5 md:text-6xl font-bold md:pt-10"
               >
                 {banner.title || "Default Title"}
               </h1>
               <p
                 style={{ color: theme.palette.black.main }}
-                className="text-primary text-xl lg:text-4xl pt-8 font-semibold"
+                className="text-white md:text-4xl text-3xl pt-8 font-semibold"
               >
                 {banner.description || "Default Description"}
               </p>
             </div>
-            <div className="cover absolute top-0 left-0 right-0 bottom-0 -z-10">
+            <div className="md:cover absolute top-0 left-0 right-0 bottom-0 -z-10">
               <img
                 src={banner.image || "../assets/images/default.jpg"}
                 alt={banner.title || "Default Title"}
-                className="object-cover w-full h-full"
+                className="h-[60vh] object-fill md:object-cover w-full md:h-full opacity-70 md:opacity-100"
               />
             </div>
           </section>
@@ -94,10 +93,10 @@ function Home() {
       </Slider>
 
       {/* Menu */}
-      <section className='foods-section pt-10 lg:py-20'>
+      <section className='foods-section pt-5 md:pt-10 lg:py-20'>
         <p
           style={{ color: theme.palette.primary.main }}
-          className='w-full text-center text-5xl font-semibold pb-20'
+          className='w-full text-center text-3xl md:text-5xl font-semibold pb-20'
         >Món ăn ngon nổi bật</p>
         <MultiItemCarousel />
       </section>
@@ -105,7 +104,7 @@ function Home() {
       {/* Favourited Restaurant */}
       {auth.favorites.length > 0
         ?
-        <section className='px-5 lg:px-20 pt-10'>
+        <section className='px-5 lg:px-20 py-10'>
           <h1
             style={{ color: theme.palette.primary.main }}
             className='text-2xl font-semiboldpb-3'
@@ -121,17 +120,17 @@ function Home() {
       {/* Banner */}
       <Slider {...settings}>
         {eventsList.map((banner, index) => (
-          <section key={index} className="banner relative flex flex-col items-center justify-center align-middle pt-10">
-            <div className="w-[100%] z-20 text-center mt-10 relative px-20">
+          <section key={index} className="md:h-[80vh] h-[50vh] banner relative flex flex-col items-center justify-center align-middle pt-10">
+            <div className="w-[100%] z-20 text-center md:mt-10 relative px-20">
               <h1
                 style={{ color: theme.palette.primary.main }}
-                className="text-2xl lg:text-6xl font-bold pt-10"
+                className="text-4xl md:text-6xl font-bold pt-10"
               >
                 {banner.title || "Default Title"}
               </h1>
               <p
                 style={{ color: theme.palette.black.main }}
-                className="text-primary text-xl lg:text-4xl pt-8 font-semibold"
+                className="text-primary text-2xl md:text-4xl md:pt-8 font-semibold"
               >
                 {banner.description || "Default Description"}
               </p>
@@ -147,11 +146,11 @@ function Home() {
                 </Button>
               </div>
             </div>
-            <div className="cover absolute top-0 left-0 right-0 bottom-0 -z-10">
+            <div className="md:cover absolute top-0 left-0 right-0 bottom-0 -z-10">
               <img
                 src={banner.image || "../assets/images/default.jpg"}
                 alt={banner.title || "Default Title"}
-                className="object-cover w-full h-full"
+                className="object-fill md:object-cover md:w-full h-full"
               />
             </div>
           </section>

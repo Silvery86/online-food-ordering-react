@@ -46,7 +46,7 @@ function Row(props) {
         <TableCell align="center"><StatusSwithcher status={row.status}/></TableCell>
       </TableRow>
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+        <TableCell style={{ paddingBottom: 60, paddingTop: 0}} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
               <Typography variant="h6" gutterBottom component="div">
@@ -129,21 +129,20 @@ const Orders = () => {
     ))
     const theme = useTheme()
   return (
-    <div className='flex w-full items-center flex-col'>
-     
+    <div className='flex w-full items-center flex-col h-[100%]'>     
       <div className='space-y-5 w-full'>
         <TableContainer component={Paper}>
         <h1 
         style={{color : theme.palette.primary.main}}
-        className='text-xl text-center py-7 font-semibold'>Đơn Hàng Của Bạn</h1>
+        className='hidden md:block text-xl text-center py-7 font-semibold'>Đơn Hàng Của Bạn</h1>
           <Table aria-label="collapsible table">
             <TableHead>
               <TableRow>
                 <TableCell />
                 <TableCell>Thời gian</TableCell>
-                <TableCell align="right">Thanh toán</TableCell>
-                <TableCell align="right">Địa chỉ giao hàng</TableCell>
-                <TableCell align="right">Điện thoại</TableCell>
+                <TableCell align="center">Thanh toán</TableCell>
+                <TableCell align="center">Địa chỉ giao hàng</TableCell>
+                <TableCell align="center">Điện thoại</TableCell>
                 <TableCell align="center">Trạng thái</TableCell>
               </TableRow>
             </TableHead>

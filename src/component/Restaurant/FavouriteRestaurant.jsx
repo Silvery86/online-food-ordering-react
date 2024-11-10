@@ -17,8 +17,8 @@ const FavouriteRestaurant = ({ item }) => {
         dispatch(addToFavorite({ jwt, restaurantId: item.id }))
     }
     const handleNavigateToRestaurant = () => {
-        if (item.open) {
-            navigate(`/restaurant/${item.address.city}/${item.name}/${item.id}`)
+        if (favoritesRestaurant.open) {
+            navigate(`/restaurant/${favoritesRestaurant.id}`)
         }
     }
     const [favoritesRestaurant, setFavoritesRestaurant] = useState(null);
@@ -41,13 +41,20 @@ const FavouriteRestaurant = ({ item }) => {
         return <div>Loading...</div>; // Show loading state while fetching
     }
     return (
-        <Card className='w-[18rem]'>
-            <div className={`${true ? 'cursor-pointer' : 'cursor-not-allowed'} relative`} >
+        <Card className='w-[45%] h-[50vh] md:w-[30%] md:h-[60vh]'>
+            <div className={`${favoritesRestaurant.open ? 'cursor-pointer' : 'cursor-not-allowed'} relative`} >
                 <img className="w-full h-[10rem] rounded-t-md object-cover"
-                    src={favoritesRestaurant.images[0]} alt='' />
+                    src={item.images[0]} alt='' />
                 <Chip size='small' className='absolute top-2 left-2' color={favoritesRestaurant.open ? "success" : "error"} label={favoritesRestaurant.open ? "Mở cửa" : "Đóng cửa"} />
+                {auth.user
+                    ?
+                    <div className='absolute top-2 right-2'>
+                        <IconButton onClick={handleAddToFavorite}>
+                            {isPresentInFavorites(auth.favorites, favoritesRestaurant) ? <FavoriteIcon color="success" /> : <FavoriteBorderIcon color='white'/>}
+                        </IconButton>
+                    </div>
+                    : <></>}
             </div>
-
             <div className='p-4 textPart lg:flex w-full justify-between'>
                 <div className='space-y-1'>
                     <p onClick={handleNavigateToRestaurant} className='font-semibold text-lg cursor-pointer'>{favoritesRestaurant.name}</p>
@@ -55,14 +62,7 @@ const FavouriteRestaurant = ({ item }) => {
                         {favoritesRestaurant.description}
                     </p>
                 </div>
-                {auth.user
-                    ?
-                    <div>
-                        <IconButton onClick={handleAddToFavorite}>
-                            {isPresentInFavorites(auth.favorites, favoritesRestaurant) ? <FavoriteIcon /> : <FavoriteBorderIcon />}
-                        </IconButton>
-                    </div>
-                    : <></>}
+
 
             </div>
         </Card>

@@ -57,49 +57,69 @@ const RestaurantDetails = () => {
     }, [selectedCategory, foodType, id, jwt, dispatch])
 
     // Stiky Cart Data
-    let stickyCart = {
+    const [stickyCart, setStickyCart] = useState({
         images: [],
         totalCart: 0,
         cartQuantity: 0,
-        cartItems: 0
-    };
-    cartList.forEach(item => {
-        if (item.food.images && item.food.images.length > 0) {
-            stickyCart.images.push(item.food.images[0]);
-        }
-        stickyCart.totalCart += item.quantity * item.food.price;
-        stickyCart.cartQuantity += item.quantity;
-        stickyCart.cartItems += 1;
+        cartItems: 0,
     });
-    console.log("Sticky Data:", stickyCart);
-    return (
+    // Update sticky cart data whenever cartList changes
+    useEffect(() => {
+        let newStickyCart = {
+            images: [],
+            totalCart: 0,
+            cartQuantity: 0,
+            cartItems: 0,
+        };
 
+        cartList.forEach(item => {
+            if (item.food.images && item.food.images.length > 0) {
+                // Add the first image if it is not already present
+                if (!newStickyCart.images.includes(item.food.images[0])) {
+                    newStickyCart.images.push(item.food.images[0]);
+                }
+            }
+            newStickyCart.totalCart += item.quantity * item.food.price;
+            newStickyCart.cartQuantity += item.quantity;
+            newStickyCart.cartItems += 1;
+        });
+
+        // Update state with new stickyCart
+        setStickyCart(prevStickyCart => ({
+            ...prevStickyCart,
+            ...newStickyCart,
+        }));
+
+        console.log("Updated Sticky Data:", newStickyCart); // Debug log
+    }, [cartList, stickyCart.images.length, stickyCart.cartQuantity, stickyCart.cartItems]);  // Runs every time `cartList` changes
+
+    return (
         <div className='relative px-5 lg:px-20'>
             <section className='pt-5'>
                 <div>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
-                            <img className='w-full h-[80vh] object-cover rounded-xl'
+                            <img className='w-full h-[30vh] md:h-[80vh] object-cover rounded-xl'
                                 src={restaurant.restaurant?.images[0]}
                                 alt=''
                             />
                         </Grid>
-                        <Grid item xs={12} lg={6}>
-                            <img className='w-full h-[40vh] object-cover rounded-xl'
+                        <Grid item xs={6} lg={6}>
+                            <img className='w-full h-[20vh] md:h-[40vh] object-cover rounded-xl'
                                 src={restaurant.restaurant?.images[1]}
                                 alt=''
                             />
                         </Grid>
-                        <Grid item xs={12} lg={6}>
-                            <img className='w-full h-[40vh] object-cover rounded-xl'
+                        <Grid item xs={6} lg={6}>
+                            <img className='w-full h-[20vh] md:h-[40vh] object-cover rounded-xl'
                                 src={restaurant.restaurant?.images[2]}
                                 alt=''
                             />
                         </Grid>
                     </Grid>
                 </div>
-                <div className='flex flex-nowrap justify-center'>
-                    <div className='w-[80%] pt-3 pb-5'>
+                <div className='flex justify-center flex-wrap'>
+                    <div className='w-[100%] md:w-[80%] pt-3 pb-5'>
                         <h1 className='text-4xl font-semibold'>
                             {restaurant.restaurant?.name}
                         </h1>
@@ -123,20 +143,21 @@ const RestaurantDetails = () => {
                             </p>
                         </div>
                     </div>
-                    <div className='w-[20%] flex justify-center align-middle py-10'>
+                    <div className='w-[100%] md:w-[20%] flex justify-center align-middle py-10'>
                         <Button onClick={() => { navigate("/table-order") }} variant='contained' className='pulse-button'>Đặt bàn ngay!</Button>
                     </div>
                 </div>
 
             </section>
             <Divider />
-            <section className='pt-[2rem] lg:flex relative'>
-                <div className='space-y-10 lg:w-[20%] filter'>
-                    <div className='box space-y-5 lg:sticky top-28'>
-                        <Typography variant='h5'>
+            <section className='pt-[2rem] md:flex relative pb-[90px]'>
+
+                <div className='hidden md:block space-y-10 w-[100%] md:w-[20%] filter'>
+                    <div className='flex flex-wrap md:box space-y-5 lg:sticky top-2 '>
+                        <Typography variant='h5' sx={{ width: "100%" }}>
                             Thực đơn :
                         </Typography>
-                        <FormControl className='py-10 space-y-5' component={"fieldset"}>
+                        <FormControl sx={{ width: "100%" }} component={"fieldset"}>
                             <RadioGroup
                                 onChange={handleFilterCategory}
                                 name='food_category'
@@ -153,7 +174,7 @@ const RestaurantDetails = () => {
                             </RadioGroup>
                         </FormControl>
                         <Divider />
-                        <Typography variant='h5'>
+                        {/* <Typography variant='h5'>
                             Loại thực đơn :
                         </Typography>
                         <FormControl className='space-y-5' component={"fieldset"}>
@@ -167,11 +188,51 @@ const RestaurantDetails = () => {
                                     />
                                 ))}
                             </RadioGroup>
-                        </FormControl>
+                        </FormControl> */}
                     </div>
 
                 </div>
-                <div className='space-y-5 lg:w-[80%] lg:pl-10'>
+                <div className='flex md:hidden space-y-10 w-[100%] md:w-[20%] filter'>
+                    <div className='flex flex-wrap md:box space-y-5 lg:sticky top-2 '>
+                        <Typography variant='h5' sx={{ width: "100%" }}>
+                            Thực đơn :
+                        </Typography>
+                        <FormControl sx={{ width: "100%" }} component={"fieldset"}>
+                            <RadioGroup
+                                onChange={handleFilterCategory}
+                                name='food_category'
+                                value={selectedCategory}
+                                row={true}
+                            >
+                                {restaurant.categories.map((item) =>
+                                    <FormControlLabel
+                                        key={item.id}
+                                        value={item.name}
+                                        control={<Radio />}
+                                        label={item.name}
+                                    />
+                                )}
+                            </RadioGroup>
+                        </FormControl>
+                        <Divider />
+                        {/* <Typography variant='h5'>
+                            Loại thực đơn :
+                        </Typography>
+                        <FormControl className='space-y-5' component={"fieldset"}>
+                            <RadioGroup onChange={handleFilter} aria-labelledby="demo-radio-buttons-group-label" defaultValue="all" name='food_type'>
+                                {foodTypes.map((item) => (
+                                    <FormControlLabel
+                                        key={item.value}
+                                        value={item.value}
+                                        control={<Radio />}
+                                        label={item.label}
+                                    />
+                                ))}
+                            </RadioGroup>
+                        </FormControl> */}
+                    </div>
+                </div>
+                <div className='space-y-5 w-[100%] md:w-[80%] md:pl-10'>
                     {menu.menuItems.map((item) => <MenuCard key={item.id} item={item} />)}
                 </div>
             </section>
@@ -182,18 +243,18 @@ const RestaurantDetails = () => {
                     <div className="flex justify-between items-center px-5 lg:px-12">
                         <AvatarGroup max={5}>
                             {stickyCart.images.length > 0
-                                ?
-                                stickyCart.images.map((image) => <Avatar alt="" src={image} sx={{ width: 50, height: 50 }} />)
-                                :
-                                <Avatar alt="Default" src="/static/images/avatar/1.jpg" />
+                                ? stickyCart.images.map((image, index) => (
+                                    <Avatar key={index} alt="" src={image} sx={{ width: 50, height: 50 }} />
+                                ))
+                                : <Avatar alt="Default" src="/static/images/avatar/1.jpg" />
                             }
                         </AvatarGroup>
 
-                        <Button 
-                        variant="contained" 
-                        onClick={() => navigate('/cart')} 
-                        endIcon={<ShoppingCart color='black'/>}
-                        size="large" 
+                        <Button
+                            variant="contained"
+                            onClick={() => navigate('/cart')}
+                            endIcon={<ShoppingCart color='black' />}
+                            size="large"
                         >
                             {formatCurrency(stickyCart.totalCart)}
                         </Button>

@@ -97,7 +97,7 @@ export const removeCartItem = ({ cartItemId, jwt }) => {
     }
 }
 
-export const clearCartAction = () => {
+export const clearCartAction = (jwt) => {
     return async (dispatch) => {
         dispatch({ type: CLEAR_CART_REQUEST });
         try {
@@ -105,11 +105,11 @@ export const clearCartAction = () => {
                 {},
                 {
                     headers: {
-                        Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+                        Authorization: `Bearer ${jwt}`,
                     },
                 });
             dispatch({ type: CLEAR_CART_SUCCESS, payload: data })
-            console.log("Cart remove :", data);
+            console.log("Cart clear :", data);
         } catch (error) {
             dispatch({ type: CLEAR_CART_FAILURE, payload: error })
             console.log("Error:", error);
