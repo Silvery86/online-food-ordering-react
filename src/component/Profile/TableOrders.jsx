@@ -13,8 +13,8 @@ export const TableOrders = () => {
     const jwt = localStorage.getItem("jwt");
     const navigate = useNavigate();
        useEffect(() => {
-        if (auth.user.id !== null) {
-            console.log("Auth....",auth.user?.id)
+        if (auth.user !== null && auth.user.id !== null) {
+            console.log("Auth....",auth.user.id)
             setIsLoading(true);
             dispatch(fetchTableOrdersByUserId({
                 userId: auth.user.id,
