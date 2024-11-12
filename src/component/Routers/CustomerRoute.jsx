@@ -5,9 +5,9 @@ import RestaurantDetails from '../Restaurant/RestaurantDetails'
 import Cart from '../Cart/Cart'
 import { Navbar } from '../Navbar/Navbar'
 import { Auth } from '../Auth/Auth'
-import { AboutUs } from '../Home/AboutUs'
-import { Contact } from '../Home/Contact'
-import { News } from '../Home/News'
+import  AboutUs  from '../Home/AboutUs'
+import  Contact  from '../Home/Contact'
+import  News  from '../Home/News'
 import Profile from '../Profile/Profile'
 
 import { PaymentProcess } from '../Payment/PaymentProcess'
@@ -16,6 +16,7 @@ import { PaymentFailed } from '../Payment/PaymentFailed'
 import { EventDetails } from '../Event/EventDetails'
 import CreateTableOrder from '../TableOrder/CreateTableOrder'
 import { TableOrderThankYou } from '../TableOrder/TableOrderThankYou'
+import NewsDetail from '../Home/NewsDetail'
 
 const CustomerRoute = () => {
     return (
@@ -30,8 +31,7 @@ const CustomerRoute = () => {
                     <Route path="/my-profile/*" element={<Profile />} />
                     <Route path="/events/event/:id" element={<EventDetails />} />
                     <Route path='/table-order' element={<CreateTableOrder />} />
-                    <Route path='/table-order/success/:id' element={<TableOrderThankYou />} />
-                    <Route path='/news' element={<News />} />
+                    <Route path='/table-order/success/:id' element={<TableOrderThankYou />} />                  
                     <Route path='/cart' element={<Cart />} />
                     <Route path='/payment/process' element={<PaymentProcess/>} />
                     <Route path='/payment/success/:id' element={<PaymentSuccess/>} />
