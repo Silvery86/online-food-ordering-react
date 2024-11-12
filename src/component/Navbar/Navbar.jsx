@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useTheme } from '@emotion/react';
 import MenuIcon from '@mui/icons-material/Menu';
-import logo from '../assets/Foodsou-removebg.png'
+
 
 export const Navbar = () => {
     const theme = useTheme()
@@ -58,7 +58,7 @@ export const Navbar = () => {
                     }}
                 >
                     <MenuItem onClick={() => navigate("/about-us")}>Về chúng tôi</MenuItem>
-                    <MenuItem onClick={() => navigate("/news")}>Tin tức</MenuItem>
+               
                     <MenuItem onClick={() => navigate("/contact")}>Liên hệ</MenuItem>                   
                 </Menu>
                 <Button color="error" variant='contained' onClick={() => navigate("/table-order")} className='ml-3 pulse-button' size='small'>
@@ -74,10 +74,7 @@ export const Navbar = () => {
                 {/* Navigation Links */}
                 <button onClick={() => navigate("/about-us")} className='text-white hover:underline md:text-xl'>
                     Về chúng tôi
-                </button>
-                <button onClick={() => navigate("/news")} className='text-white hover:underline md:text-xl'>
-                    Tin tức
-                </button>
+                </button>               
                 <button onClick={() => navigate("/contact")} className='text-white hover:underline md:text-xl'>
                     Liên hệ
                 </button>
@@ -85,12 +82,7 @@ export const Navbar = () => {
                     Đặt bàn ngay
                 </Button >
             </div>
-            <div className='flex items-center space-x-2 lg:space-x-10'>
-                {/* <div className=''>
-                    <IconButton>
-                        <SearchIcon sx={{ fontSize: "1.5rem" }} />
-                    </IconButton>
-                </div> */}
+            <div className='flex items-center space-x-2 lg:space-x-10'>             
                 <div className=''>
                     {auth.user ?
                         <Avatar onClick={handleAvatarClick} sx={{ bgcolor: theme.palette.white.main, color: green[500] }}>{auth.user?.fullName[0].toUpperCase()}</Avatar>

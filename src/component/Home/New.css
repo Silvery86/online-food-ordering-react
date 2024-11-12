@@ -1,0 +1,14 @@
+.news-item {
+    display: flex;
+    margin-bottom: 15px;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    width: 100%; /* Đảm bảo container đủ lớn */
+}
+
+.news-item img {
+    width: 150px;  /* hoặc đặt kích thước phù hợp với thiết kế */
+    height: 100px;
+    object-fit: cover; /* hoặc contain tùy ý */
+}

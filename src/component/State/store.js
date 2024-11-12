@@ -10,6 +10,7 @@ import ingredientReducer from "./Ingredients/Reducer";
 import authReducer from "./Authentication/Reducer";
 import eventReducer from "./Event/Reducer";
 import tableOrderReducer from "./OrderTable/Reducer";
+import analyticsReducer from "./Analytic/Reducer";
 
 const rootReducer = combineReducers({
     auth: authReducer,
@@ -20,7 +21,8 @@ const rootReducer = combineReducers({
     restaurantOrder : restaurantsOrderReducer,
     ingredients:ingredientReducer,
     event:eventReducer,
-    tableOrder:tableOrderReducer
+    tableOrder:tableOrderReducer,
+    analytics: analyticsReducer,
 })
 
 export const store =  legacy_createStore(rootReducer,applyMiddleware(thunk));

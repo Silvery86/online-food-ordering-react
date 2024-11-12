@@ -25,7 +25,7 @@ const AdminRoute = () => {
     useEffect(() => {       
           dispatch(getRestaurantByUserId(jwt));        
       }, [jwt, dispatch]);
-      console.log("Restaurant",restaurant)
+     
 
     return (
         <div>
